@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: 'InstrumentSans-Bold';
+    src: url('../public/fonts/static/InstrumentSans-Bold.ttf')format('woff2');
+    font-weight: bold;
+    font-size: 16px;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'InstrumentSans-Regular';
+    src: url('../public/fonts/static/InstrumentSans-Regular.ttf')format('woff2');
+    font-weight: normal;
+    font-size: 12px;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'InstrumentSans-Semibold';
+    src: url('../public/fonts/static/InstrumentSans-Semibold.ttf')format('woff2');
+    font-size: 16px;
+    font-style: normal;
+}
+
+body {
+    @apply bg-light-grey
+}
+
+
+
+.active h3 {
+    @apply text-primaryPurple font-bold;
+}
+
+.active svg path {
+    @apply fill-primaryPurple;
+}
