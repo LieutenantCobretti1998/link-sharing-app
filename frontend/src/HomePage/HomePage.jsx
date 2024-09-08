@@ -1,6 +1,19 @@
 import Button from "../UI/Button.jsx";
+import {useDispatch, useSelector} from "react-redux";
+import {addLink, showForm} from "../LinksAddition/LinkSlice.js";
+import NewLinkForm from "../LinksAddition/NewLink.jsx";
 
 function HomePage() {
+    const dispatch = useDispatch();
+    const showLinkForm = useSelector((state) => state.link.showForm);
+    const links = useSelector((state) => state.link.links);
+    const handleAddLink = () => {
+        dispatch(showForm());
+    };
+
+    const handleAddNewLink = (newLink) => {
+    dispatch(addLink(newLink)); // Dispatch the action to add a new link
+  };
     return (
         <>
             <section className="w-[45%] flex justify-center items-center bg-white pt-10 pb-10">
@@ -28,9 +41,11 @@ function HomePage() {
                 </div>
 
                 <div className="w-full pb-12">
-                    <Button type="main">+ Add new Link</Button>
+                    <Button onclick={handleAddLink} type="main">+ Add new Link</Button>
                 </div>
-
+                {showLinkForm ? (
+                    <NewLinkForm />
+                ): (
                 <div className="flex bg-light-grey items-center flex-col p-10 gap-4 pb-12">
                     <svg xmlns="http://www.w3.org/2000/svg" width="250" height="161" fill="none" viewBox="0 0 250 161">
                         <path fill="#fff"
@@ -80,6 +95,7 @@ function HomePage() {
                         you can reorder and edit them. We’re here to help you share your profiles with everyone!
                     </p>
                 </div>
+                )}
                 <div className="border-t border-light-grey-100 mt-10 -mx-10"></div>
                 <div className="mt-10 text-end">
                     <Button type="save">Save</Button>

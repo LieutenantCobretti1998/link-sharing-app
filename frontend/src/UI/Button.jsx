@@ -1,4 +1,4 @@
-function Button({type, children, isActive}) {
+function Button({type, children, isActive, onclick}) {
     let buttonClasses;
 
     switch (type) {
@@ -13,7 +13,7 @@ function Button({type, children, isActive}) {
             break;
 
         case "save":
-            buttonClasses = "w-24 h-9 p-0 border-[.5px] border-lightPurple1 rounded-md text-white bg-lightPurple1 font-regular";
+            buttonClasses = "w-24 h-9 p-0 hover:bg-primaryPurple rounded-md text-white bg-lightPurple1 font-regular transition duration-300 ease-in-out";
             break;
 
         case "links":
@@ -22,7 +22,7 @@ function Button({type, children, isActive}) {
             : "hover:bg-lightPurple2 hover:border-lightPurple2 rounded-md transition duration-300";
     }
     return (
-        <button className={buttonClasses}>{children}</button>
+        <button onClick={onclick} className={buttonClasses}>{children}</button>
     );
 }
 
