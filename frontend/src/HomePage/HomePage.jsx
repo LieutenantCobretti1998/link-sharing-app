@@ -1,19 +1,38 @@
 import Button from "../UI/Button.jsx";
 import {useDispatch, useSelector} from "react-redux";
-import {addLink, showForm} from "../LinksAddition/LinkSlice.js";
+import {updateLink, removeLink, showForm, addLink} from "../LinksAddition/LinkSlice.js";
 import NewLinkForm from "../LinksAddition/NewLink.jsx";
+import {platforms} from "../Platforms/PreDefaultPlatForms.jsx";
+
 
 function HomePage() {
     const dispatch = useDispatch();
     const showLinkForm = useSelector((state) => state.link.showForm);
     const links = useSelector((state) => state.link.links);
-    const handleAddLink = () => {
-        dispatch(showForm());
+
+    const handleAddNewLink = () => {
+         dispatch(showForm());
+         dispatch(addLink());
     };
 
-    const handleAddNewLink = (newLink) => {
-    dispatch(addLink(newLink)); // Dispatch the action to add a new link
-  };
+    const removeNewLink = (linkId) => {
+        dispatch(removeLink(linkId));
+    };
+
+    const handleUpdateLink = (linkId, updates) => {
+        dispatch(updateLink({id: linkId, updates}));
+    };
+
+    const getPlatformIcon = (label) => {
+        const platform = platforms.find((p) => p.label === label);
+        return platform ? platform.icon : null;
+    }
+
+    const getPlatformColor = (label) => {
+        const platform = platforms.find((p) => p.label === label);
+        return platform ? platform.color : null;
+    }
+
     return (
         <>
             <section className="w-[45%] flex justify-center items-center bg-white pt-10 pb-10">
@@ -25,26 +44,61 @@ function HomePage() {
                     <circle cx="153.5" cy="112" r="48" fill="#EEE"/>
                     <rect width="160" height="16" x="73.5" y="185" fill="#EEE" rx="8"/>
                     <rect width="72" height="8" x="117.5" y="214" fill="#EEE" rx="4"/>
-                    <rect width="237" height="44" x="35" y="278" fill="#EEE" rx="8"/>
-                    <rect width="237" height="44" x="35" y="342" fill="#EEE" rx="8"/>
-                    <rect width="237" height="44" x="35" y="406" fill="#EEE" rx="8"/>
-                    <rect width="237" height="44" x="35" y="470" fill="#EEE" rx="8"/>
-                    <rect width="237" height="44" x="35" y="534" fill="#EEE" rx="8"/>
+                    <rect width="80" height="8" x="113" y="235" fill="#EEE" rx="4"/>
+                    {links.map((link, index) => (
+                        <g key={link.id}>
+                            <rect
+                                width="237"
+                                height="44"
+                                x="35"
+                                y={278 + index * 64}
+                                fill={getPlatformColor(link.label)}
+                                rx="8"
+                            />
+                            <g transform={`translate(45, ${292 + index * 64})`}>
+                                {getPlatformIcon(link.label)}
+                            </g>
+                            <text
+                                x="70"
+                                y={305 + index * 64}  /* Text positioning inside the rect */
+                                fontSize="14"
+                                fill="white"
+                            >
+                                {link.label || `Link #${index + 1}`}
+                            </text>
+                            <g transform={`translate(250, ${292 + index * 64})`}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+                                     viewBox="0 0 16 16">
+                                    <path fill="#fff"
+                                          d="M2.667 7.333v1.334h8L7 12.333l.947.947L13.227 8l-5.28-5.28L7 3.667l3.667 3.666h-8Z"/>
+                                </svg>
+                            </g>
+                        </g>
+                    ))}
+
                 </svg>
             </section>
 
             <section className="w-full bg-white p-10">
                 <div className="pb-12">
-                    <h2 className="font-bold text-lightBlack-1 text-3xl">Customize your links</h2>
+                <h2 className="font-bold text-lightBlack-1 text-3xl">Customize your links</h2>
                     <p className="font-normal text-lightBlack-2 text-base">Add/edit/remove links below and then share
                         all your profiles with the world!</p>
                 </div>
 
                 <div className="w-full pb-12">
-                    <Button onclick={handleAddLink} type="main">+ Add new Link</Button>
+                    <Button onclick={handleAddNewLink} type="main">+ Add new Link</Button>
                 </div>
                 {showLinkForm ? (
-                    <NewLinkForm />
+                    links.map((link, index) => (
+                    <NewLinkForm
+                        key={link.id}
+                        id={link.id}
+                        index={index + 1}
+                        onUpdate = {handleUpdateLink}
+                        onDelete = {removeNewLink}
+                    />
+                    ))
                 ): (
                 <div className="flex bg-light-grey items-center flex-col p-10 gap-4 pb-12">
                     <svg xmlns="http://www.w3.org/2000/svg" width="250" height="161" fill="none" viewBox="0 0 250 161">

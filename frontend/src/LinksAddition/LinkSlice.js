@@ -13,19 +13,38 @@ const linkReducer = createSlice({
             state.showForm = true;
         },
 
-        hideForm: (state) => {
-            state.showForm = false;
+        addLink: (state) => {
+            if (state.links.length < 5) {
+                const newLink = {
+                    id: Date.now() + Math.random(), // Ensure a unique ID by combining Date.now with Math.random
+                    label: "",
+                    url: "",
+                };
+                state.links.push(newLink);
+            } else {
+                alert("You can only add up to 5 links");
+            }
         },
-
-        addLink: (state, action) => {
-            state.links.push(action.payload);
+        updateLink: (state, action) => {
+            const {id, updates} = action.payload;
+            const linkIndex = state.links.findIndex((link) => link.id === id);
+            if (linkIndex !== -1) {
+                state.links[linkIndex] = {...state.links[linkIndex], ...updates };
+            }
+        },
+        updateLinkOrder: (state, action) => {
+            state.links = action.payload;
         },
 
         removeLink: (state, action) => {
-            state.links.splice(state.links.indexOf(action.payload), 1);
+            const id = action.payload;
+            state.links = state.links.filter((link) => link.id !== id);
+            if (state.links.length === 0) {
+                state.showForm = false;
+            }
         }
     }
 });
 
-export const {showForm, hideForm, addLink, removeLink} = linkReducer.actions;
+export const {showForm, addLink,updateLinkOrder, updateLink, removeLink} = linkReducer.actions;
 export default linkReducer.reducer;
