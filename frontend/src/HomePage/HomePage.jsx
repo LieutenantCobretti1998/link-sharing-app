@@ -3,13 +3,16 @@ import {useDispatch, useSelector} from "react-redux";
 import {updateLink, removeLink, showForm, addLink} from "../LinksAddition/LinkSlice.js";
 import NewLinkForm from "../LinksAddition/NewLink.jsx";
 import {platforms} from "../Platforms/PreDefaultPlatForms.jsx";
+import {useState} from "react";
+import Modal from "../UI/Modal.jsx";
 
 
 function HomePage() {
     const dispatch = useDispatch();
     const showLinkForm = useSelector((state) => state.link.showForm);
     const links = useSelector((state) => state.link.links);
-
+    const [errors, setErrors] = useState({});
+    const [showModal, setShowModal] = useState(false);
     const handleAddNewLink = () => {
          dispatch(showForm());
          dispatch(addLink());
@@ -33,9 +36,36 @@ function HomePage() {
         return platform ? platform.color : null;
     }
 
+    const validateLink = (link) => {
+      let errors = {};
+      if (!link.url) {
+          errors.emptyUrl = "This field cannot be empty";
+      }
+      return errors;
+    };
+
+    const handleSave = () => {
+        let hasError = false;
+        let allErrors = {};
+        links.forEach((link) => {
+            const validationErrors = validateLink(link);
+
+            if (Object.keys(validationErrors).length > 0) {
+                hasError = true;
+                allErrors[link.id] = validationErrors;
+            }
+        });
+        if (hasError) {
+            setErrors(allErrors);
+            setShowModal(false);
+        } else {
+            setErrors({});
+            setShowModal(true);
+        }
+    }
     return (
         <>
-            <section className="w-[45%] flex justify-center items-center bg-white pt-10 pb-10">
+            <section className="w-[45%] h-min flex justify-center items-center bg-white pt-10 pb-10">
                 <svg xmlns="http://www.w3.org/2000/svg" width="308" height="632" fill="none" viewBox="0 0 308 632">
                     <path stroke="#737373"
                           d="M1 54.5C1 24.953 24.953 1 54.5 1h199C283.047 1 307 24.953 307 54.5v523c0 29.547-23.953 53.5-53.5 53.5h-199C24.953 631 1 607.047 1 577.5v-523Z"/>
@@ -79,7 +109,7 @@ function HomePage() {
                 </svg>
             </section>
 
-            <section className="w-full bg-white p-10">
+            <section className="w-full bg-white p-10 relative">
                 <div className="pb-12">
                 <h2 className="font-bold text-lightBlack-1 text-3xl">Customize your links</h2>
                     <p className="font-normal text-lightBlack-2 text-base">Add/edit/remove links below and then share
@@ -87,7 +117,7 @@ function HomePage() {
                 </div>
 
                 <div className="w-full pb-12">
-                    <Button onclick={handleAddNewLink} type="main">+ Add new Link</Button>
+                    <Button disabled={links.length === 5}  onclick={handleAddNewLink} type="main">+ Add new Link</Button>
                 </div>
                 {showLinkForm ? (
                     links.map((link, index) => (
@@ -96,7 +126,8 @@ function HomePage() {
                         id={link.id}
                         index={index + 1}
                         onUpdate = {handleUpdateLink}
-                        onDelete = {removeNewLink}
+                        onDelete={removeNewLink}
+                        errors={errors[link.id]}
                     />
                     ))
                 ): (
@@ -152,8 +183,9 @@ function HomePage() {
                 )}
                 <div className="border-t border-light-grey-100 mt-10 -mx-10"></div>
                 <div className="mt-10 text-end">
-                    <Button type="save">Save</Button>
+                    <Button onclick={handleSave} disabled={links.length === 0} type="save">Save</Button>
                 </div>
+                {showModal && <Modal />}
             </section>
 
         </>

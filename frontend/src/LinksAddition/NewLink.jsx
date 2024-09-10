@@ -1,8 +1,5 @@
 import Select from 'react-select';
 import {platforms} from "../Platforms/PreDefaultPlatForms.jsx";
-import {updateLinkOrder} from "./LinkSlice.js";
-import {useDispatch, useSelector} from "react-redux";
-import {useRef, useState} from "react";
 
 const customStyles = {
     control: (provided, state) => ({
@@ -32,11 +29,7 @@ const customStyles = {
     }),
 }
 
-function NewLinkForm({id, index, onUpdate, onDelete}) {
-    const dispatch = useDispatch();
-    const links = useSelector((state) => state.link.links);
-    const [draggedIndex, setDraggedIndex] = useState(null);
-    console.log(draggedIndex)
+function NewLinkForm({id, index, onUpdate, onDelete, errors}) {
     const handlePlatformChange = (selectedOption) => {
         onUpdate(id, {label: selectedOption.label});
     };
@@ -47,46 +40,9 @@ function NewLinkForm({id, index, onUpdate, onDelete}) {
         onDelete(id);
     };
 
-    // Set the dragged item index when drag starts
-    const handleDragStart = (dragIndex) => {
-        console.log("Drag start: ", dragIndex);
-        setDraggedIndex(dragIndex);  // Set the dragged item's index in state
-    };
-
-    // Allow drag over and capture the index of the element being dragged over
-    const handleDragOver = (event) => {
-        event.preventDefault();  // Necessary to allow dropping
-    };
-
-    // Handle drop event and reorder items
-    const handleDrop = (dropIndex) => {
-        console.log(`Dropped from ${draggedIndex} to ${dropIndex}`);
-
-        if (draggedIndex === null || dropIndex === null) {
-            console.error("Invalid drop or drag");
-            return;
-        }
-
-        // Reorder the links array
-        const reorderedLinks = [...links];
-        const [draggedItem] = reorderedLinks.splice(draggedIndex, 1);  // Remove the dragged item
-        reorderedLinks.splice(dropIndex, 0, draggedItem);  // Insert at the drop index
-
-        // Dispatch the new order to the Redux store
-        dispatch(updateLinkOrder(reorderedLinks));
-
-        // Reset dragged item index
-        setDraggedIndex(null);
-    };
     return (
-        <div draggable
-            onDragStart={() => handleDragStart(index)}
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-
-             id={id}
-             data-index={index}
-             className="flex flex-col gap-3 bg-light-grey p-3 border-[.5px] rounded-md border-light-grey">
+        <div
+             className="mb-4 flex flex-col gap-3 bg-light-grey p-3 border-[.5px] rounded-md border-light-grey">
             <div className="flex justify-between">
                 <div className="flex items-center gap-1.5">
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="6" fill="none" viewBox="0 0 12 6">
@@ -106,9 +62,10 @@ function NewLinkForm({id, index, onUpdate, onDelete}) {
                             <span className="mr-2">{e.icon}</span>
                         </div>
                     )}
-                    placeholder="Select a platform"
+                    defaultValue={platforms[0]}
                     onChange = {handlePlatformChange}
                     styles={customStyles}
+                    required
                 />
             </div>
             <div>
@@ -118,7 +75,10 @@ function NewLinkForm({id, index, onUpdate, onDelete}) {
                         <path fill="#737373"
                               d="M8.523 11.72a.749.749 0 0 1 0 1.063l-.371.371A3.751 3.751 0 1 1 2.847 7.85l1.507-1.506A3.75 3.75 0 0 1 9.5 6.188a.753.753 0 0 1-1 1.125 2.25 2.25 0 0 0-3.086.091L3.908 8.91a2.25 2.25 0 0 0 3.183 3.183l.37-.371a.748.748 0 0 1 1.062 0Zm4.63-8.874a3.756 3.756 0 0 0-5.305 0l-.371.37A.751.751 0 1 0 8.539 4.28l.372-.37a2.25 2.25 0 0 1 3.182 3.182l-1.507 1.507a2.25 2.25 0 0 1-3.086.09.753.753 0 0 0-1 1.125 3.75 3.75 0 0 0 5.144-.152l1.507-1.507a3.756 3.756 0 0 0 .002-5.307v-.001Z"/>
                     </svg>
-                    <input onChange={handleUrlChange} placeholder="https://github.com/LieutenantCobretti1998/link-sharing-app" className="w-full pl-10 bg-white p-3 border-[.5px] rounded-md border-lightBlack-2" type="text"/>
+                    <input required onChange={handleUrlChange} placeholder="https://github.com/LieutenantCobretti1998/link-sharing-app" className={`relative w-full pl-10 bg-white p-3 border-[.5px] rounded-md ${errors?.emptyUrl ? "border-red" : "border-lightBlack-2"} focus:outline-primaryPurple`} type="text"/>
+                    {errors?.emptyUrl && (
+                        <span className="text-red text-sm absolute right-[10px] bottom-[15px]">{errors.emptyUrl}</span>
+                    )}
                 </div>
             </div>
         </div>
