@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {updateLink, removeLink, showForm, addLink} from "../LinksAddition/LinkSlice.js";
 import NewLinkForm from "../LinksAddition/NewLink.jsx";
 import {platforms} from "../Platforms/PreDefaultPlatForms.jsx";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import Modal from "../UI/Modal.jsx";
 
 
@@ -13,6 +13,14 @@ function HomePage() {
     const links = useSelector((state) => state.link.links);
     const [errors, setErrors] = useState({});
     const [showModal, setShowModal] = useState(false);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowModal(false);
+        }, 5000);
+        return () => clearTimeout(timer);
+    }, [showModal]);
+
     const handleAddNewLink = () => {
          dispatch(showForm());
          dispatch(addLink());
@@ -29,17 +37,29 @@ function HomePage() {
     const getPlatformIcon = (label) => {
         const platform = platforms.find((p) => p.label === label);
         return platform ? platform.icon : null;
-    }
+    };
 
     const getPlatformColor = (label) => {
         const platform = platforms.find((p) => p.label === label);
         return platform ? platform.color : null;
-    }
+    };
 
     const validateLink = (link) => {
       let errors = {};
       if (!link.url) {
           errors.emptyUrl = "This field cannot be empty";
+      } else {
+          try {
+              const parsedUrl = new URL(link.url);
+              const domain = parsedUrl.hostname.replace("www.", "");
+              const platform = platforms.find(platform => platform.label === link.label);
+
+              if (!platform || domain !== platform.allowedDomain) {
+                  errors.invalidPlatform = "Invalid Platform";
+              }
+          } catch (error) {
+              errors.invalidUrl = "Invalid URL format";
+          }
       }
       return errors;
     };
@@ -49,7 +69,6 @@ function HomePage() {
         let allErrors = {};
         links.forEach((link) => {
             const validationErrors = validateLink(link);
-
             if (Object.keys(validationErrors).length > 0) {
                 hasError = true;
                 allErrors[link.id] = validationErrors;
@@ -62,7 +81,8 @@ function HomePage() {
             setErrors({});
             setShowModal(true);
         }
-    }
+    };
+
     return (
         <>
             <section className="w-[45%] h-min flex justify-center items-center bg-white pt-10 pb-10">
