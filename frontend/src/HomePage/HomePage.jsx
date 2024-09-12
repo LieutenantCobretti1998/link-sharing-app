@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {addLink, removeLink, showForm, updateLink} from "../LinksAddition/LinkSlice.js";
 import NewLinkForm from "../LinksAddition/NewLink.jsx";
 import {platforms} from "../Platforms/PreDefaultPlatForms.jsx";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import Modal from "../UI/Modal.jsx";
 import MobileOverview from "../UI/MobileOverview.jsx";
 
@@ -21,6 +21,7 @@ function HomePage() {
         }, 5000);
         return () => clearTimeout(timer);
     }, [showModal]);
+
 
     const handleAddNewLink = () => {
          dispatch(showForm());
@@ -40,11 +41,27 @@ function HomePage() {
         return platform ? platform.icon : null;
     };
 
-    const findLinkById = (id) => {
+    const findLinkById = (id, links) => {
          const link = links.find((link) => link.id === id);
-        console.log(link);
-         return link.url !== "" ? link.url : "https://github.com/LieutenantCobretti1998/link-sharing-app";
+         console.log(link.label);
+         if (!link) {
+        return {
+          label: "Github", // Default label
+          url: "https://github.com/LieutenantCobretti1998/link-sharing-app", // Default URL
+        };
+      }
+      return {
+        label: link.label !== "" ? link.label : "Github", // Fallback to Github if no label
+        url: link.url !== "" ? link.url : "https://github.com/LieutenantCobretti1998/link-sharing-app", // Fallback to default URL
+      };
     };
+
+      const savedPlatformLabels = useMemo(() => {
+        return links.reduce((labels, link) => {
+            labels[link.id] = findLinkById(link.id, links);
+            return labels
+        }, {})
+    }, [links]);
 
     const getPlatformColor = (label) => {
         const platform = platforms.find((p) => p.label === label);
@@ -112,7 +129,7 @@ function HomePage() {
                         onUpdate = {handleUpdateLink}
                         onDelete={removeNewLink}
                         errors={errors[link.id]}
-                        findLinkById={findLinkById}
+                        findLinkById={savedPlatformLabels[link.id]}
                     />
                     ))
                 ): (
