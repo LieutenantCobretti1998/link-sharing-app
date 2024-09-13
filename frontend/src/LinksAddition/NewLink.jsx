@@ -29,7 +29,7 @@ const customStyles = {
     }),
 }
 
-function NewLinkForm({id, index, onUpdate, onDelete, errors, findLinkById, findPlatformById}) {
+function NewLinkForm({id, index, onUpdate, onDelete, errors, findLinkById}) {
     const handlePlatformChange = (selectedOption) => {
         onUpdate(id, {label: selectedOption.label});
     };

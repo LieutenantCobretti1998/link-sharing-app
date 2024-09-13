@@ -110,7 +110,7 @@ function HomePage() {
     return (
         <>
             <MobileOverview links={links} getPlatformColor={getPlatformColor} getPlatformIcon={getPlatformIcon} />
-            <section className="w-full bg-white p-10 relative">
+            <section className="w-full bg-white p-10 relative rounded-md border-light-grey">
                 <div className="pb-12">
                 <h2 className="font-bold text-lightBlack-1 text-3xl">Customize your links</h2>
                     <p className="font-normal text-lightBlack-2 text-base">Add/edit/remove links below and then share
@@ -133,7 +133,7 @@ function HomePage() {
                     />
                     ))
                 ): (
-                <div className="flex bg-light-grey items-center flex-col p-10 gap-4 pb-12">
+                <div className="flex bg-light-grey items-center flex-col p-10 gap-4 pb-12 rounded-md border-light-grey">
                     <svg xmlns="http://www.w3.org/2000/svg" width="250" height="161" fill="none" viewBox="0 0 250 161">
                         <path fill="#fff"
                               d="M48.694 15.421C23.379 25.224 4.594 50.068.858 80.128c-3.12 25.331 4.335 53.318 48.23 61.291 85.406 15.52 173.446 17.335 193.864-24.525 20.417-41.86-7.525-108.891-50.873-113.53C157.683-.326 98.146-3.721 48.694 15.42Z"
