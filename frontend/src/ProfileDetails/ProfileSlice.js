@@ -1,15 +1,24 @@
 import {createSlice} from '@reduxjs/toolkit'
 
 const initialState = {
-    profileImage: "",
-    firstName: "",
-    lastName: "",
+    linksGroupImage: "",
+    linksGroupName: "",
+    shortDescription: "",
     category:  "",
-    email: "",
     backgroundImage: ""
 }
 
 const profileReducer = createSlice({
     name: "profile",
     initialState,
-})
+    reducers: {
+        updateProfile: (state, action) => {
+            const {field, value} = action.payload;
+            state[field] = value;
+
+        }
+    }
+});
+
+export const {updateProfile} = profileReducer.actions;
+export default profileReducer.reducer;

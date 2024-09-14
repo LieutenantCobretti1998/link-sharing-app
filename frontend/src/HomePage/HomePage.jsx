@@ -6,12 +6,14 @@ import {platforms} from "../Platforms/PreDefaultPlatForms.jsx";
 import {useEffect, useMemo, useState} from "react";
 import Modal from "../UI/Modal.jsx";
 import MobileOverview from "../UI/MobileOverview.jsx";
+import {backgrounds} from "../BackgroundImages/BackgroundImages.jsx";
 
 
 function HomePage() {
     const dispatch = useDispatch();
     const showLinkForm = useSelector((state) => state.link.showForm);
     const links = useSelector((state) => state.link.links);
+    const profile = useSelector((state) => state.profile);
     const [errors, setErrors] = useState({});
     const [showModal, setShowModal] = useState(false);
 
@@ -68,6 +70,11 @@ function HomePage() {
         return platform ? platform.color : null;
     };
 
+    const getBackgroundImage = (label) => {
+        const background = backgrounds.find((image) => image.value === label);
+        return background ? background.image: null;
+    };
+
     const validateLink = (link) => {
       let errors = {};
       if (!link.url) {
@@ -109,7 +116,7 @@ function HomePage() {
 
     return (
         <>
-            <MobileOverview links={links} getPlatformColor={getPlatformColor} getPlatformIcon={getPlatformIcon} />
+            <MobileOverview profile={profile} getBackgroundImage={getBackgroundImage} links={links} getPlatformColor={getPlatformColor} getPlatformIcon={getPlatformIcon} />
             <section className="w-full bg-white p-10 relative rounded-md border-light-grey">
                 <div className="pb-12">
                 <h2 className="font-bold text-lightBlack-1 text-3xl">Customize your links</h2>

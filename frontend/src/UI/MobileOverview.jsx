@@ -1,4 +1,8 @@
-function MobileOverview({links, getPlatformColor, getPlatformIcon}) {
+import {useSelector} from "react-redux";
+
+function MobileOverview({links, profile, getPlatformColor, getPlatformIcon, getBackgroundImage}) {
+    const {linksGroupName, shortDescription} = useSelector((state) => state.profile);
+    const lines = shortDescription.match(/.{1,40}/g) || [];
     return (
         <section className="w-[45%] h-min flex justify-center items-center bg-white pt-10 pb-10 rounded-md border-light-grey">
             <svg xmlns="http://www.w3.org/2000/svg" width="308" height="632" fill="none" viewBox="0 0 308 632">
@@ -18,7 +22,7 @@ function MobileOverview({links, getPlatformColor, getPlatformIcon}) {
                     </clipPath>
                 </defs>
                 <image
-                    href="../../images/background-images/pexels-chinar-minar-1265133847-25724597.jpg"
+                    href={getBackgroundImage(profile.backgroundImage)}
                     x="12"
                     y="40"
                     width="284"
@@ -29,9 +33,33 @@ function MobileOverview({links, getPlatformColor, getPlatformIcon}) {
 
                 </image>
                 <circle cx="153.5" cy="112" r="48" fill="#EEE"/>
-                <rect width="160" height="16" x="73.5" y="185" fill="#EEE" rx="8"/>
-                <rect width="72" height="8" x="117.5" y="214" fill="#EEE" rx="4"/>
-                <rect width="80" height="8" x="113" y="235" fill="#EEE" rx="4"/>
+                <rect width="250" height="20" x="30" y="185" fill="#EEE" rx="8"/>
+                <text
+                    x="155"
+                    y="195"
+                    fill="black"
+                    fontSize="12"
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                >
+                    {linksGroupName}
+                </text>
+                <rect width="250" height="70" x="30" y="214" fill="#EEE" rx="4"/>
+                <text
+                    x="275"
+                    y="240"
+                    fill="black"
+                    fontSize="12"
+                    textAnchor="end"
+                    dominantBaseline="end"
+                >
+                    {lines.map((line, index) => (
+                        <tspan key={index} x="275" y="230" dy={`${index * 1.2}em`}>
+                            {line}
+                        </tspan>
+                    ))}
+                </text>
+                {/*<rect width="80" height="8" x="113" y="235" fill="#EEE" rx="4"/>*/}
                 {links.map((link, index) => (
                     <g key={link.id}>
                         <rect

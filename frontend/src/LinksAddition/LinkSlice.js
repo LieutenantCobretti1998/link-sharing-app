@@ -32,9 +32,6 @@ const linkReducer = createSlice({
                 state.links[linkIndex] = {...state.links[linkIndex], ...updates };
             }
         },
-        updateLinkOrder: (state, action) => {
-            state.links = action.payload;
-        },
 
         removeLink: (state, action) => {
             const id = action.payload;
@@ -46,5 +43,5 @@ const linkReducer = createSlice({
     }
 });
 
-export const {showForm, addLink,updateLinkOrder, updateLink, removeLink} = linkReducer.actions;
+export const {showForm, addLink, updateLink, removeLink} = linkReducer.actions;
 export default linkReducer.reducer;
