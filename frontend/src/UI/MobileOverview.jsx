@@ -1,8 +1,14 @@
 import {useSelector} from "react-redux";
 
 function MobileOverview({links, profile, getPlatformColor, getPlatformIcon, getBackgroundImage}) {
-    const {linksGroupName, shortDescription} = useSelector((state) => state.profile);
-    const lines = shortDescription.match(/.{1,40}/g) || [];
+    const {linksGroupName, shortDescription, linksGroupImage} = useSelector((state) => state.profile);
+    const safeCharactersArray = Array.from(shortDescription);
+    const lines = [];
+
+    for (let i = 0; i < safeCharactersArray.length; i += 40) {
+      lines.push(safeCharactersArray.slice(i, i + 40).join(''));
+    }
+
     return (
         <section className="w-[45%] h-min flex justify-center items-center bg-white pt-10 pb-10 rounded-md border-light-grey">
             <svg xmlns="http://www.w3.org/2000/svg" width="308" height="632" fill="none" viewBox="0 0 308 632">
@@ -30,31 +36,41 @@ function MobileOverview({links, profile, getPlatformColor, getPlatformIcon, getB
                     preserveAspectRatio="xMidYMid slice"
                     clipPath="url(#screenClip)"
                 >
-
                 </image>
                 <circle cx="153.5" cy="112" r="48" fill="#EEE"/>
+                <clipPath id="circleClip">
+                    <circle cx="153.5" cy="112" r="48" fill="#EEE"/>
+                </clipPath>
+                <image
+                    href={linksGroupImage}
+                    x="105.5"
+                    y="64"
+                    width="96"
+                    height="96"
+                    preserveAspectRatio="xMidYMid slice"
+                    clipPath="url(#circleClip)"
+                />
                 <rect width="250" height="20" x="30" y="185" fill="#EEE" rx="8"/>
                 <text
                     x="155"
                     y="195"
                     fill="black"
-                    fontSize="12"
+                    fontSize="10"
                     textAnchor="middle"
                     dominantBaseline="middle"
                 >
                     {linksGroupName}
                 </text>
-                <rect width="250" height="70" x="30" y="214" fill="#EEE" rx="4"/>
+                <rect width="250" height="30" x="30" y="214" fill="#EEE" rx="4"/>
                 <text
-                    x="275"
+                    x="160"
                     y="240"
                     fill="black"
-                    fontSize="12"
-                    textAnchor="end"
-                    dominantBaseline="end"
+                    fontSize="10"
+
                 >
                     {lines.map((line, index) => (
-                        <tspan key={index} x="275" y="230" dy={`${index * 1.2}em`}>
+                        <tspan key={index} x="45" y="230" dy={`${index * 1.1}em`}>
                             {line}
                         </tspan>
                     ))}
@@ -66,22 +82,22 @@ function MobileOverview({links, profile, getPlatformColor, getPlatformIcon, getB
                             width="237"
                             height="44"
                             x="35"
-                            y={278 + index * 64}
+                            y={300 + index * 64}
                             fill={getPlatformColor(link.label)}
                             rx="8"
                         />
-                        <g transform={`translate(45, ${292 + index * 64})`}>
+                        <g transform={`translate(45, ${314 + index * 64})`}>
                             {getPlatformIcon(link.label)}
                         </g>
                         <text
                             x="70"
-                            y={305 + index * 64}  /* Text positioning inside the rect */
+                            y={326 + index * 64}  /* Text positioning inside the rect */
                             fontSize="14"
                             fill="white"
                         >
                             {link.label || `Link #${index + 1}`}
                         </text>
-                        <g transform={`translate(250, ${292 + index * 64})`}>
+                        <g transform={`translate(250, ${314 + index * 64})`}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
                                  viewBox="0 0 16 16">
                                 <path fill="#fff"

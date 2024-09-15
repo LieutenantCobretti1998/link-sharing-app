@@ -15,10 +15,12 @@ const profileReducer = createSlice({
         updateProfile: (state, action) => {
             const {field, value} = action.payload;
             state[field] = value;
-
+        },
+        removeLinksGroupImage: (state) => {
+            state.linksGroupImage = "";
         }
     }
 });
 
-export const {updateProfile} = profileReducer.actions;
+export const {updateProfile, removeLinksGroupImage} = profileReducer.actions;
 export default profileReducer.reducer;

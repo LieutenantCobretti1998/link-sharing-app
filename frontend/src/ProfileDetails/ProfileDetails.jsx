@@ -3,9 +3,10 @@ import {useDispatch, useSelector} from "react-redux";
 import {platforms} from "../Platforms/PreDefaultPlatForms.jsx";
 import {backgrounds} from "../BackgroundImages/BackgroundImages.jsx";
 import Select from "react-select";
-import {updateProfile} from "./ProfileSlice.js";
+import {removeLinksGroupImage, updateProfile} from "./ProfileSlice.js";
 import Button from "../UI/Button.jsx";
-import {useState} from "react";
+import {useEffect, useReducer, useRef, useState} from "react";
+import Modal from "../UI/Modal.jsx";
 
 const customStyles = {
     control: (provided, state) => ({
@@ -33,18 +34,100 @@ const customStyles = {
         color: "#BEADFF", // Red color on focus
 
     }),
-}
+};
+
+const SET_ERROR = "SET_ERROR";
+const CLEAR_ERROR = 'CLEAR_ERROR';
+const SET_SUCCESS = 'SET_SUCCESS';
+const CLEAR_SUCCESS = "CLEAR_SUCCESS";
+
+const errorReducer = (state, action) => {
+    switch (action.type) {
+        case SET_ERROR:
+            return {errorType: action.errorType, errorMessage: action.errorMessage};
+        case CLEAR_ERROR:
+             return { errorType: null, errorMessage: '' };
+        case SET_SUCCESS:
+            return {successMessage: action.successMessage};
+        case CLEAR_SUCCESS:
+            return {successMessage: ""};
+        default:
+            return state;
+    }
+};
 
 function ProfileDetails() {
-    const dispatch = useDispatch();
+    const dispatch_redux = useDispatch();
+    const {linksGroupImage} = useSelector((state) => state.profile);
+    const fileInputRef = useRef(null);
+    const [state, dispatch] = useReducer(errorReducer, { errorType: null, errorMessage: '', successMessage: "" });
     const profile = useSelector((state) => state.profile);
     const links = useSelector((state) => state.link.links);
+    const [imagePreview, setImagePreview] = useState(null);
     const [description, setDescription] = useState("");
     const [linkName, setLinkName] = useState("");
     const [category, setCategory] = useState("");
     const maxCategoryLength = 20;
     const maxLinkNameLength = 30;
-    const maxDescriptionLength = 150;
+    const maxDescriptionLength = 40;
+
+    // useEffect(() => {
+    //     if(state.successMessage) {
+    //         const timer = setTimeout(() => {
+    //             dispatch({type:})
+    //         })
+    //     }
+    // }, []);
+
+    const handleImageLoadButton = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.click(); // Programmatically click the file input
+        }
+    };
+
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const validTypes = ["image/png", "image/jpg"];
+        if(!validTypes.includes(file.type)) {
+           dispatch({
+               type: SET_ERROR,
+               errorType: 'invalidFormat',
+               errorMessage: 'Invalid file format. Please upload PNG or JPG.',
+           });
+           return;
+        }
+        const image = new Image();
+        image.src = URL.createObjectURL(file);
+
+        image.onload = () => {
+            const width = image.width;
+            const height = image.height;
+            if (width > 1024 || height > 1024) {
+                dispatch({
+                   type: SET_ERROR,
+                   errorType: 'invalidDimensions',
+                   errorMessage: 'Image dimensions must be less than 1024x1024.',
+                });
+                return;
+            }
+            dispatch({ type: CLEAR_ERROR });
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result;
+                dispatch_redux(updateProfile({ field: "linksGroupImage", value: base64String }));
+                dispatch({
+                    type: 'SET_SUCCESS',
+                    successMessage: 'Link Group Image uploaded successfully!',
+                 });
+                setImagePreview(base64String);
+            };
+            reader.readAsDataURL(file);
+            if(fileInputRef.current) {
+                fileInputRef.current.value = null;
+            }
+        };
+    };
 
     const handleInputChange = (event) => {
         switch (event.target.name) {
@@ -62,7 +145,7 @@ function ProfileDetails() {
                 break;
         }
         const {name, value} = event.target;
-        dispatch(updateProfile({ field: name, value: value }));
+        dispatch_redux(updateProfile({ field: name, value: value }));
     };
 
     const isStateEmpty = (state) => {
@@ -82,8 +165,7 @@ function ProfileDetails() {
     const getBackgroundImage = (label) => {
         const background = backgrounds.find((image) => image.value === label);
         return background ? background.image: null;
-    }
-
+    };
 
     return (
         <>
@@ -95,10 +177,24 @@ function ProfileDetails() {
                         to your Links Group.</p>
                 </div>
                 <div
-                    className="p-[1rem] mb-4  flex items-center justify-between bg-light-grey rounded-md border-light-grey">
+                    className="relative p-[1rem] mb-4  flex items-center justify-between bg-light-grey rounded-md border-light-grey">
                     <h2 className="font-bold text-lightBlack-2 text-base">Links Group picture</h2>
                     <button type="button"
-                            className="bg-lightPurple1 flex flex-col items-center justify-center h-32 w-32 rounded-lg">
+                            className="bg-lightPurple1 flex flex-col items-center justify-center h-32 w-32 rounded-lg"
+                            onClick={handleImageLoadButton}
+                            style={{
+                                backgroundImage: imagePreview ? `url(${imagePreview})` : 'none',
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                            }}
+                    >
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/png, image/jpg"
+                            onChange={handleImageUpload}
+                            className="hidden"
+                        />
                         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" viewBox="0 0 40 40">
                             <path fill="#633CFF"
                                   d="M33.75 6.25H6.25a2.5 2.5 0 0 0-2.5 2.5v22.5a2.5 2.5 0 0 0 2.5 2.5h27.5a2.5 2.5 0 0 0 2.5-2.5V8.75a2.5 2.5 0 0 0-2.5-2.5Zm0 2.5v16.055l-4.073-4.072a2.5 2.5 0 0 0-3.536 0l-3.125 3.125-6.875-6.875a2.5 2.5 0 0 0-3.535 0L6.25 23.339V8.75h27.5ZM6.25 26.875l8.125-8.125 12.5 12.5H6.25v-4.375Zm27.5 4.375h-3.34l-5.624-5.625L27.91 22.5l5.839 5.84v2.91ZM22.5 15.625a1.875 1.875 0 1 1 3.75 0 1.875 1.875 0 0 1-3.75 0Z"/>
@@ -109,6 +205,20 @@ function ProfileDetails() {
                         Image must be below
                         1024x1024px. Use PNG or JPG format.
                     </p>
+                    {linksGroupImage && (
+                        <button
+                                onClick={() => dispatch_redux(removeLinksGroupImage())}
+                                className="absolute top-2 right-5 text-lightBlack-2 font-instrumentNormal hover:text-red-500 focus:outline-none">Remove
+                        </button>
+                    )}
+                    {state.errorType === 'invalidFormat' && (
+                        <p className="absolute right-0 bottom-0 text-red mt-2 text-sm">Invalid file format. Please
+                            upload PNG or JPG.</p>
+                    )}
+                    {state.errorType === 'invalidDimensions' && (
+                        <p className="absolute right-0 bottom-0 text-red mt-2 text-sm">Image dimensions must be less
+                            than 1024x1024.</p>
+                    )}
                 </div>
                 <div className="p-[1rem]  flex flex-col gap-10 bg-light-grey rounded-md border-light-grey">
                     <div className="relative flex justify-between items-center w-full">
@@ -150,7 +260,7 @@ function ProfileDetails() {
                             <Select
                                 name="backgroundImage"
                                 onChange={(selectedOption) => {
-                                    dispatch(updateProfile({field: "backgroundImage", value: selectedOption.value}));
+                                    dispatch_redux(updateProfile({field: "backgroundImage", value: selectedOption.value}));
                                 }}
                                 id="backgroundImage"
                                 options={backgrounds}

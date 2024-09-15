@@ -194,7 +194,7 @@ function HomePage() {
                 <div className="mt-10 text-end">
                     <Button onclick={handleSave} disabled={links.length === 0} type="save">Save</Button>
                 </div>
-                {showModal && <Modal />}
+                {showModal && <Modal/>}
             </section>
 
         </>
