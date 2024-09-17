@@ -10,6 +10,7 @@ export default {
       "lightPurple2": "#EFEBFF",
       "lightBlack-1": "#333333",
       "lightBlack-2": "#737373",
+      "lightBlack-3": "#797878",
       "grey": "#D9D9D9",
       "light-grey": "#FAFAFA",
       "white": "#ffffff",

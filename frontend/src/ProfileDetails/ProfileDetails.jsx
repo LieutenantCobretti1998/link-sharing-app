@@ -78,7 +78,7 @@ function ProfileDetails() {
     //         })
     //     }
     // }, []);
-
+    console.log(imagePreview);
     const handleImageLoadButton = () => {
         if (fileInputRef.current) {
             fileInputRef.current.click(); // Programmatically click the file input
@@ -180,7 +180,7 @@ function ProfileDetails() {
                     className="relative p-[1rem] mb-4  flex items-center justify-between bg-light-grey rounded-md border-light-grey">
                     <h2 className="font-bold text-lightBlack-2 text-base">Links Group picture</h2>
                     <button type="button"
-                            className="bg-lightPurple1 flex flex-col items-center justify-center h-32 w-32 rounded-lg"
+                            className={` ${imagePreview ? "bg-lightBlack-3" : "bg-lightPurple1"}  flex flex-col items-center justify-center h-32 w-32 rounded-lg`}
                             onClick={handleImageLoadButton}
                             style={{
                                 backgroundImage: imagePreview ? `url(${imagePreview})` : 'none',
@@ -188,6 +188,7 @@ function ProfileDetails() {
                                 backgroundPosition: 'center',
                             }}
                     >
+                        <span className="absolute inset-0 bg-black opacity-50"></span>
                         <input
                             ref={fileInputRef}
                             type="file"
@@ -195,11 +196,15 @@ function ProfileDetails() {
                             onChange={handleImageUpload}
                             className="hidden"
                         />
-                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" viewBox="0 0 40 40">
-                            <path fill="#633CFF"
-                                  d="M33.75 6.25H6.25a2.5 2.5 0 0 0-2.5 2.5v22.5a2.5 2.5 0 0 0 2.5 2.5h27.5a2.5 2.5 0 0 0 2.5-2.5V8.75a2.5 2.5 0 0 0-2.5-2.5Zm0 2.5v16.055l-4.073-4.072a2.5 2.5 0 0 0-3.536 0l-3.125 3.125-6.875-6.875a2.5 2.5 0 0 0-3.535 0L6.25 23.339V8.75h27.5ZM6.25 26.875l8.125-8.125 12.5 12.5H6.25v-4.375Zm27.5 4.375h-3.34l-5.624-5.625L27.91 22.5l5.839 5.84v2.91ZM22.5 15.625a1.875 1.875 0 1 1 3.75 0 1.875 1.875 0 0 1-3.75 0Z"/>
-                        </svg>
-                        <span className="text-primaryPurple font-bold">+ Upload Links Group Image</span>
+                        {!imagePreview && (
+                            <>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" viewBox="0 0 40 40">
+                                    <path fill={imagePreview ? "white" : "#633CFF"}
+                                          d="M33.75 6.25H6.25a2.5 2.5 0 0 0-2.5 2.5v22.5a2.5 2.5 0 0 0 2.5 2.5h27.5a2.5 2.5 0 0 0 2.5-2.5V8.75a2.5 2.5 0 0 0-2.5-2.5Zm0 2.5v16.055l-4.073-4.072a2.5 2.5 0 0 0-3.536 0l-3.125 3.125-6.875-6.875a2.5 2.5 0 0 0-3.535 0L6.25 23.339V8.75h27.5ZM6.25 26.875l8.125-8.125 12.5 12.5H6.25v-4.375Zm27.5 4.375h-3.34l-5.624-5.625L27.91 22.5l5.839 5.84v2.91ZM22.5 15.625a1.875 1.875 0 1 1 3.75 0 1.875 1.875 0 0 1-3.75 0Z"/>
+                                </svg>
+                                <span className={`text-primaryPurple font-bold`}>+ Upload Links Group Image</span>
+                             </>
+                        )}
                     </button>
                     <p className="w-[215px] font-normal text-lightBlack-2 text-base">
                         Image must be below
@@ -207,7 +212,10 @@ function ProfileDetails() {
                     </p>
                     {linksGroupImage && (
                         <button
-                                onClick={() => dispatch_redux(removeLinksGroupImage())}
+                                onClick={() => {
+                                    dispatch_redux(removeLinksGroupImage());
+                                    setImagePreview(null);
+                                }}
                                 className="absolute top-2 right-5 text-lightBlack-2 font-instrumentNormal hover:text-red-500 focus:outline-none">Remove
                         </button>
                     )}
