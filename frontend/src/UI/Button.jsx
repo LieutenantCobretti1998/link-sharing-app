@@ -14,7 +14,7 @@ function Button({type, children, isActive, onclick, disabled}) {
 
         case "save":
             buttonClasses = disabled
-            ? "w-24 h-9 p-0 border-[.5px] border-gray-300 rounded-md text-gray-300 font-bold cursor-not-allowed transition duration-300 ease-in-out"
+            ? "w-24 h-9 p-0 border-[.5px] border-gray-300 rounded-md text-gray-300 font-bold pointer-events-none cursor-default transition duration-300 ease-in-out"
             : "w-24 h-9 p-0 hover:bg-primaryPurple rounded-md text-white bg-lightPurple1 font-regular transition duration-300 ease-in-out";
             break;
 

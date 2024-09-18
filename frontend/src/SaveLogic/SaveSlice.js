@@ -14,8 +14,12 @@ const saveReducer = createSlice({
     name: "save",
     initialState,
     reducers: {
-        updateProfile: (state, action) => {
+        saveChooses: (state, action) => {
             const {field, value} = action.payload;
+            state[field] = value;
         }
     }
-})
+});
+
+export const {saveChooses} = saveReducer.actions;
+export default saveReducer.reducer;

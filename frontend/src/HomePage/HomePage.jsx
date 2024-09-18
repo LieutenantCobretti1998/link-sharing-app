@@ -7,12 +7,14 @@ import {useEffect, useMemo, useState} from "react";
 import Modal from "../UI/Modal.jsx";
 import MobileOverview from "../UI/MobileOverview.jsx";
 import {backgrounds} from "../BackgroundImages/BackgroundImages.jsx";
+import {saveChooses} from "../SaveLogic/SaveSlice.js";
 
 
 function HomePage() {
     const dispatch = useDispatch();
     const showLinkForm = useSelector((state) => state.link.showForm);
     const links = useSelector((state) => state.link.links);
+    const linksReducer = useSelector((state) => state.link);
     const profile = useSelector((state) => state.profile);
     const [errors, setErrors] = useState({});
     const [showModal, setShowModal] = useState(false);
@@ -111,6 +113,9 @@ function HomePage() {
         } else {
             setErrors({});
             setShowModal(true);
+            for (const field in linksReducer) {
+                 dispatch(saveChooses({ field: field, value: linksReducer[field] }));
+            }
         }
     };
 

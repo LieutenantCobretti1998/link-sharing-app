@@ -61,16 +61,18 @@ function MobileOverview({links, profile, getPlatformColor, getPlatformIcon, getB
                 >
                     {linksGroupName}
                 </text>
-                <rect width="250" height="30" x="30" y="214" fill="#EEE" rx="4"/>
+                <rect width="280" height="30" x="15" y="214" fill="#EEE" rx="4"/>
                 <text
                     x="160"
                     y="240"
                     fill="black"
                     fontSize="10"
+                    textAnchor="middle"
+                    dominantBaseline="middle"
 
                 >
                     {lines.map((line, index) => (
-                        <tspan key={index} x="45" y="230" dy={`${index * 1.1}em`}>
+                        <tspan key={index} x="150" y="230" dy={`${index * 1.1}em`}>
                             {line}
                         </tspan>
                     ))}

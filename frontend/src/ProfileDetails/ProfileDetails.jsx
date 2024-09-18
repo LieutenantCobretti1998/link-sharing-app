@@ -7,6 +7,7 @@ import {removeLinksGroupImage, updateProfile} from "./ProfileSlice.js";
 import Button from "../UI/Button.jsx";
 import {useEffect, useReducer, useRef, useState} from "react";
 import Modal from "../UI/Modal.jsx";
+import {saveChooses} from "../SaveLogic/SaveSlice.js";
 
 const customStyles = {
     control: (provided, state) => ({
@@ -44,13 +45,13 @@ const CLEAR_SUCCESS = "CLEAR_SUCCESS";
 const errorReducer = (state, action) => {
     switch (action.type) {
         case SET_ERROR:
-            return {errorType: action.errorType, errorMessage: action.errorMessage};
+            return {...state, errorType: action.errorType, errorMessage: action.errorMessage};
         case CLEAR_ERROR:
-             return { errorType: null, errorMessage: '' };
+             return {...state, errorType: null, errorMessage: '' };
         case SET_SUCCESS:
-            return {successMessage: action.successMessage};
+            return {...state, successMessage: action.successMessage};
         case CLEAR_SUCCESS:
-            return {successMessage: ""};
+            return {...state, successMessage: ""};
         default:
             return state;
     }
@@ -67,10 +68,12 @@ function ProfileDetails() {
     const [description, setDescription] = useState("");
     const [linkName, setLinkName] = useState("");
     const [category, setCategory] = useState("");
+    const [linkNameError, setLinkNameError] = useState("");
+    const [categoryError, setCategoryError] = useState("");
+    const [showModal, setShowModal] = useState(false);
     const maxCategoryLength = 20;
     const maxLinkNameLength = 30;
     const maxDescriptionLength = 40;
-
     // useEffect(() => {
     //     if(state.successMessage) {
     //         const timer = setTimeout(() => {
@@ -78,7 +81,14 @@ function ProfileDetails() {
     //         })
     //     }
     // }, []);
-    console.log(imagePreview);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowModal(false);
+        }, 5000);
+        return () => clearTimeout(timer);
+    }, [showModal]);
+
     const handleImageLoadButton = () => {
         if (fileInputRef.current) {
             fileInputRef.current.click(); // Programmatically click the file input
@@ -149,6 +159,7 @@ function ProfileDetails() {
     };
 
     const isStateEmpty = (state) => {
+
         return Object.values(state).every(value => value === "");
     }
 
@@ -167,6 +178,26 @@ function ProfileDetails() {
         return background ? background.image: null;
     };
 
+    const handleSave = () => {
+        if (!linkName) {
+            setLinkNameError('This field is required');
+             setShowModal(false);
+        } else {
+            setLinkNameError('');
+        }
+
+        if (!category) {
+            setCategoryError('This field is required');
+             setShowModal(false);
+        } else {
+            setCategoryError('');
+        }
+        for (const field in profile) {
+            dispatch_redux(saveChooses({ field: field, value: profile[field] }));
+             setShowModal(true);
+        }
+    }
+
     return (
         <>
             <MobileOverview profile={profile} getBackgroundImage={getBackgroundImage} links={links} getPlatformIcon={getPlatformIcon} getPlatformColor={getPlatformColor} />
@@ -180,7 +211,7 @@ function ProfileDetails() {
                     className="relative p-[1rem] mb-4  flex items-center justify-between bg-light-grey rounded-md border-light-grey">
                     <h2 className="font-bold text-lightBlack-2 text-base">Links Group picture</h2>
                     <button type="button"
-                            className={` ${imagePreview ? "bg-lightBlack-3" : "bg-lightPurple1"}  flex flex-col items-center justify-center h-32 w-32 rounded-lg`}
+                            className={` ${imagePreview ? "bg-white" : "bg-lightPurple1"}  flex flex-col items-center justify-center h-32 w-32 rounded-lg`}
                             onClick={handleImageLoadButton}
                             style={{
                                 backgroundImage: imagePreview ? `url(${imagePreview})` : 'none',
@@ -231,18 +262,37 @@ function ProfileDetails() {
                 <div className="p-[1rem]  flex flex-col gap-10 bg-light-grey rounded-md border-light-grey">
                     <div className="relative flex justify-between items-center w-full">
                         <label className="font-bold text-lightBlack-2 text-base" htmlFor="firstName">Links Group Name*</label>
-                        <input maxLength={maxLinkNameLength} value={linkName} name="linksGroupName"
-                               onChange={handleInputChange} id="firstName"
-                               type="text"
-                               placeholder="Enter the link name for your group of links/link"
-                               className=" w-[50%] pl-10 bg-white p-3 border-[.5px] rounded-md border-lightBlack-2 focus:outline-primaryPurple"
-                        />
-                        <p className="text-sm text-lightBlack-2 absolute right-0 bottom-[-20px]">
-                            {maxLinkNameLength - linkName.length} characters left
-                        </p>
+                        {linkNameError ? (
+                            <>
+                                <input maxLength={maxLinkNameLength} value={linkName} name="linksGroupName"
+                                       onChange={handleInputChange} id="firstName"
+                                       type="text"
+                                       placeholder="Enter the link name for your group of links/link"
+                                       className=" w-[50%] pl-10 bg-white p-3 border-[.5px] rounded-md border-red focus:outline-primaryPurple"
+                                />
+                                <p className="text-sm text-red absolute right-[120px] bottom-[-20px]">
+                                    {linkNameError}
+                                </p>
+                                <p className="text-sm text-lightBlack-2 absolute right-0 bottom-[-20px]">
+                                    {maxLinkNameLength - linkName.length} characters left
+                                </p>
+                            </>
+                            ):(
+                             <>
+                                <input maxLength={maxLinkNameLength} value={linkName} name="linksGroupName"
+                                       onChange={handleInputChange} id="firstName"
+                                       type="text"
+                                       placeholder="Enter the link name for your group of links/link"
+                                       className=" w-[50%] pl-10 bg-white p-3 border-[.5px] rounded-md border-lightBlack-2 focus:outline-primaryPurple"
+                                />
+                                <p className="text-sm text-lightBlack-2 absolute right-0 bottom-[-20px]">
+                                    {maxLinkNameLength - linkName.length} characters left
+                                </p>
+                             </>
+                        )}
                     </div>
                     <div className="relative flex justify-between items-center w-full">
-                        <label className="font-bold text-lightBlack-2 text-base" htmlFor="shortDescription">Links Description*</label>
+                        <label className="font-bold text-lightBlack-2 text-base" htmlFor="shortDescription">Links Description</label>
                         <textarea value={description} maxLength={maxDescriptionLength}  name="shortDescription" onChange={handleInputChange} id="shortDescription"
                                   placeholder="Enter the description for your group of links/link."
                                className="w-[50%] pl-10 bg-white p-3 border-[.5px] rounded-md border-lightBlack-2 focus:outline-primaryPurple" rows="3"
@@ -253,17 +303,36 @@ function ProfileDetails() {
                     </div>
                     <div className="relative flex justify-between items-center w-full">
                         <label className="font-bold text-lightBlack-2 text-base" htmlFor="category">Category*</label>
-                        <input value={category} maxLength={maxCategoryLength} name="category" onChange={handleInputChange} id="category" type="text"
-                               placeholder="Enter Category"
-                               className=" w-[50%] pl-10 bg-white p-3 border-[.5px] rounded-md border-lightBlack-2 focus:outline-primaryPurple"
-                        />
-                        <p className="text-sm text-lightBlack-2 absolute right-0 bottom-[-20px]">
-                            {maxCategoryLength - category.length} characters left
-                        </p>
+                        {categoryError ? (
+                            <>
+                                <input value={category} maxLength={maxCategoryLength} name="category"
+                                       onChange={handleInputChange} id="category" type="text"
+                                       placeholder="Enter Category"
+                                       className=" w-[50%] pl-10 bg-white p-3 border-[.5px] rounded-md border-red focus:outline-primaryPurple"
+                                />
+                                <p className="text-sm text-red absolute right-[120px] bottom-[-20px]">
+                                    {categoryError}
+                                </p>
+                                <p className="text-sm text-lightBlack-2 absolute right-0 bottom-[-20px]">
+                                    {maxCategoryLength - category.length} characters left
+                                </p>
+                            </>
+                        ):(
+                            <>
+                                <input value={category} maxLength={maxCategoryLength} name="category"
+                                       onChange={handleInputChange} id="category" type="text"
+                                       placeholder="Enter Category"
+                                       className=" w-[50%] pl-10 bg-white p-3 border-[.5px] rounded-md border-lightBlack-2 focus:outline-primaryPurple"
+                                />
+                                <p className="text-sm text-lightBlack-2 absolute right-0 bottom-[-20px]">
+                                    {maxCategoryLength - category.length} characters left
+                                </p>
+                            </>
+                        )}
                     </div>
                     <div className="flex justify-between items-center w-full">
                         <label className="font-bold text-lightBlack-2 text-base" htmlFor="backgroundImage">Background
-                            Image*</label>
+                            Image</label>
                         <div className="w-[50%]">
                             <Select
                                 name="backgroundImage"
@@ -295,8 +364,9 @@ function ProfileDetails() {
                 </div>
                 <div className="border-t border-light-grey-100 mt-10 -mx-10"></div>
                 <div className="mt-10 text-end">
-                    <Button disabled={isStateEmpty(profile)} type="save">Save</Button>
+                    <Button disabled={isStateEmpty(profile)} onclick={handleSave} type="save">Save</Button>
                 </div>
+                 {showModal && <Modal/>}
             </section>
         </>
     );
