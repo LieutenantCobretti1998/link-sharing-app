@@ -37,19 +37,16 @@ function MobileOverview({links, profile, getPlatformColor, getPlatformIcon, getB
                     clipPath="url(#screenClip)"
                 >
                 </image>
-                <circle cx="153.5" cy="112" r="48" fill={commonColor}/>
-                <clipPath id="circleClip">
-                    <circle cx="153.5" cy="112" r="48" fill="#EEE"/>
-                </clipPath>
-                <image
-                    href={linksGroupImage}
-                    x="105.5"
-                    y="64"
-                    width="96"
-                    height="96"
-                    preserveAspectRatio="xMidYMid slice"
-                    clipPath="url(#circleClip)"
-                />
+                <foreignObject x="105" y="64" width="96" height="96" clipPath="url(#screenClip)" className="rounded-full">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style={{width: '100%', height: '100%'}}>
+                        {/* Place HTML content inside */}
+                        <img
+                            src={linksGroupImage}
+                            alt="Links Group"
+                            style={{width: '100%', height: '100%',}}
+                        />
+                    </div>
+                </foreignObject>
                 <rect width="270" height="20" x="20" y="185" fill={commonColor} rx="8"/>
                 <text
                     x="155"
