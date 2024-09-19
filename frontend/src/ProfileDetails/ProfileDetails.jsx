@@ -101,48 +101,77 @@ function ProfileDetails() {
     };
 
     const handleImageUpload = (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const validTypes = ["image/png", "image/jpg"];
-        if(!validTypes.includes(file.type)) {
-           dispatch({
-               type: SET_ERROR,
-               errorType: 'invalidFormat',
-               errorMessage: 'Invalid file format. Please upload PNG or JPG.',
-           });
-           return;
-        }
-        const image = new Image();
-        image.src = URL.createObjectURL(file);
+  const file = e.target.files[0];
+  if (!file) return;
 
-        image.onload = () => {
-            const width = image.width;
-            const height = image.height;
-            if (width > 1024 || height > 1024) {
-                dispatch({
-                   type: SET_ERROR,
-                   errorType: 'invalidDimensions',
-                   errorMessage: 'Image dimensions must be less than 1024x1024.',
-                });
-                return;
-            }
-            dispatch({ type: CLEAR_ERROR });
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const base64String = reader.result;
-                dispatch_redux(updateProfile({ field: "linksGroupImage", value: base64String }));
-                dispatch({
-                    type: 'SET_SUCCESS',
-                    successMessage: 'Link Group Image uploaded successfully!',
-                 });
-                setImagePreview(base64String);
-            };
-            reader.readAsDataURL(file);
-            if(fileInputRef.current) {
-                fileInputRef.current.value = null;
-            }
-        };
-    };
+  // Validate file format
+  const validTypes = ["image/png", "image/jpg", "image/jpeg"];
+  if (!validTypes.includes(file.type)) {
+    dispatch({
+      type: SET_ERROR,
+      errorType: 'invalidFormat',
+      errorMessage: 'Invalid file format. Please upload PNG or JPG.',
+    });
+    return;
+  }
+
+  // Load the image
+  const image = new Image();
+  image.src = URL.createObjectURL(file);
+
+  image.onload = () => {
+    const width = image.width;
+    const height = image.height;
+
+    // Check if the image dimensions exceed 1024x1024
+    if (width > 1024 || height > 1024) {
+      // Resize the image using a canvas
+      const MAX_SIZE = 1024;
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      // Set canvas width and height to 1024x1024
+      canvas.width = MAX_SIZE;
+      canvas.height = MAX_SIZE;
+
+      // Draw the image on the canvas with resized dimensions
+      ctx.drawImage(image, 0, 0, MAX_SIZE, MAX_SIZE);
+
+      // Convert the canvas to a Data URL (base64 string)
+      const resizedImageUrl = canvas.toDataURL(file.type, 0.9); // You can adjust the quality if needed
+
+      dispatch({
+        type: SET_SUCCESS,
+        successMessage: 'Image was resized to 1024x1024 and uploaded successfully!',
+      });
+
+      // Store the resized image in Redux and as the preview
+      dispatch_redux(updateProfile({ field: "linksGroupImage", value: resizedImageUrl }));
+      setImagePreview(resizedImageUrl);
+
+    } else {
+      // If dimensions are within the limit, just use the original image
+      dispatch({ type: CLEAR_ERROR });
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result;
+        dispatch_redux(updateProfile({ field: "linksGroupImage", value: base64String }));
+        dispatch({
+          type: 'SET_SUCCESS',
+          successMessage: 'Link Group Image uploaded successfully!',
+        });
+        setImagePreview(base64String);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Clear the file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = null;
+    }
+  };
+};
+
 
     const handleInputChange = (event) => {
         switch (event.target.name) {
@@ -230,16 +259,11 @@ function ProfileDetails() {
                 <div
                     className="relative p-[1rem] mb-4  flex items-center justify-between bg-light-grey rounded-md border-light-grey">
                     <h2 className="font-bold text-lightBlack-2 text-base">Links Group picture</h2>
-                    <button type="button"
-                            className={` ${imagePreview ? "bg-white" : "bg-lightPurple1"}  flex flex-col items-center justify-center h-32 w-32 rounded-lg`}
-                            onClick={handleImageLoadButton}
-                            style={{
-                                backgroundImage: imagePreview ? `url(${imagePreview})` : 'none',
-                                backgroundSize: 'cover',
-                                backgroundPosition: 'center',
-                            }}
+                    <button
+                        type="button"
+                        className={`relative h-32 w-32 rounded-lg ${imagePreview ? "bg-white": "bg-lightPurple1"} flex flex-col items-center justify-center`}
+                        onClick={handleImageLoadButton}
                     >
-                        <span className="absolute inset-0 bg-black opacity-50"></span>
                         <input
                             ref={fileInputRef}
                             type="file"
@@ -247,27 +271,38 @@ function ProfileDetails() {
                             onChange={handleImageUpload}
                             className="hidden"
                         />
+                        {imagePreview && (
+                            <img
+                                src={imagePreview}
+                                alt="Uploaded Preview"
+                                className="absolute inset-0 w-max h-full rounded-lg"
+                            />
+                        )}
                         {!imagePreview && (
                             <>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" viewBox="0 0 40 40">
-                                    <path fill={imagePreview ? "white" : "#633CFF"}
-                                          d="M33.75 6.25H6.25a2.5 2.5 0 0 0-2.5 2.5v22.5a2.5 2.5 0 0 0 2.5 2.5h27.5a2.5 2.5 0 0 0 2.5-2.5V8.75a2.5 2.5 0 0 0-2.5-2.5Zm0 2.5v16.055l-4.073-4.072a2.5 2.5 0 0 0-3.536 0l-3.125 3.125-6.875-6.875a2.5 2.5 0 0 0-3.535 0L6.25 23.339V8.75h27.5ZM6.25 26.875l8.125-8.125 12.5 12.5H6.25v-4.375Zm27.5 4.375h-3.34l-5.624-5.625L27.91 22.5l5.839 5.84v2.91ZM22.5 15.625a1.875 1.875 0 1 1 3.75 0 1.875 1.875 0 0 1-3.75 0Z"/>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none"
+                                     viewBox="0 0 40 40">
+                                    <path
+                                        fill="#633CFF"
+                                        d="M33.75 6.25H6.25a2.5 2.5 0 0 0-2.5 2.5v22.5a2.5 2.5 0 0 0 2.5 2.5h27.5a2.5 2.5 0 0 0 2.5-2.5V8.75a2.5 2.5 0 0 0-2.5-2.5Zm0 2.5v16.055l-4.073-4.072a2.5 2.5 0 0 0-3.536 0l-3.125 3.125-6.875-6.875a2.5 2.5 0 0 0-3.535 0L6.25 23.339V8.75h27.5ZM6.25 26.875l8.125-8.125 12.5 12.5H6.25v-4.375Zm27.5 4.375h-3.34l-5.624-5.625L27.91 22.5l5.839 5.84v2.91ZM22.5 15.625a1.875 1.875 0 1 1 3.75 0 1.875 1.875 0 0 1-3.75 0Z"
+                                    />
                                 </svg>
-                                <span className={`text-primaryPurple font-bold`}>+ Upload Links Group Image</span>
-                             </>
+                                <span className="text-primaryPurple font-bold">+ Upload Links Group Image</span>
+                            </>
                         )}
                     </button>
+
                     <p className="w-[215px] font-normal text-lightBlack-2 text-base">
                         Image must be below
                         1024x1024px. Use PNG or JPG format.
                     </p>
                     {linksGroupImage && (
                         <button
-                                onClick={() => {
-                                    dispatch_redux(removeLinksGroupImage());
-                                    setImagePreview(null);
-                                }}
-                                className="absolute top-2 right-5 text-lightBlack-2 font-instrumentNormal hover:text-red-500 focus:outline-none">Remove
+                            onClick={() => {
+                                dispatch_redux(removeLinksGroupImage());
+                                setImagePreview(null);
+                            }}
+                            className="absolute top-2 right-5 text-lightBlack-2 font-instrumentNormal hover:text-red-500 focus:outline-none">Remove
                         </button>
                     )}
                     {state.errorType === 'invalidFormat' && (
