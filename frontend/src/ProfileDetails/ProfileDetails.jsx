@@ -8,6 +8,7 @@ import Button from "../UI/Button.jsx";
 import {useEffect, useReducer, useRef, useState} from "react";
 import Modal from "../UI/Modal.jsx";
 import {saveChooses} from "../SaveLogic/SaveSlice.js";
+import {HexColorPicker} from "react-colorful";
 
 const customStyles = {
     control: (provided, state) => ({
@@ -29,6 +30,7 @@ const customStyles = {
         backgroundColor: 'white',
         border: '1px solid #A3A3A3',
         borderRadius: '0.375rem',
+        zIndex: 1000
     }),
     dropdownIndicator: (provided, state) => ({
         ...provided,
@@ -64,12 +66,15 @@ function ProfileDetails() {
     const [state, dispatch] = useReducer(errorReducer, { errorType: null, errorMessage: '', successMessage: "" });
     const profile = useSelector((state) => state.profile);
     const links = useSelector((state) => state.link.links);
+    const savedData= useSelector((state) => state.saveChooses);
     const [imagePreview, setImagePreview] = useState(null);
     const [description, setDescription] = useState("");
     const [linkName, setLinkName] = useState("");
     const [category, setCategory] = useState("");
     const [linkNameError, setLinkNameError] = useState("");
     const [categoryError, setCategoryError] = useState("");
+    const [textColor, setTextColor] = useState("#333333");
+    const [commonColor, setCommonColor] = useState("#D9D9D9");
     const [showModal, setShowModal] = useState(false);
     const maxCategoryLength = 20;
     const maxLinkNameLength = 30;
@@ -158,10 +163,19 @@ function ProfileDetails() {
         dispatch_redux(updateProfile({ field: name, value: value }));
     };
 
-    const isStateEmpty = (state) => {
-
-        return Object.values(state).every(value => value === "");
+    const saveTextColorChange = () => {
+        dispatch_redux(updateProfile({ field: "textColor", value: textColor }));
     }
+
+    const saveCommonColorChange = () => {
+        dispatch_redux(updateProfile({ field: "commonColor", value: commonColor }));
+    };
+
+    const isStateEmpty = (state) => {
+        const entries = Object.entries(state);
+        const entriesToCheck = entries.slice(0, -2);
+        return entriesToCheck.every(([key, value]) => value === "");
+    };
 
     const getPlatformIcon = (label) => {
         const platform = platforms.find((p) => p.label === label);
@@ -179,23 +193,29 @@ function ProfileDetails() {
     };
 
     const handleSave = () => {
-        if (!linkName) {
+        console.log(savedData.linksGroupName === "")
+        let hasError = false;
+        if (savedData.linksGroupName === "" || !linkName) {
             setLinkNameError('This field is required');
-             setShowModal(false);
+            hasError = true;
         } else {
             setLinkNameError('');
         }
-
-        if (!category) {
+        if (savedData.category === "" || !category) {
             setCategoryError('This field is required');
-             setShowModal(false);
+            hasError = true;
         } else {
             setCategoryError('');
         }
+
+        if (hasError) {
+            setShowModal(false);
+            return;
+        }
         for (const field in profile) {
             dispatch_redux(saveChooses({ field: field, value: profile[field] }));
-             setShowModal(true);
         }
+        setShowModal(true);
     }
 
     return (
@@ -261,7 +281,8 @@ function ProfileDetails() {
                 </div>
                 <div className="p-[1rem]  flex flex-col gap-10 bg-light-grey rounded-md border-light-grey">
                     <div className="relative flex justify-between items-center w-full">
-                        <label className="font-bold text-lightBlack-2 text-base" htmlFor="firstName">Links Group Name*</label>
+                        <label className="font-bold text-lightBlack-2 text-base" htmlFor="firstName">Links Group
+                            Name*</label>
                         {linkNameError ? (
                             <>
                                 <input maxLength={maxLinkNameLength} value={linkName} name="linksGroupName"
@@ -270,15 +291,15 @@ function ProfileDetails() {
                                        placeholder="Enter the link name for your group of links/link"
                                        className=" w-[50%] pl-10 bg-white p-3 border-[.5px] rounded-md border-red focus:outline-primaryPurple"
                                 />
-                                <p className="text-sm text-red absolute right-[120px] bottom-[-20px]">
+                                <p className="text-sm text-red absolute right-[10px] bottom-[15px]">
                                     {linkNameError}
                                 </p>
                                 <p className="text-sm text-lightBlack-2 absolute right-0 bottom-[-20px]">
                                     {maxLinkNameLength - linkName.length} characters left
                                 </p>
                             </>
-                            ):(
-                             <>
+                        ) : (
+                            <>
                                 <input maxLength={maxLinkNameLength} value={linkName} name="linksGroupName"
                                        onChange={handleInputChange} id="firstName"
                                        type="text"
@@ -288,14 +309,17 @@ function ProfileDetails() {
                                 <p className="text-sm text-lightBlack-2 absolute right-0 bottom-[-20px]">
                                     {maxLinkNameLength - linkName.length} characters left
                                 </p>
-                             </>
+                            </>
                         )}
                     </div>
                     <div className="relative flex justify-between items-center w-full">
-                        <label className="font-bold text-lightBlack-2 text-base" htmlFor="shortDescription">Links Description</label>
-                        <textarea value={description} maxLength={maxDescriptionLength}  name="shortDescription" onChange={handleInputChange} id="shortDescription"
+                        <label className="font-bold text-lightBlack-2 text-base" htmlFor="shortDescription">Links
+                            Description</label>
+                        <textarea value={description} maxLength={maxDescriptionLength} name="shortDescription"
+                                  onChange={handleInputChange} id="shortDescription"
                                   placeholder="Enter the description for your group of links/link."
-                               className="w-[50%] pl-10 bg-white p-3 border-[.5px] rounded-md border-lightBlack-2 focus:outline-primaryPurple" rows="3"
+                                  className="w-[50%] pl-10 bg-white p-3 border-[.5px] rounded-md border-lightBlack-2 focus:outline-primaryPurple"
+                                  rows="3"
                         />
                         <p className="text-sm text-lightBlack-2 absolute right-0 bottom-[-20px]">
                             {maxDescriptionLength - description.length} characters left
@@ -310,14 +334,14 @@ function ProfileDetails() {
                                        placeholder="Enter Category"
                                        className=" w-[50%] pl-10 bg-white p-3 border-[.5px] rounded-md border-red focus:outline-primaryPurple"
                                 />
-                                <p className="text-sm text-red absolute right-[120px] bottom-[-20px]">
+                                <p className="text-sm text-red absolute right-[10px] bottom-[15px]">
                                     {categoryError}
                                 </p>
                                 <p className="text-sm text-lightBlack-2 absolute right-0 bottom-[-20px]">
                                     {maxCategoryLength - category.length} characters left
                                 </p>
                             </>
-                        ):(
+                        ) : (
                             <>
                                 <input value={category} maxLength={maxCategoryLength} name="category"
                                        onChange={handleInputChange} id="category" type="text"
@@ -337,16 +361,18 @@ function ProfileDetails() {
                             <Select
                                 name="backgroundImage"
                                 onChange={(selectedOption) => {
-                                    dispatch_redux(updateProfile({field: "backgroundImage", value: selectedOption.value}));
+                                    dispatch_redux(updateProfile({
+                                        field: "backgroundImage",
+                                        value: selectedOption.value
+                                    }));
                                 }}
                                 id="backgroundImage"
                                 options={backgrounds}
                                 getOptionLabel={(option) => (
                                     <div className="flex items-center gap-2">
                                         {option.image && (
-
                                             <img
-                                                src={option.image}
+                                                src={option.imageSmall}
                                                 alt={option.label}
                                                 style={{width: '24px', height: '24px', borderRadius: '4px'}}
                                             />
@@ -361,12 +387,24 @@ function ProfileDetails() {
                             />
                         </div>
                     </div>
+                    <div className="flex">
+                        <div className="flex gap-20  items-center w-full">
+                            <label className="font-bold text-lightBlack-2 text-base" htmlFor="textColor">Text Color</label>
+                            <HexColorPicker onMouseUp={saveTextColorChange} onTouchEnd={saveTextColorChange} name="textColor"
+                                            color={textColor} onChange={setTextColor}/>
+                        </div>
+                        <div className="flex gap-20 items-center w-full">
+                            <label className="font-bold text-lightBlack-2 text-base" htmlFor="groupColor">Common Color</label>
+                            <HexColorPicker name="groupColor" onMouseUp={saveCommonColorChange} onTouchEnd={saveCommonColorChange}
+                                            color={commonColor} onChange={setCommonColor} />
+                        </div>
+                    </div>
                 </div>
                 <div className="border-t border-light-grey-100 mt-10 -mx-10"></div>
                 <div className="mt-10 text-end">
                     <Button disabled={isStateEmpty(profile)} onclick={handleSave} type="save">Save</Button>
                 </div>
-                 {showModal && <Modal/>}
+                {showModal && <Modal/>}
             </section>
         </>
     );

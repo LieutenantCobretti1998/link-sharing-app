@@ -3,6 +3,7 @@ import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import Layout from "./CommonComponents/Layout.jsx";
 import HomePage from "./HomePage/HomePage.jsx";
 import ProfileDetails from "./ProfileDetails/ProfileDetails.jsx";
+import Preview from "./Preview/Preview.jsx";
 
 const router = createBrowserRouter([
   {
@@ -10,7 +11,8 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       {path: "/", element: <HomePage />},
-      {path: "/profile", element: <ProfileDetails />}
+      {path: "/profile", element: <ProfileDetails />},
+      {path: "/preview", element: <Preview />}
     ]
   }
 ])

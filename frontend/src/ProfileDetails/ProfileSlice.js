@@ -5,7 +5,9 @@ const initialState = {
     linksGroupName: "",
     shortDescription: "",
     category:  "",
-    backgroundImage: ""
+    backgroundImage: "",
+    textColor: "#333333",
+    commonColor: "#D9D9D9",
 }
 
 const profileReducer = createSlice({

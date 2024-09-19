@@ -8,6 +8,7 @@ export default {
       "primaryPurple": "#633CFF",
       "lightPurple1": "#BEADFF",
       "lightPurple2": "#EFEBFF",
+      "primaryPurple3": "#4015f8",
       "lightBlack-1": "#333333",
       "lightBlack-2": "#737373",
       "lightBlack-3": "#797878",

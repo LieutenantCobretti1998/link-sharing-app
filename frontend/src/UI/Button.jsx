@@ -3,7 +3,7 @@ function Button({type, children, isActive, onclick, disabled}) {
 
     switch (type) {
         case "header":
-            buttonClasses = "w-24 h-9 p-0 border-[.5px] border-primaryPurple " +
+            buttonClasses = "w-40 h-9 p-0 border-[.5px] border-primaryPurple " +
                 "rounded-md text-primaryPurple font-bold hover:bg-lightPurple2 transition duration-300 ease-in-out";
             break;
         case "main":
@@ -22,6 +22,11 @@ function Button({type, children, isActive, onclick, disabled}) {
            buttonClasses = isActive
             ? "bg-lightPurple2 rounded-md pointer-events-none"
             : "hover:bg-lightPurple2 hover:border-lightPurple2 rounded-md transition duration-300";
+           break;
+
+        case "shareLink":
+            buttonClasses = "w-40 h-9 p-0 border-[.5px] border-primaryPurple " +
+                "rounded-md text-white font-bold bg-primaryPurple hover:bg-primaryPurple3 transition duration-300 ease-in-out";
     }
     return (
         <button disabled={type==="main" && disabled} onClick={onclick} className={buttonClasses}>{children}</button>

@@ -1,7 +1,6 @@
 import {useSelector} from "react-redux";
 
 function MobileOverview({links, profile, getPlatformColor, getPlatformIcon, getBackgroundImage}) {
-    const {linksGroupName, shortDescription, linksGroupImage} = useSelector((state) => state.profile);
     const safeCharactersArray = Array.from(shortDescription);
     const lines = [];
 
@@ -37,7 +36,7 @@ function MobileOverview({links, profile, getPlatformColor, getPlatformIcon, getB
                     clipPath="url(#screenClip)"
                 >
                 </image>
-                <circle cx="153.5" cy="112" r="48" fill="#EEE"/>
+                <circle cx="153.5" cy="112" r="48" fill={commonColor}/>
                 <clipPath id="circleClip">
                     <circle cx="153.5" cy="112" r="48" fill="#EEE"/>
                 </clipPath>
@@ -50,29 +49,29 @@ function MobileOverview({links, profile, getPlatformColor, getPlatformIcon, getB
                     preserveAspectRatio="xMidYMid slice"
                     clipPath="url(#circleClip)"
                 />
-                <rect width="250" height="20" x="30" y="185" fill="#EEE" rx="8"/>
+                <rect width="270" height="20" x="20" y="185" fill={commonColor} rx="8"/>
                 <text
                     x="155"
                     y="195"
-                    fill="black"
-                    fontSize="10"
+                    fill={textColor}
+                    fontSize="12"
                     textAnchor="middle"
                     dominantBaseline="middle"
                 >
                     {linksGroupName}
                 </text>
-                <rect width="280" height="30" x="15" y="214" fill="#EEE" rx="4"/>
+                <rect width="278" height="30" x="15" y="214" fill={commonColor} rx="4"/>
                 <text
                     x="160"
                     y="240"
-                    fill="black"
+                    fill={textColor}
                     fontSize="10"
                     textAnchor="middle"
                     dominantBaseline="middle"
 
                 >
                     {lines.map((line, index) => (
-                        <tspan key={index} x="150" y="230" dy={`${index * 1.1}em`}>
+                        <tspan key={index} x="155" y="230" dy={`${index * 1.1}em`}>
                             {line}
                         </tspan>
                     ))}
@@ -84,22 +83,22 @@ function MobileOverview({links, profile, getPlatformColor, getPlatformIcon, getB
                             width="237"
                             height="44"
                             x="35"
-                            y={300 + index * 64}
+                            y={250 + index * 64}
                             fill={getPlatformColor(link.label)}
                             rx="8"
                         />
-                        <g transform={`translate(45, ${314 + index * 64})`}>
+                        <g transform={`translate(45, ${264 + index * 64})`}>
                             {getPlatformIcon(link.label)}
                         </g>
                         <text
                             x="70"
-                            y={326 + index * 64}  /* Text positioning inside the rect */
+                            y={276 + index * 64}  /* Text positioning inside the rect */
                             fontSize="14"
                             fill="white"
                         >
                             {link.label || `Link #${index + 1}`}
                         </text>
-                        <g transform={`translate(250, ${314 + index * 64})`}>
+                        <g transform={`translate(250, ${264 + index * 64})`}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
                                  viewBox="0 0 16 16">
                                 <path fill="#fff"

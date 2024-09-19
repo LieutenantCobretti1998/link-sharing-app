@@ -7,7 +7,7 @@ import {useEffect, useMemo, useState} from "react";
 import Modal from "../UI/Modal.jsx";
 import MobileOverview from "../UI/MobileOverview.jsx";
 import {backgrounds} from "../BackgroundImages/BackgroundImages.jsx";
-import {saveChooses} from "../SaveLogic/SaveSlice.js";
+import {removeSavedLink, saveChooses} from "../SaveLogic/SaveSlice.js";
 
 
 function HomePage() {
@@ -34,6 +34,7 @@ function HomePage() {
 
     const removeNewLink = (linkId) => {
         dispatch(removeLink(linkId));
+        dispatch(removeSavedLink(linkId));
     };
 
     const handleUpdateLink = (linkId, updates) => {
@@ -47,7 +48,6 @@ function HomePage() {
 
     const findLinkById = (id, links) => {
          const link = links.find((link) => link.id === id);
-         console.log(link.label);
          if (!link) {
         return {
           label: "Github", // Default label
