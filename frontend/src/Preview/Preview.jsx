@@ -1,14 +1,23 @@
 import {useSelector} from "react-redux";
 import {backgrounds} from "../BackgroundImages/BackgroundImages.jsx";
+import {platforms} from "../Platforms/PreDefaultPlatForms.jsx";
 
 function Preview() {
     const getBackgroundImage = (label) => {
         const background = backgrounds.find((image) => image.value === label);
         return background ? background.image: null;
     };
-    const {linksGroupName, shortDescription, linksGroupImage, textColor, commonColor, backgroundColor, backgroundImage} = useSelector((state) => state.saveChooses);
+    const getPlatformColor = (label) => {
+        const platform = platforms.find((p) => p.label === label);
+        return platform ? platform.color : null;
+    };
+    const getPlatformIcon = (label) => {
+        const platform = platforms.find((p) => p.label === label);
+        return platform ? platform.icon : null;
+    };
+    const {linksGroupName, links, shortDescription, linksGroupImage, textColor, commonColor, backgroundColor, backgroundImage} = useSelector((state) => state.saveChooses);
     return (
-            <div className="drop-shadow-md relative top-[-100px] rounded-xl h-auto flex flex-col align-center justify-center"
+            <div className="drop-shadow-md relative top-[-120px] rounded-xl h-auto flex flex-col align-center justify-center"
                  style={{
                      backgroundColor: backgroundImage ? "white" : backgroundColor,
                      backgroundImage: `url(${getBackgroundImage(backgroundImage)})`,
@@ -16,7 +25,7 @@ function Preview() {
                      backgroundPosition: "center"
                 }}
             >
-                <svg xmlns="http://www.w3.org/2000/svg" width="300" height="500">
+                <svg xmlns="http://www.w3.org/2000/svg" width="300" height="585">
                     {!linksGroupImage ? (
                         <circle cx="153.5" cy="112" r="48" fill={commonColor}/>
                     ) : (
@@ -54,6 +63,38 @@ function Preview() {
                     >
                         {shortDescription}
                     </text>
+                    {links.map((link, index) => (
+                    <g key={link.id}>
+                        <a href={link.url} target="_blank" rel="noopener noreferrer">
+                            <rect
+                                width="237"
+                                height="44"
+                                x="35"
+                                y={270 + index * 64}
+                                fill={getPlatformColor(link.label)}
+                                rx="8"
+                            />
+                            <g transform={`translate(45, ${284 + index * 64})`}>
+                                {getPlatformIcon(link.label)}
+                            </g>
+                            <text
+                                x="70"
+                                y={296 + index * 64}  /* Text positioning inside the rect */
+                                fontSize="14"
+                                fill="white"
+                            >
+                                {link.label || `Link #${index + 1}`}
+                            </text>
+                            <g transform={`translate(250, ${284 + index * 64})`}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+                                     viewBox="0 0 16 16">
+                                    <path fill="#fff"
+                                          d="M2.667 7.333v1.334h8L7 12.333l.947.947L13.227 8l-5.28-5.28L7 3.667l3.667 3.666h-8Z"/>
+                                </svg>
+                            </g>
+                        </a>
+                    </g>
+                ))}
                 </svg>
             </div>
     );

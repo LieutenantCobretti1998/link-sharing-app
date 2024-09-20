@@ -16,7 +16,7 @@ const linkReducer = createSlice({
         addLink: (state) => {
             if (state.links.length < 5) {
                 const newLink = {
-                    id: Date.now() + Math.random(), // Ensure a unique ID by combining Date.now with Math.random
+                    id: Date.now() + Math.random(),
                     label: "GitHub",
                     url: "",
                 };
