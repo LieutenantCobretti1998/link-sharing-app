@@ -67,7 +67,7 @@ function ProfileDetails() {
     const profile = useSelector((state) => state.profile);
     const links = useSelector((state) => state.link.links);
     const savedData= useSelector((state) => state.saveChooses);
-    const [imagePreview, setImagePreview] = useState(null);
+    const [imagePreview, setImagePreview] = useState("");
     const [description, setDescription] = useState("");
     const [linkName, setLinkName] = useState("");
     const [category, setCategory] = useState("");
@@ -75,6 +75,7 @@ function ProfileDetails() {
     const [categoryError, setCategoryError] = useState("");
     const [textColor, setTextColor] = useState("#333333");
     const [commonColor, setCommonColor] = useState("#D9D9D9");
+    const [backgroundColor, setbackgroundColor] = useState("#FFF");
     const [showModal, setShowModal] = useState(false);
     const maxCategoryLength = 20;
     const maxLinkNameLength = 30;
@@ -94,6 +95,11 @@ function ProfileDetails() {
         return () => clearTimeout(timer);
     }, [showModal]);
 
+    useEffect(() => {
+        setTextColor(savedData.textColor || textColor);
+        setCommonColor(savedData.commonColor || commonColor);
+        setbackgroundColor(savedData.backgroundColor || commonColor);
+    }, [savedData ]);
     const handleImageLoadButton = () => {
         if (fileInputRef.current) {
             fileInputRef.current.click(); // Programmatically click the file input
@@ -171,8 +177,6 @@ function ProfileDetails() {
     }
   };
 };
-
-
     const handleInputChange = (event) => {
         switch (event.target.name) {
             case "shortDescription":
@@ -200,11 +204,9 @@ function ProfileDetails() {
         dispatch_redux(updateProfile({ field: "commonColor", value: commonColor }));
     };
 
-    const isStateEmpty = (state) => {
-        const entries = Object.entries(state);
-        const entriesToCheck = entries.slice(0, -2);
-        return entriesToCheck.every(([key, value]) => value === "");
-    };
+    const saveBackgroundColorChange = () => {
+        dispatch_redux(updateProfile({ field: "backgroundColor", value: backgroundColor }));
+    }
 
     const getPlatformIcon = (label) => {
         const platform = platforms.find((p) => p.label === label);
@@ -220,17 +222,16 @@ function ProfileDetails() {
         const background = backgrounds.find((image) => image.value === label);
         return background ? background.image: null;
     };
-
     const handleSave = () => {
-        console.log(savedData.linksGroupName === "")
+
         let hasError = false;
-        if (savedData.linksGroupName === "" || !linkName) {
+        if (!linkName && !savedData.linksGroupName) {
             setLinkNameError('This field is required');
             hasError = true;
         } else {
             setLinkNameError('');
         }
-        if (savedData.category === "" || !category) {
+        if (!category && !savedData.category) {
             setCategoryError('This field is required');
             hasError = true;
         } else {
@@ -242,6 +243,20 @@ function ProfileDetails() {
             return;
         }
         for (const field in profile) {
+            switch (field) {
+                case 'linksGroupName':
+                    if(!profile["linksGroupName"]) {
+                        setLinkNameError('This field is required');
+                        return;
+                    }
+                    break;
+                case "category":
+                    if(!profile["category"]) {
+                        setCategoryError('This field is required');
+                        return;
+                    }
+                    break;
+            }
             dispatch_redux(saveChooses({ field: field, value: profile[field] }));
         }
         setShowModal(true);
@@ -271,14 +286,14 @@ function ProfileDetails() {
                             onChange={handleImageUpload}
                             className="hidden"
                         />
-                        {imagePreview && (
+                        {(imagePreview || savedData.linksGroupImage) && (
                             <img
-                                src={imagePreview}
+                                src={imagePreview ? imagePreview: savedData.linksGroupImage}
                                 alt="Uploaded Preview"
                                 className="absolute inset-0 w-max h-full rounded-lg"
                             />
                         )}
-                        {!imagePreview && (
+                        {(!imagePreview || !linksGroupImage) && (
                             <>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none"
                                      viewBox="0 0 40 40">
@@ -300,7 +315,7 @@ function ProfileDetails() {
                         <button
                             onClick={() => {
                                 dispatch_redux(removeLinksGroupImage());
-                                setImagePreview(null);
+                                setImagePreview("");
                             }}
                             className="absolute top-2 right-5 text-lightBlack-2 font-instrumentNormal hover:text-red-500 focus:outline-none">Remove
                         </button>
@@ -316,14 +331,15 @@ function ProfileDetails() {
                 </div>
                 <div className="p-[1rem]  flex flex-col gap-10 bg-light-grey rounded-md border-light-grey">
                     <div className="relative flex justify-between items-center w-full">
-                        <label className="font-bold text-lightBlack-2 text-base" htmlFor="firstName">Links Group
-                            Name*</label>
+                        <label className="font-bold text-lightBlack-2 text-base" htmlFor="firstName">
+                            Links Group Name*
+                        </label>
                         {linkNameError ? (
                             <>
                                 <input maxLength={maxLinkNameLength} value={linkName} name="linksGroupName"
                                        onChange={handleInputChange} id="firstName"
                                        type="text"
-                                       placeholder="Enter the link name for your group of links/link"
+                                       placeholder={savedData.linksGroupName ? savedData.linksGroupName : "Enter the link name for your group of links/link"}
                                        className=" w-[50%] pl-10 bg-white p-3 border-[.5px] rounded-md border-red focus:outline-primaryPurple"
                                 />
                                 <p className="text-sm text-red absolute right-[10px] bottom-[15px]">
@@ -338,7 +354,7 @@ function ProfileDetails() {
                                 <input maxLength={maxLinkNameLength} value={linkName} name="linksGroupName"
                                        onChange={handleInputChange} id="firstName"
                                        type="text"
-                                       placeholder="Enter the link name for your group of links/link"
+                                       placeholder={savedData.linksGroupName ? savedData.linksGroupName : "Enter the link name for your group of links/link"}
                                        className=" w-[50%] pl-10 bg-white p-3 border-[.5px] rounded-md border-lightBlack-2 focus:outline-primaryPurple"
                                 />
                                 <p className="text-sm text-lightBlack-2 absolute right-0 bottom-[-20px]">
@@ -352,7 +368,7 @@ function ProfileDetails() {
                             Description</label>
                         <textarea value={description} maxLength={maxDescriptionLength} name="shortDescription"
                                   onChange={handleInputChange} id="shortDescription"
-                                  placeholder="Enter the description for your group of links/link."
+                                  placeholder={savedData.shortDescription ? savedData.shortDescription : "Enter the short description for your links' group"}
                                   className="w-[50%] pl-10 bg-white p-3 border-[.5px] rounded-md border-lightBlack-2 focus:outline-primaryPurple"
                                   rows="3"
                         />
@@ -366,7 +382,7 @@ function ProfileDetails() {
                             <>
                                 <input value={category} maxLength={maxCategoryLength} name="category"
                                        onChange={handleInputChange} id="category" type="text"
-                                       placeholder="Enter Category"
+                                        placeholder={savedData.category ? savedData.category : "Enter category"}
                                        className=" w-[50%] pl-10 bg-white p-3 border-[.5px] rounded-md border-red focus:outline-primaryPurple"
                                 />
                                 <p className="text-sm text-red absolute right-[10px] bottom-[15px]">
@@ -380,7 +396,7 @@ function ProfileDetails() {
                             <>
                                 <input value={category} maxLength={maxCategoryLength} name="category"
                                        onChange={handleInputChange} id="category" type="text"
-                                       placeholder="Enter Category"
+                                       placeholder={savedData.category ? savedData.category : "Enter category"}
                                        className=" w-[50%] pl-10 bg-white p-3 border-[.5px] rounded-md border-lightBlack-2 focus:outline-primaryPurple"
                                 />
                                 <p className="text-sm text-lightBlack-2 absolute right-0 bottom-[-20px]">
@@ -423,21 +439,35 @@ function ProfileDetails() {
                         </div>
                     </div>
                     <div className="flex">
-                        <div className="flex gap-20  items-center w-full">
-                            <label className="font-bold text-lightBlack-2 text-base" htmlFor="textColor">Text Color</label>
-                            <HexColorPicker onMouseUp={saveTextColorChange} onTouchEnd={saveTextColorChange} name="textColor"
+                        <div className="flex gap-2 flex-col  items-center w-full">
+                            <label className="font-bold text-lightBlack-2 text-base" htmlFor="textColor">
+                                Text Color
+                            </label>
+                            <HexColorPicker onMouseUp={saveTextColorChange} onTouchEnd={saveTextColorChange}
+                                            name="textColor"
                                             color={textColor} onChange={setTextColor}/>
                         </div>
-                        <div className="flex gap-20 items-center w-full">
-                            <label className="font-bold text-lightBlack-2 text-base" htmlFor="groupColor">Common Color</label>
-                            <HexColorPicker name="groupColor" onMouseUp={saveCommonColorChange} onTouchEnd={saveCommonColorChange}
-                                            color={commonColor} onChange={setCommonColor} />
+                        <div className="flex gap-2 flex-col items-center w-full">
+                            <label className="font-bold text-lightBlack-2 text-base" htmlFor="groupColor">
+                                Common Color
+                            </label>
+                            <HexColorPicker name="groupColor" onMouseUp={saveCommonColorChange}
+                                            onTouchEnd={saveCommonColorChange}
+                                            color={commonColor} onChange={setCommonColor}/>
+                        </div>
+                        <div className="flex gap-2 flex-col items-center w-full">
+                            <label className="font-bold text-lightBlack-2 text-base" htmlFor="backgroundColor">
+                                Background Color
+                            </label>
+                            <HexColorPicker name="backgroundColor" onMouseUp={saveBackgroundColorChange}
+                                            onTouchEnd={saveBackgroundColorChange}
+                                            color={backgroundColor} onChange={setbackgroundColor}/>
                         </div>
                     </div>
                 </div>
                 <div className="border-t border-light-grey-100 mt-10 -mx-10"></div>
                 <div className="mt-10 text-end">
-                    <Button disabled={isStateEmpty(profile)} onclick={handleSave} type="save">Save</Button>
+                    <Button  onclick={handleSave} type="save">Save</Button>
                 </div>
                 {showModal && <Modal/>}
             </section>

@@ -8,6 +8,7 @@ const initialState = {
     category:  "",
     textColor: "#333333",
     commonColor: "#D9D9D9",
+    backgroundColor: "#FFF",
     backgroundImage: ""
 }
 
