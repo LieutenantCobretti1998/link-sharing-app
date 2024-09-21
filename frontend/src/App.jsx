@@ -15,7 +15,7 @@ const router = createBrowserRouter([
       {path: "/preview", element: <Preview />}
     ]
   }
-])
+]);
 
 function App() {
   return (

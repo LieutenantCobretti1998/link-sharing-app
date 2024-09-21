@@ -223,18 +223,28 @@ function ProfileDetails() {
         return background ? background.image: null;
     };
     const handleSave = () => {
-
         let hasError = false;
+        let updatedProfile = {...profile}
         if (!linkName && !savedData.linksGroupName) {
             setLinkNameError('This field is required');
             hasError = true;
-        } else {
+        }
+        else if(!linkName) {
+             dispatch_redux(updateProfile({ field: "linksGroupName", value: savedData.linksGroupName }));
+             updatedProfile.linksGroupName = savedData.linksGroupName;
+        }
+        else {
             setLinkNameError('');
         }
         if (!category && !savedData.category) {
             setCategoryError('This field is required');
             hasError = true;
-        } else {
+        }
+        else if(!category) {
+            dispatch_redux(updateProfile({ field: "category", value: savedData.category }));
+            updatedProfile.category = savedData.category;
+        }
+        else {
             setCategoryError('');
         }
 
@@ -242,26 +252,11 @@ function ProfileDetails() {
             setShowModal(false);
             return;
         }
-        for (const field in profile) {
-            switch (field) {
-                case 'linksGroupName':
-                    if(!profile["linksGroupName"]) {
-                        setLinkNameError('This field is required');
-                        return;
-                    }
-                    break;
-                case "category":
-                    if(!profile["category"]) {
-                        setCategoryError('This field is required');
-                        return;
-                    }
-                    break;
-            }
-            dispatch_redux(saveChooses({ field: field, value: profile[field] }));
+        for (const field in updatedProfile) {
+            dispatch_redux(saveChooses({ field: field, value: updatedProfile[field] }));
         }
         setShowModal(true);
     }
-
     return (
         <>
             <MobileOverview profile={profile} getBackgroundImage={getBackgroundImage} links={links} getPlatformIcon={getPlatformIcon} getPlatformColor={getPlatformColor} />
@@ -469,7 +464,7 @@ function ProfileDetails() {
                 <div className="mt-10 text-end">
                     <Button  onclick={handleSave} type="save">Save</Button>
                 </div>
-                {showModal && <Modal/>}
+                {showModal && <Modal text={"Profile settings saved successfully"}/>}
             </section>
         </>
     );

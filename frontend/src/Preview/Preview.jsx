@@ -1,8 +1,27 @@
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {backgrounds} from "../BackgroundImages/BackgroundImages.jsx";
 import {platforms} from "../Platforms/PreDefaultPlatForms.jsx";
+import Modal from "../UI/Modal.jsx";
+import {useEffect, useState} from "react";
+import {setBlendedColor, toggleModal} from "../SaveLogic/SaveSlice.js";
+import {averageColors, hexToRgb, rgbToHex} from "../Helpers/ColorsConversion.js";
 
 function Preview() {
+    const dispatch = useDispatch();
+    const {
+        linksGroupName, links, shortDescription,
+        linksGroupImage, textColor, commonColor,
+        backgroundColor, backgroundImage, showModal
+        } = useSelector((state) => state.saveChooses);
+
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            dispatch(toggleModal(false))
+        }, 5000);
+        return () => clearTimeout(timer);
+    }, [showModal]);
+
     const getBackgroundImage = (label) => {
         const background = backgrounds.find((image) => image.value === label);
         return background ? background.image: null;
@@ -15,9 +34,25 @@ function Preview() {
         const platform = platforms.find((p) => p.label === label);
         return platform ? platform.icon : null;
     };
-    const {linksGroupName, links, shortDescription, linksGroupImage, textColor, commonColor, backgroundColor, backgroundImage} = useSelector((state) => state.saveChooses);
+
+    const handleCalculateAverageColor = () => {
+        const textColorRgb = hexToRgb(textColor);
+        const commonColorRgb = hexToRgb(commonColor);
+        const backgroundColorRgb = hexToRgb(backgroundColor);
+
+        const avgRgb = averageColors([textColorRgb, commonColorRgb, backgroundColorRgb]);
+        const blendedColor = rgbToHex(avgRgb.r, avgRgb.g, avgRgb.b);
+        // document.body.style.backgroundColor = blendedColor;
+        dispatch(setBlendedColor(blendedColor));
+    }
+    useEffect(() => {
+        if (textColor !== "#333333" && commonColor !== "#D9D9D9" && backgroundColor !== "#FFF") {
+            handleCalculateAverageColor()
+        }
+    }, []);
     return (
-            <div className="drop-shadow-md relative top-[-120px] rounded-xl h-auto flex flex-col align-center justify-center"
+        <>
+            <section className="drop-shadow-md relative top-[-120px] rounded-xl h-auto flex flex-col align-center justify-center"
                  style={{
                      backgroundColor: backgroundImage ? "white" : backgroundColor,
                      backgroundImage: `url(${getBackgroundImage(backgroundImage)})`,
@@ -96,7 +131,9 @@ function Preview() {
                     </g>
                 ))}
                 </svg>
-            </div>
+            </section>
+                {showModal && <Modal text={"Please check the required fields in the profile section"}/>}
+        </>
     );
 }
 

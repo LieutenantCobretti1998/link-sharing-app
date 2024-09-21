@@ -22,7 +22,7 @@ function HomePage() {
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowModal(false);
-        }, 5000);
+        }, 50000);
         return () => clearTimeout(timer);
     }, [showModal]);
 
@@ -201,7 +201,7 @@ function HomePage() {
                         <Button onclick={handleSave} disabled={links.length === 0} type="save">Save</Button>
                     )}
                 </div>
-                {showModal && <Modal/>}
+                {showModal && <Modal text={"Links saved successfully"}/>}
             </section>
 
         </>

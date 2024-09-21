@@ -1,10 +1,25 @@
 import Button from "../UI/Button.jsx";
 import {NavLink, useLocation} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {toggleModal} from "../SaveLogic/SaveSlice.js";
 
 function Header() {
     const location = useLocation();
+    const dispatch = useDispatch();
+    const {linksGroupName, category, blendedColor} = useSelector(state => state.saveChooses);
+
+    const checkValidity = () => {
+        if (!linksGroupName || !category) {
+            dispatch(toggleModal(true));
+        }
+    }
+
     return (location.pathname === "/preview" ? (
-        <div className="bg-primaryPurple w-full h-64 rounded-b-3xl">
+        <div className=" w-full h-64 rounded-b-3xl"
+             style = {{
+                 backgroundColor: blendedColor ? blendedColor: "#4015f8"
+             }}
+        >
             <header
                 className="w-70 flex flex-row flex-md-row align-items-center bg-white p-5 relative top-2 ml-2 mr-2 rounded-md mb-4 justify-between font-instrumentBold">
                 <div>
@@ -14,7 +29,7 @@ function Header() {
                 </div>
 
                 <div>
-                    <Button type="shareLink">Create Link</Button>
+                    <Button onclick={checkValidity}  type="shareLink">Create Link</Button>
                 </div>
             </header>
         </div>

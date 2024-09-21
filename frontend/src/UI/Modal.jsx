@@ -1,8 +1,8 @@
 import React from 'react';
 
-function Modal() {
+function Modal({text}) {
     return (
-        <div className="sticky z-10 left-1/2 bottom-5 transform -translate-x-[300px] p-3 border-[.5px] rounded-md  bg-lightBlack-1 flex items-center justify-center gap-2">
+        <div className="absolute bottom-3  p-3 border-[.5px] rounded-md  bg-lightBlack-1 flex items-center justify-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 20 20">
                 <g clipPath="url(#a)">
                     <path fill="#fff"
@@ -16,7 +16,7 @@ function Modal() {
                     </clipPath>
                 </defs>
             </svg>
-            <p className="text-white">Your changes have been successfully saved</p>
+            <p className="text-white">{text}</p>
         </div>
     );
 }
