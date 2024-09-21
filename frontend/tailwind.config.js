@@ -22,6 +22,21 @@ export default {
         instrumentNormal: ["IInstrumentSans-Regular", "sans-serif"],
         instrumentSemiBold: ["IInstrumentSans-SemiBold", "sans-serif"],
     },
+    keyframes: {
+      "fill-bounce": {
+        "0%, 100%": {
+          transform: "translateY(0)",
+          fill: "transparent"
+        },
+        "50%": {
+          transform: 'translateY(-25%)',
+          fill: "#633CFF"
+        }
+      }
+    },
+    animation: {
+      "fill-bounce": "fill-bounce 1s infinite linear",
+    },
     extend: {},
   },
   plugins: [],
