@@ -2,16 +2,24 @@ import Button from "../UI/Button.jsx";
 import {NavLink, useLocation} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {toggleModal} from "../SaveLogic/SaveSlice.js";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import saveLink from "../SaveLogic/SaveMutation.js";
 
 function Header() {
+    const queryClient = useQueryClient();
     const location = useLocation();
     const dispatch = useDispatch();
     const {linksGroupName, category, blendedColor} = useSelector(state => state.saveChooses);
+    const savedParameters = useSelector(state => state.saveChooses);
+    const {mutate: saveLinks} = useMutation({
+        mutationFn: saveLink
+    });
 
     const checkValidity = () => {
         if (!linksGroupName || !category) {
             dispatch(toggleModal(true));
         }
+        saveLinks(savedParameters)
     }
 
     return (location.pathname === "/preview" ? (
