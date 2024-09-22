@@ -9,7 +9,7 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///development.db'
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL_DEV', "postgresql://postgres:Djamil25281998@localhost:5432/link_sharing_app_dev")
 
 
 class ProductionConfig(Config):
