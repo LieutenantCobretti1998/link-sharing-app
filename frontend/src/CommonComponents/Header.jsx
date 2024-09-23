@@ -9,7 +9,10 @@ function Header({saveLinks}) {
     const location = useLocation();
     const dispatch = useDispatch();
     const {linksGroupName, category, blendedColor} = useSelector(state => state.saveChooses);
-    const savedParameters = useSelector(state => state.saveChooses);
+    const savedParameters = useSelector(state => {
+        const {showModal, ...rest} = state.saveChooses;
+        return rest;
+    });
 
 
     const checkValidity = () => {

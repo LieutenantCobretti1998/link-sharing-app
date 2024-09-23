@@ -4,6 +4,7 @@ from sqlalchemy import Column, Integer, String, DateTime, JSON
 from backend.database import Base, db
 import os
 
+
 class LinksGroup(Base):
     __tablename__ = 'links_group'
     id = Column(Integer, primary_key=True)
