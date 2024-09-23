@@ -7,7 +7,7 @@ import {useEffect, useMemo, useState} from "react";
 import Modal from "../UI/Modal.jsx";
 import MobileOverview from "../UI/MobileOverview.jsx";
 import {backgrounds} from "../BackgroundImages/BackgroundImages.jsx";
-import {removeSavedLink, saveChooses} from "../SaveLogic/SaveSlice.js";
+import {removeSavedLink, saveChooses, toggleModal} from "../SaveLogic/SaveSlice.js";
 
 
 function HomePage() {
@@ -26,6 +26,9 @@ function HomePage() {
         return () => clearTimeout(timer);
     }, [showModal]);
 
+    useEffect(() => {
+        dispatch(toggleModal(false));
+    }, []);
 
     const handleAddNewLink = () => {
          dispatch(showForm());

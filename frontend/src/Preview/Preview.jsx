@@ -19,7 +19,10 @@ function Preview() {
         const timer = setTimeout(() => {
             dispatch(toggleModal(false))
         }, 5000);
-        return () => clearTimeout(timer);
+        return () => {
+            clearTimeout(timer)
+
+        };
     }, [showModal]);
 
     const getBackgroundImage = (label) => {

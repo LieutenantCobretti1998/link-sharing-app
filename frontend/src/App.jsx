@@ -4,7 +4,7 @@ import HomePage from "./HomePage/HomePage.jsx";
 import ProfileDetails from "./ProfileDetails/ProfileDetails.jsx";
 import Preview from "./Preview/Preview.jsx";
 import {QueryClientProvider, QueryClient} from "@tanstack/react-query";
-
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 const router = createBrowserRouter([
   {
     path: "/",
@@ -23,6 +23,7 @@ function App() {
   return (
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router}></RouterProvider>
+        <ReactQueryDevtools />
       </QueryClientProvider>
   )
 }

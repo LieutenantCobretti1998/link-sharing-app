@@ -7,7 +7,7 @@ import {removeLinksGroupImage, updateProfile} from "./ProfileSlice.js";
 import Button from "../UI/Button.jsx";
 import {useEffect, useReducer, useRef, useState} from "react";
 import Modal from "../UI/Modal.jsx";
-import {saveChooses} from "../SaveLogic/SaveSlice.js";
+import {saveChooses, toggleModal} from "../SaveLogic/SaveSlice.js";
 import {HexColorPicker} from "react-colorful";
 
 const customStyles = {
@@ -80,13 +80,10 @@ function ProfileDetails() {
     const maxCategoryLength = 20;
     const maxLinkNameLength = 30;
     const maxDescriptionLength = 40;
-    // useEffect(() => {
-    //     if(state.successMessage) {
-    //         const timer = setTimeout(() => {
-    //             dispatch({type:})
-    //         })
-    //     }
-    // }, []);
+
+    useEffect(() => {
+        dispatch_redux(toggleModal(false));
+    }, []);
 
     useEffect(() => {
         const timer = setTimeout(() => {
