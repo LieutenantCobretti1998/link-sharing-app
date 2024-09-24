@@ -9,7 +9,7 @@ class LinksGroup(Base):
     __tablename__ = 'links_group'
     id = Column(Integer, primary_key=True)
     created_at = Column(DateTime, default=db.func.current_timestamp())
-    shorten_url = Column(String(20), unique=True, nullable=False)
+    # shorten_url = Column(String(20), unique=True, nullable=False)
     clicks = Column(Integer, default=0)
     links = Column(JSON, nullable=True)
     links_group_image = Column(String(512), nullable=True)
@@ -34,13 +34,12 @@ def generate_short_url(length=6, domain=None) -> str:
     random_str = ''.join(random.choice(characters) for _ in range(length))
     if domain is None:
         if os.getenv("FLASK_ENV") == "development":
-            domain = "http://localhost:5173/"
+            domain = "http://localhost:5173/jamil/"
     return f'{domain}{random_str}'
 
 
 def generate_short_unique_url(database) -> str:
     """
-    database:
     Generate url until it found it
     :return: str
     """

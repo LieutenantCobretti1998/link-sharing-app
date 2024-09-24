@@ -3,16 +3,14 @@ import {NavLink, useLocation} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {toggleModal} from "../SaveLogic/SaveSlice.js";
 import {useQueryClient} from "@tanstack/react-query";
+import {createSelector} from "@reduxjs/toolkit";
 
 function Header({saveLinks}) {
     const queryClient = useQueryClient();
     const location = useLocation();
     const dispatch = useDispatch();
     const {linksGroupName, category, blendedColor} = useSelector(state => state.saveChooses);
-    const savedParameters = useSelector(state => {
-        const {showModal, ...rest} = state.saveChooses;
-        return rest;
-    });
+    const savedParameters = useSelector(state => state.saveChooses);
 
 
     const checkValidity = () => {

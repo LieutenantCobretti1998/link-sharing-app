@@ -3,6 +3,7 @@ from sqlalchemy.orm import DeclarativeBase
 from .configuration_map import map_frontend_to_backend
 from .data_validator import SaveLinksDava
 
+
 class Base(DeclarativeBase):
     pass
 

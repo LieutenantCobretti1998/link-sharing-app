@@ -117,6 +117,7 @@ function HomePage() {
             setErrors({});
             setShowModal(true);
             for (const field in linksReducer) {
+                if(field === "showForm") continue;
                  dispatch(saveChooses({ field: field, value: linksReducer[field] }));
             }
         }
