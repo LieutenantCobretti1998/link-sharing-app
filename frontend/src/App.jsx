@@ -1,18 +1,20 @@
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import Layout from "./CommonComponents/Layout.jsx";
-import HomePage from "./HomePage/HomePage.jsx";
+import Links from "./Links/Links.jsx";
 import ProfileDetails from "./ProfileDetails/ProfileDetails.jsx";
 import Preview from "./Preview/Preview.jsx";
 import {QueryClientProvider, QueryClient} from "@tanstack/react-query";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import HomePage from "./HomePage/HomePage.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
     children: [
-      {path: "/", element: <HomePage />},
-      {path: "/profile", element: <ProfileDetails />},
-      {path: "/preview", element: <Preview />}
+        {path: "/", element: <HomePage />},
+      // {path: "/", element: <Links />},
+        {path: "/profile", element: <ProfileDetails />},
+        {path: "/preview", element: <Preview />}
     ]
   }
 ]);

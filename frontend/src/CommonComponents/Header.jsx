@@ -57,12 +57,12 @@ function Header({saveLinks}) {
                 </div>
 
                 <div className="flex items-center gap-7">
-                    <Button type="links" isActive={location.pathname === "/"}>
+                    <Button type="links" isActive={location.pathname === "/links"}>
                         <NavLink onClick={(e) => {
-                            if (location.pathname === "/") {
+                            if (location.pathname === "/links") {
                                 e.preventDefault();
                             }
-                        }} className="flex p-3 py-1 items-center gap-0.5 justify-center w-max group" to="/">
+                        }} className="flex p-3 py-1 items-center gap-0.5 justify-center w-max group" to="/links">
                             <svg xmlns="http://www.w3.org/2000/svg" width="21" height="20" fill="none"
                                  viewBox="0 0 21 20">
                                 <path className="group-hover:fill-primaryPurple transition duration-300 ease-in-out"
