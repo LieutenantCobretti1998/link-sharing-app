@@ -2,7 +2,6 @@ import base64
 import os
 import uuid
 from pathlib import Path
-
 from flask import current_app as app
 from werkzeug.utils import secure_filename
 
