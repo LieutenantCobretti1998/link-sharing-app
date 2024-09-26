@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from ...database import map_frontend_to_backend, SaveLinksDava, db
 from ...database.models import generate_short_unique_url
+from .maps import background_images
 from .helpers import save_base64_image
 save_bp = Blueprint('save', __name__)
 
@@ -15,6 +16,7 @@ def save_link():
             shorten_url = generate_short_unique_url(db.session)
             data["linksGroupImage"] = filepath
             data["shorten_url"] = shorten_url
+            data["backgroundImage"] = background_images.get(f"{data.get('backgroundImage')}")
         except ValueError:
             message = "Invalid image extension. Please provide a valid image extension."
             return jsonify(message), 400

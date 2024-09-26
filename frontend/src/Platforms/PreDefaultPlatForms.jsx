@@ -1,6 +1,6 @@
 "use strict";
 
-export const platforms = [
+export const    platforms = [
     {
         label: "GitHub",
         allowedDomain: "github.com",
