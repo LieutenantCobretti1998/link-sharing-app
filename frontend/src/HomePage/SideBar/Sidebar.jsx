@@ -24,7 +24,7 @@ const customStyles = {
         borderRadius: '0.375rem',
         zIndex: 1000
     }),
-    dropdownIndicator: (provided, state) => ({
+    dropdownIndicator: (provided) => ({
         ...provided,
         color: "#BEADFF",
 
@@ -49,7 +49,7 @@ function Sidebar() {
                 <label htmlFor="search"></label>
                 <input   className=" border-2  placeholder-gray-400 p-2 rounded-md focus:border-lightPurple1 outline-none" type="text" id="search" placeholder="Search...🔍" />
             </div>
-            <h1 className="font-bold text-primaryPurple text-2xl">Filter Searching by</h1>
+            <h1 className="font-bold text-primaryPurple text-2xl">Filter Searching by:</h1>
             <ul className="flex flex-col gap-5">
                 <li className="flex flex-col gap-3">
                     <label htmlFor="category">Category</label>

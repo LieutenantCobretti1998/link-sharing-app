@@ -1,9 +1,8 @@
 import Header from "./Header.jsx";
-import {Outlet, replace, useLocation, useNavigate} from 'react-router-dom';
+import {Outlet, useLocation, useNavigate} from 'react-router-dom';
 import Spinner from "../UI/Spinner.jsx";
 import {useMutation} from "@tanstack/react-query";
 import saveLink from "../SaveLogic/SaveMutation.js";
-import {useEffect} from "react";
 function Layout() {
     const location = useLocation();
     const navigate = useNavigate();

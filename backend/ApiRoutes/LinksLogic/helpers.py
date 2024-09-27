@@ -30,6 +30,7 @@ def save_base64_image(base64_string: str) -> str:
     image_data = base64.b64decode(base64_string.split(',')[1])
     print(Path(app.config['UPLOAD_FOLDER']))
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(random_filename))
-    with open(file_path, 'wb') as f:
+    normed_path = os.path.normpath(file_path).replace("\\", "/")
+    with open(normed_path, 'wb') as f:
         f.write(image_data)
-    return file_path
+    return normed_path

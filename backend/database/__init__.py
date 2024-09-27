@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from .configuration_map import map_frontend_to_backend
-from .data_validator import SaveLinksDava
+from .data_validator import SaveLinksData, GetAllLinksData
 
 
 class Base(DeclarativeBase):
