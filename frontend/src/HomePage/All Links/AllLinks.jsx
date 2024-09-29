@@ -17,8 +17,9 @@ function AllLinks() {
         return <Spinner />;
     } else {
         return (
+            <div className="flex flex-col">
             <section
-                className="w-full  h-full flex gap-10  bg-white pl-10 pt-10 pb-10 rounded-md border-light-grey ">
+                className="w-full  h-full flex flex-wrap gap-10  bg-white pl-10 pt-10 pb-10 rounded-md border-light-grey ">
                 {data.map((link, index) => (
                     <div
                         key={index}
@@ -37,7 +38,8 @@ function AllLinks() {
                                 className="edit-icon"
                                 onClick={() => onEdit(link)}
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="ionicon h-5 w-5" viewBox="0 0 512 512">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="ionicon h-5 w-5"
+                                     viewBox="0 0 512 512">
                                     <path
                                         d="M384 224v184a40 40 0 01-40 40H104a40 40 0 01-40-40V168a40 40 0 0140-40h167.48"
                                         fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
@@ -71,35 +73,35 @@ function AllLinks() {
                             )}
                             {link.links.map((user_link, idx) => (
                                 <g key={user_link.id}>
-                                        <rect
-                                            width="160"
-                                            height="30"
-                                            x="20"
-                                            y={85 + idx * 40}
-                                            fill={getPlatformColor(user_link.label)}
-                                            rx="8"
-                                        />
-                                        <g transform={`translate(35, ${90 + idx * 40})`}>
-                                            {getPlatformIcon(user_link.label)}
-                                        </g>
-                                        <text
-                                            x="100"
-                                            y={105 + idx * 40}
-                                            fontSize="12"
-                                            fill="white"
-                                            textAnchor="middle"
-                                        >
-                                            {user_link.label || `Link #${idx + 1}`}
-                                        </text>
-                                        <g transform={`translate(165, ${95 + idx * 40})`}>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" fill="none"
-                                                 viewBox="0 0 16 16">
-                                                <path
-                                                    fill="#fff"
-                                                    d="M2.667 7.333v1.334h8L7 12.333l.947.947L13.227 8l-5.28-5.28L7 3.667l3.667 3.666h-8Z"
-                                                />
-                                            </svg>
-                                        </g>
+                                    <rect
+                                        width="160"
+                                        height="30"
+                                        x="20"
+                                        y={85 + idx * 40}
+                                        fill={getPlatformColor(user_link.label)}
+                                        rx="8"
+                                    />
+                                    <g transform={`translate(35, ${90 + idx * 40})`}>
+                                        {getPlatformIcon(user_link.label)}
+                                    </g>
+                                    <text
+                                        x="100"
+                                        y={105 + idx * 40}
+                                        fontSize="12"
+                                        fill="white"
+                                        textAnchor="middle"
+                                    >
+                                        {user_link.label || `Link #${idx + 1}`}
+                                    </text>
+                                    <g transform={`translate(165, ${95 + idx * 40})`}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" fill="none"
+                                             viewBox="0 0 16 16">
+                                            <path
+                                                fill="#fff"
+                                                d="M2.667 7.333v1.334h8L7 12.333l.947.947L13.227 8l-5.28-5.28L7 3.667l3.667 3.666h-8Z"
+                                            />
+                                        </svg>
+                                    </g>
                                 </g>
                             ))}
                         </svg>
@@ -108,10 +110,24 @@ function AllLinks() {
                             <h2 className="category-name text-gray-500">{link.category}</h2>
                         </div>
                     </div>
-
                 ))}
             </section>
+            <div className="flex self-end justify-center mt-4">
+                <button
+                    className="mr-2 px-4 py-2 bg-gray-200 rounded-md"
+                >
+                    Previous
+                </button>
 
+                <span className="px-4 py-2">10</span>
+
+                <button
+                    className="ml-2 px-4 py-2 bg-gray-200 rounded-md"
+                >
+                    Next
+                </button>
+            </div>
+    </div>
         )
     }
 }
