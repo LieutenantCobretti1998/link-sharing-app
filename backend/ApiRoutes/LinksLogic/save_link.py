@@ -15,7 +15,6 @@ def save_link():
         try:
             filepath = save_base64_image(base64_image)
             data["linksGroupImage"] = filepath
-            data["backgroundImage"] = background_images.get(f"{data.get('backgroundImage')}")
         except ValueError:
             message = "Invalid image extension. Please provide a valid image extension."
             return jsonify(message), 400

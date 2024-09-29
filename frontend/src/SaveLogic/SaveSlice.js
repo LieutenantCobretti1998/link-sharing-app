@@ -32,11 +32,11 @@ const saveReducer = createSlice({
         setBlendedColor: (state, action) => {
             state.blendedColor = action.payload;
         },
-        resetState: (state) => {
+        resetSaveState: () => {
             return initialState;
         }
     }
 });
 
-export const {saveChooses, resetState, removeSavedLink, toggleModal, setBlendedColor} = saveReducer.actions;
+export const {saveChooses, resetSaveState, removeSavedLink, toggleModal, setBlendedColor} = saveReducer.actions;
 export default saveReducer.reducer;

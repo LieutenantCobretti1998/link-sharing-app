@@ -5,7 +5,6 @@ const getLinks = async () => {
         method: "GET",
     });
     const responseData = await response.json();
-    console.log(responseData);
     if (!response.ok) {
          throw new Error("Error to get Links");
     }

@@ -8,7 +8,7 @@ from .database import db
 
 
 def create_app(config_class=None):
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder="../static")
     # Get the environment from the FLASK_ENV variable (default to 'development')
     if not config_class:
         env = os.getenv('FLASK_ENV', 'development')

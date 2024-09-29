@@ -38,3 +38,51 @@ body {
 .active svg path {
     @apply fill-primaryPurple;
 }
+@layer components {
+    .card-container {
+    position: relative;
+    overflow: hidden; /* Ensures content doesn't overflow outside the card */
+    }
+
+    /* Hover content that appears at the bottom */
+    .card-hover-content {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 0.5rem;
+        background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+        opacity: 0; /* Hidden by default */
+        transform: translateY(100%); /* Initially out of view */
+        transition: all 0.3s ease; /* Smooth transition for showing */
+    }
+
+    /* Show content on hover */
+    .card-container:hover .card-hover-content {
+        opacity: 1;
+        transform: translateY(0); /* Slide into view */
+    }
+
+    /* Handle long group names and categories */
+    .group-name, .category-name {
+        white-space: nowrap; /* Prevent text from wrapping */
+        overflow: hidden; /* Hide overflow */
+        text-overflow: ellipsis; /* Add "..." when text is too long */
+        display: block;
+    }
+    .edit-icon {
+        position: absolute;
+        top: -20px;
+        right: 10px;
+        cursor: pointer;
+        padding: 0.5rem;
+        background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent background */
+        border-radius: 50%;
+        transition: top 0.3s ease, opacity 0.3s ease; /* Transition for smooth movement */
+        opacity: 0; /* Initially hidden */
+    }
+    .card-container:hover .edit-icon {
+        opacity: 1;
+        top: 10px;
+    }
+}

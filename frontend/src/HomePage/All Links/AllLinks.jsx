@@ -1,10 +1,13 @@
-import {useMutation, useQuery} from "@tanstack/react-query";
+import {useQuery} from "@tanstack/react-query";
 import getLinks from "../../GetLogic/GetMutation.js";
 import Spinner from "../../UI/Spinner.jsx";
 import {getBackgroundImage, getPlatformColor, getPlatformIcon} from "../../Helpers/SliceFunctions.js";
+import {useState} from "react";
 
 
 function AllLinks() {
+    const [hoveredCardIndex, setHoveredCardIndex] = useState(null);
+
     const {data, error, isLoading} = useQuery({
         queryKey: ["userLinks"],
         queryFn: getLinks,
@@ -15,18 +18,35 @@ function AllLinks() {
     } else {
         return (
             <section
-                className="w-full gap-10 h-min flex flex-wrap bg-white pl-10 pt-10 pb-10 rounded-md border-light-grey justify-between">
+                className="w-full  h-full flex gap-10  bg-white pl-10 pt-10 pb-10 rounded-md border-light-grey ">
                 {data.map((link, index) => (
                     <div
                         key={index}
-                        className="w-[30%] drop-shadow-md rounded-xl h-auto flex flex-col align-center justify-center"
+                        className="w-[15%] card-container relative drop-shadow-md rounded-xl h-auto flex flex-col items-center justify-center"
                         style={{
                             backgroundColor: link.backgroundImage ? "white" : link.backgroundColor,
                             backgroundImage: `url(${getBackgroundImage(link.backgroundImage)})`,
                             backgroundSize: "cover",
                             backgroundPosition: "center"
                         }}
+                        onMouseEnter={() => setHoveredCardIndex(index)}
+                        onMouseLeave={() => setHoveredCardIndex(null)}
                     >
+                        {hoveredCardIndex === index && (
+                            <div
+                                className="edit-icon"
+                                onClick={() => onEdit(link)}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="ionicon h-5 w-5" viewBox="0 0 512 512">
+                                    <path
+                                        d="M384 224v184a40 40 0 01-40 40H104a40 40 0 01-40-40V168a40 40 0 0140-40h167.48"
+                                        fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
+                                        strokeWidth="32"/>
+                                    <path
+                                        d="M459.94 53.25a16.06 16.06 0 00-23.22-.56L424.35 65a8 8 0 000 11.31l11.34 11.32a8 8 0 0011.34 0l12.06-12c6.1-6.09 6.67-16.01.85-22.38zM399.34 90L218.82 270.2a9 9 0 00-2.31 3.93L208.16 299a3.91 3.91 0 004.86 4.86l24.85-8.35a9 9 0 003.93-2.31L422 112.66a9 9 0 000-12.66l-9.95-10a9 9 0 00-12.71 0z"/>
+                                </svg>
+                            </div>
+                        )}
                         <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 200 300">
                             {!link.linksGroupImage ? (
                                 <circle cx="100" cy="50" r="40" fill={link.commonColor}/>
@@ -51,28 +71,27 @@ function AllLinks() {
                             )}
                             {link.links.map((user_link, idx) => (
                                 <g key={user_link.id}>
-                                    <a href={user_link.url} target="_blank" rel="noopener noreferrer">
                                         <rect
                                             width="160"
                                             height="30"
                                             x="20"
-                                            y={160 + idx * 40}
+                                            y={85 + idx * 40}
                                             fill={getPlatformColor(user_link.label)}
                                             rx="8"
                                         />
-                                        <g transform={`translate(35, ${175 + idx * 40})`}>
+                                        <g transform={`translate(35, ${90 + idx * 40})`}>
                                             {getPlatformIcon(user_link.label)}
                                         </g>
                                         <text
                                             x="100"
-                                            y={178 + idx * 40}
+                                            y={105 + idx * 40}
                                             fontSize="12"
                                             fill="white"
                                             textAnchor="middle"
                                         >
                                             {user_link.label || `Link #${idx + 1}`}
                                         </text>
-                                        <g transform={`translate(180, ${175 + idx * 40})`}>
+                                        <g transform={`translate(165, ${95 + idx * 40})`}>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" fill="none"
                                                  viewBox="0 0 16 16">
                                                 <path
@@ -81,12 +100,15 @@ function AllLinks() {
                                                 />
                                             </svg>
                                         </g>
-                                    </a>
                                 </g>
                             ))}
                         </svg>
-
+                        <div className="text-center mt-4 w-full card-hover-content">
+                            <h1 className="group-name">{link.linksGroupName}</h1>
+                            <h2 className="category-name text-gray-500">{link.category}</h2>
+                        </div>
                     </div>
+
                 ))}
             </section>
 

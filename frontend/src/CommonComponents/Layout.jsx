@@ -8,10 +8,9 @@ function Layout() {
     const navigate = useNavigate();
     const mutation = useMutation({
         mutationFn: saveLink,
-        onCompleted: () => {
-            navigate("/", {replace: true})
+        onSuccess: () => {
+            navigate("/", {replace: true});
         }
-        
     });
 
     return (

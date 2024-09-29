@@ -22,11 +22,11 @@ const profileReducer = createSlice({
         removeLinksGroupImage: (state) => {
             state.linksGroupImage = "";
         },
-        resetState: (state) => {
+        resetProfileState: () => {
             return initialState;
         }
     }
 });
 
-export const {updateProfile, resetState, removeLinksGroupImage} = profileReducer.actions;
+export const {updateProfile, resetProfileState, removeLinksGroupImage} = profileReducer.actions;
 export default profileReducer.reducer;
