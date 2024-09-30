@@ -3,27 +3,33 @@ import getLinks from "../../GetLogic/GetMutation.js";
 import Spinner from "../../UI/Spinner.jsx";
 import {getBackgroundImage, getPlatformColor, getPlatformIcon} from "../../Helpers/SliceFunctions.js";
 import {useState} from "react";
+import {useNavigate} from "react-router-dom";
 
 
 function AllLinks() {
     const [hoveredCardIndex, setHoveredCardIndex] = useState(null);
-
+    const navigate = useNavigate();
     const {data, error, isLoading} = useQuery({
         queryKey: ["userLinks"],
         queryFn: getLinks,
         enabled: true
     })
+
+    const editLink = function (link) {
+        navigate(`/edit-links/${link.id}`);
+    }
+
     if (isLoading) {
         return <Spinner />;
     } else {
         return (
             <div className="flex flex-col">
             <section
-                className="w-full  h-full flex flex-wrap gap-10  bg-white pl-10 pt-10 pb-10 rounded-md border-light-grey ">
+                className="w-max  h-full flex flex-wrap gap-10  bg-white p-10 rounded-md border-light-grey ">
                 {data.map((link, index) => (
                     <div
-                        key={index}
-                        className="w-[15%] card-container relative drop-shadow-md rounded-xl h-auto flex flex-col items-center justify-center"
+                        key={link.id}
+                        className="w-[200px] card-container relative drop-shadow-md rounded-xl h-auto flex flex-col items-center justify-center"
                         style={{
                             backgroundColor: link.backgroundImage ? "white" : link.backgroundColor,
                             backgroundImage: `url(${getBackgroundImage(link.backgroundImage)})`,
@@ -36,7 +42,7 @@ function AllLinks() {
                         {hoveredCardIndex === index && (
                             <div
                                 className="edit-icon"
-                                onClick={() => onEdit(link)}
+                                onClick={() => editLink(link)}
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" className="ionicon h-5 w-5"
                                      viewBox="0 0 512 512">

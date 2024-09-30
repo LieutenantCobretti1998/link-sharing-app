@@ -14,7 +14,10 @@ const router = createBrowserRouter([
         {path: "/", element: <HomePage />},
         {path: "/links", element: <Links />},
         {path: "/profile", element: <ProfileDetails />},
-        {path: "/preview", element: <Preview />}
+        {path: "/preview", element: <Preview />},
+        {path: "/edit-links/:id", element: <Links />},
+        {path: "/profile/:id", element: <ProfileDetails />},
+        {path: "preview/:id", element: <Preview />}
     ]
   }
 ]);
