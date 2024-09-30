@@ -1,6 +1,5 @@
 from abc import ABC
-from sqlalchemy.exc import OperationalError
-
+from sqlalchemy.exc import OperationalError, NoResultFound
 
 
 class AbstractDataValidator(ABC):
@@ -42,5 +41,20 @@ class GetAllLinksData(AbstractDataValidator):
             if not all_links:
                 return []
             return all_links
+        except OperationalError:
+            raise OperationalError
+
+    def get_links_group_data(self, links_group_id: int):
+        """
+        the method which get the links group data from the links database based on the id
+        :param links_group_id:
+        :return:
+        """
+        try:
+            from .models import LinksGroup
+            chosen_link_group = self.db_session.query(LinksGroup).filter(LinksGroup.id == links_group_id).first()
+            if not chosen_link_group:
+                raise NoResultFound(f"LinksGroup with id {links_group_id} was not found")
+            return chosen_link_group
         except OperationalError:
             raise OperationalError

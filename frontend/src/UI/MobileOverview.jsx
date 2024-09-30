@@ -1,8 +1,9 @@
 import {useSelector} from "react-redux";
+import {useParams} from "react-router-dom";
 
 function MobileOverview({links, profile, getPlatformColor, getPlatformIcon, getBackgroundImage}) {
-    const {linksGroupName, shortDescription, linksGroupImage, textColor, commonColor, backgroundColor, backgroundImage} = useSelector((state) => state.profile);
-
+     const {id} = useParams();
+    const {linksGroupName, shortDescription, linksGroupImage, textColor, commonColor, backgroundColor, backgroundImage} = id ? profile: useSelector((state) => state.profile);
     return (
         <section className="w-[45%] h-min flex justify-center items-center bg-white pt-10 pb-10 rounded-md border-light-grey">
             <svg xmlns="http://www.w3.org/2000/svg" width="308" height="632" fill="none" viewBox="0 0 308 632">

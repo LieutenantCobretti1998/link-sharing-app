@@ -1,7 +1,6 @@
 from flask import Blueprint, jsonify, request
 from ...database import map_frontend_to_backend, SaveLinksData, db
 from ...database.models import generate_short_unique_url
-from .maps import background_images
 from .helpers import save_base64_image
 save_bp = Blueprint('save', __name__)
 

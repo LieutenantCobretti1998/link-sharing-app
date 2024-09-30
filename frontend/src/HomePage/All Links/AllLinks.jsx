@@ -1,5 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
-import getLinks from "../../GetLogic/GetMutation.js";
+import {getLinks} from "../../GetLogic/GetMutation.js";
 import Spinner from "../../UI/Spinner.jsx";
 import {getBackgroundImage, getPlatformColor, getPlatformIcon} from "../../Helpers/SliceFunctions.js";
 import {useState} from "react";
@@ -11,9 +11,10 @@ function AllLinks() {
     const navigate = useNavigate();
     const {data, error, isLoading} = useQuery({
         queryKey: ["userLinks"],
-        queryFn: getLinks,
-        enabled: true
+        queryFn: () => getLinks(),
+        enabled: true,
     })
+
 
     const editLink = function (link) {
         navigate(`/edit-links/${link.id}`);
@@ -25,7 +26,7 @@ function AllLinks() {
         return (
             <div className="flex flex-col">
             <section
-                className="w-max  h-full flex flex-wrap gap-10  bg-white p-10 rounded-md border-light-grey ">
+                className="w-full  h-full flex flex-wrap gap-10  bg-white p-10 rounded-md border-light-grey ">
                 {data.map((link, index) => (
                     <div
                         key={link.id}

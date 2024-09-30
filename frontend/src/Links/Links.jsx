@@ -8,17 +8,37 @@ import Modal from "../UI/Modal.jsx";
 import MobileOverview from "../UI/MobileOverview.jsx";
 import {backgrounds} from "../BackgroundImages/BackgroundImages.jsx";
 import {removeSavedLink, saveChooses, toggleModal} from "../SaveLogic/SaveSlice.js";
+import {useParams} from "react-router-dom";
+import {useQuery, useQueryClient} from "@tanstack/react-query";
+import {getLink} from "../GetLogic/GetMutation.js";
+import Spinner from "../UI/Spinner.jsx";
 
 
 function Links() {
+    const {id} = useParams();
+    const {data: linksFromQuery, error, isLoading} = useQuery( {
+           queryKey: ["userLink"],
+           queryFn: () => getLink(id),
+           enabled: !!id
+        }
+    );
     const dispatch = useDispatch();
     const showLinkForm = useSelector((state) => state.link.showForm);
-    const links = useSelector((state) => state.link.links);
+    const linksFromSlice = useSelector((state) => state.link.links);
     const linksReducer = useSelector((state) => state.link);
-    const profile = useSelector((state) => state.profile);
+    const profileFromSlice = useSelector((state) => state.profile);
     const [errors, setErrors] = useState({});
     const [showModal, setShowModal] = useState(false);
-
+    const links = id ? linksFromQuery?.links : linksFromSlice;
+    const profile = id ? {
+          linksGroupImage: linksFromQuery?.linksGroupImage,
+          linksGroupName: linksFromQuery?.linksGroupName,
+          textColor: linksFromQuery?.textColor,
+          commonColor: linksFromQuery?.commonColor,
+          backgroundColor: linksFromQuery?.backgroundColor,
+          backgroundImage: linksFromQuery?.backgroundImage,
+          category: linksFromQuery?.category,
+        }: profileFromSlice;
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowModal(false);
@@ -123,6 +143,9 @@ function Links() {
         }
     };
 
+    if (isLoading) {
+        return <Spinner />;
+    }
     return (
         <>
             <MobileOverview profile={profile} getBackgroundImage={getBackgroundImage} links={links} getPlatformColor={getPlatformColor} getPlatformIcon={getPlatformIcon} />
