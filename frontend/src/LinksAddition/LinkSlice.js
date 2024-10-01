@@ -42,9 +42,13 @@ const linkReducer = createSlice({
         },
         resetLinksState: () => {
             return initialState;
+
+        },
+        fetchLinks: (state, action) => {
+            state.links = action.payload;
         }
-    }
+    },
 });
 
-export const {showForm, resetLinksState, addLink, updateLink, removeLink} = linkReducer.actions;
+export const {showForm, resetLinksState, addLink, updateLink, removeLink, fetchLinks} = linkReducer.actions;
 export default linkReducer.reducer;

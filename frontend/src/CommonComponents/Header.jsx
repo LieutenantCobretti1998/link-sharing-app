@@ -1,12 +1,14 @@
 import Button from "../UI/Button.jsx";
-import {NavLink, useLocation} from "react-router-dom";
+import {NavLink, useLocation, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {resetSaveState, toggleModal} from "../SaveLogic/SaveSlice.js";
 import {resetLinksState} from "../LinksAddition/LinkSlice.js";
 import {resetProfileState} from "../ProfileDetails/ProfileSlice.js";
 
+// eslint-disable-next-line react/prop-types
 function Header({saveLinks}) {
     const location = useLocation();
+    const {id} = useParams();
     const dispatch = useDispatch();
     const {linksGroupName, category, blendedColor} = useSelector(state => state.saveChooses);
     const savedParameters = useSelector(state => state.saveChooses);
@@ -49,7 +51,7 @@ function Header({saveLinks}) {
         )
     }
 
-    return (location.pathname === "/preview" ? (
+    return (location.pathname === "/preview" || location.pathname.startsWith("/edit-preview") ? (
             <div className=" w-full h-64 rounded-b-3xl"
                  style={{
                      backgroundColor: blendedColor ? blendedColor : "#4015f8"
@@ -59,12 +61,12 @@ function Header({saveLinks}) {
                     className="w-70 flex flex-row flex-md-row align-items-center bg-white p-5 relative top-2 ml-2 mr-2 rounded-md mb-4 justify-between font-instrumentBold">
                     <div>
                         <Button type="header">
-                            <NavLink className="w-full, h-full block pt-1" to="/links">Back to Editor</NavLink>
+                            <NavLink className="w-full, h-full block pt-1" to={location.pathname.includes("edit") ? `/edit-links/${id}`: "/links"}>Back to Editor</NavLink>
                         </Button>
                     </div>
 
                     <div>
-                        <Button onclick={checkValidity} type="shareLink">Create Link</Button>
+                        <Button onclick={checkValidity} type="shareLink">{location.pathname.includes("edit") ? "Update Group": "Create Group"}</Button>
                     </div>
                 </header>
             </div>
@@ -88,12 +90,12 @@ function Header({saveLinks}) {
                     </Button>
                 </div>
                 <div className="flex items-center gap-7">
-                    <Button type="links" isActive={location.pathname === "/links"}>
+                    <Button type="links" isActive={location.pathname === "/links" || location.pathname.startsWith("/edit-links")}>
                         <NavLink onClick={(e) => {
                             if (location.pathname === "/links") {
                                 e.preventDefault();
                             }
-                        }} className="flex p-3 py-1 items-center gap-0.5 justify-center w-max group" to="/links">
+                        }} className="flex p-3 py-1 items-center gap-0.5 justify-center w-max group" to={location.pathname.startsWith("/profile") ? "/links": `/edit-links/${id}`}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="21" height="20" fill="none"
                                  viewBox="0 0 21 20">
                                 <path className="group-hover:fill-primaryPurple transition duration-300 ease-in-out"
@@ -104,8 +106,8 @@ function Header({saveLinks}) {
                         </NavLink>
                     </Button>
                     <div>
-                        <Button type="links" isActive={location.pathname === "/profile"}>
-                            <NavLink to="/profile"
+                        <Button type="links" isActive={location.pathname === "/profile" || location.pathname.startsWith("/edit-profile")}>
+                            <NavLink to={location.pathname.startsWith("/links") ? "/profile": `/edit-profile/${id}`}
                                      className="p-3 py-1 flex items-center gap-0.5 justify-center w-max group">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="21" height="20" fill="none"
                                      viewBox="0 0 21 20">
@@ -121,7 +123,7 @@ function Header({saveLinks}) {
 
                 <div>
                     <Button type="header">
-                        <NavLink className="w-full, h-full block pt-1" to="/preview">Preview</NavLink>
+                        <NavLink className="w-full, h-full block pt-1" to={location.pathname.includes("edit") ? `/edit-preview/${id}`: "/preview"}>Preview</NavLink>
                     </Button>
                 </div>
             </header>

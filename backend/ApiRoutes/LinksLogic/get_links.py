@@ -38,3 +38,6 @@ def get_link(links_group_id):
          "links": chosen_link.links
     }
     return jsonify(chosen_link_data), 200
+
+# @links_bp.route('/update-link/<int:links_group_id>', methods=['PUT'])
+# def update_link(links_group_id):

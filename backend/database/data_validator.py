@@ -2,6 +2,7 @@ from abc import ABC
 from sqlalchemy.exc import OperationalError, NoResultFound
 
 
+
 class AbstractDataValidator(ABC):
     def __init__(self, db_session):
         self.db_session = db_session
@@ -58,3 +59,4 @@ class GetAllLinksData(AbstractDataValidator):
             return chosen_link_group
         except OperationalError:
             raise OperationalError
+    # def update_links_group_data(self, links_group_id: int, links_group: LinksGroup):

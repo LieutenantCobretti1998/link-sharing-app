@@ -8,7 +8,6 @@ save_bp = Blueprint('save', __name__)
 @save_bp.route('/save_link', methods=['POST'])
 def save_link():
     data = request.get_json()
-    print(data)
     base64_image = data.get("linksGroupImage")
     if base64_image != "":
         try:
@@ -20,7 +19,6 @@ def save_link():
     shorten_url = generate_short_unique_url(db.session)
     data["shorten_url"] = shorten_url
     backend_data = map_frontend_to_backend(data)
-    print(backend_data)
     save_links_class = SaveLinksData(backend_data, db.session)
     message, code = save_links_class.save_links()
     return jsonify(message), code

@@ -6,6 +6,8 @@ import Preview from "./Preview/Preview.jsx";
 import {QueryClientProvider, QueryClient} from "@tanstack/react-query";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import HomePage from "./HomePage/HomePage.jsx";
+import {editLinkLoader} from "./Links/EditLinksPreLoader.js";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -15,9 +17,9 @@ const router = createBrowserRouter([
         {path: "/links", element: <Links />},
         {path: "/profile", element: <ProfileDetails />},
         {path: "/preview", element: <Preview />},
-        {path: "/edit-links/:id", element: <Links />},
-        {path: "/profile/:id", element: <ProfileDetails />},
-        {path: "preview/:id", element: <Preview />}
+        {path: "/edit-links/:id", element: <Links />, loader: editLinkLoader},
+        {path: "/edit-profile/:id", element: <ProfileDetails />, loader: editLinkLoader},
+        {path: "edit-preview/:id", element: <Preview />, loader: editLinkLoader}
     ]
   }
 ]);

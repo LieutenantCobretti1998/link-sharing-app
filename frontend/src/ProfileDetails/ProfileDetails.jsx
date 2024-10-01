@@ -7,8 +7,9 @@ import {removeLinksGroupImage, updateProfile} from "./ProfileSlice.js";
 import Button from "../UI/Button.jsx";
 import {useEffect, useReducer, useRef, useState} from "react";
 import Modal from "../UI/Modal.jsx";
-import {saveChooses, toggleModal} from "../SaveLogic/SaveSlice.js";
+import {saveChooses} from "../SaveLogic/SaveSlice.js";
 import {HexColorPicker} from "react-colorful";
+import {useParams} from "react-router-dom";
 
 const customStyles = {
     control: (provided, state) => ({
@@ -80,10 +81,6 @@ function ProfileDetails() {
     const maxCategoryLength = 20;
     const maxLinkNameLength = 30;
     const maxDescriptionLength = 40;
-
-    useEffect(() => {
-        dispatch_redux(toggleModal(false));
-    }, []);
 
     useEffect(() => {
         const timer = setTimeout(() => {

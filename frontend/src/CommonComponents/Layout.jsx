@@ -20,7 +20,7 @@ function Layout() {
             ): (
                 <>
                 <Header saveLinks={mutation.mutate} />
-                <main className={`flex bg-light-grey m-2 flex-grow gap-5 font-instrumentNormal ${location.pathname === "/preview" ? "justify-center" : ""}`}>
+                <main className={`flex bg-light-grey m-2 flex-grow gap-5 font-instrumentNormal ${location.pathname === "/preview" || location.pathname.startsWith("/edit-preview") ? "justify-center" : ""}`}>
                     <Outlet/>
                 </main>
                 </>
