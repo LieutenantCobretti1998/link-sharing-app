@@ -32,7 +32,7 @@ function AllLinks() {
         deleteLinkGroup(id)
     }
 
-    if (isLoading && isDeleting) {
+    if (isLoading || isDeleting) {
         return <Spinner />;
     } else {
         return (
