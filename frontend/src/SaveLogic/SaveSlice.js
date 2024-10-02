@@ -12,7 +12,6 @@ const initialState = {
     backgroundImage: "",
     blendedColor: "",
     showModal: false,
-    editMode: false
 }
 
 const saveReducer = createSlice({
@@ -30,9 +29,6 @@ const saveReducer = createSlice({
         toggleModal: (state, action) => {
             state.showModal = action.payload;
         },
-        toggleEditMode: (state, action) => {
-            state.editMode = action.payload;
-        },
         setBlendedColor: (state, action) => {
             state.blendedColor = action.payload;
         },
@@ -45,5 +41,5 @@ const saveReducer = createSlice({
     }
 });
 
-export const {saveChooses, saveData, resetSaveState, removeSavedLink, toggleModal, toggleEditMode, setBlendedColor} = saveReducer.actions;
+export const {saveChooses, saveData, resetSaveState, removeSavedLink, toggleModal, setBlendedColor} = saveReducer.actions;
 export default saveReducer.reducer;

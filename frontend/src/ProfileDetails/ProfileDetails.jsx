@@ -3,13 +3,16 @@ import {useDispatch, useSelector} from "react-redux";
 import {platforms} from "../Platforms/PreDefaultPlatForms.jsx";
 import {backgrounds} from "../BackgroundImages/BackgroundImages.jsx";
 import Select from "react-select";
-import {removeLinksGroupImage, updateProfile} from "./ProfileSlice.js";
+import {fetchProfileData, removeLinksGroupImage, updateProfile} from "./ProfileSlice.js";
 import Button from "../UI/Button.jsx";
 import {useEffect, useReducer, useRef, useState} from "react";
 import Modal from "../UI/Modal.jsx";
-import {saveChooses} from "../SaveLogic/SaveSlice.js";
+import {saveChooses, saveData} from "../SaveLogic/SaveSlice.js";
 import {HexColorPicker} from "react-colorful";
-import {useParams} from "react-router-dom";
+import {useLoaderData, useNavigate, useParams} from "react-router-dom";
+import {fetchLinks} from "../LinksAddition/LinkSlice.js";
+import {useMutation} from "@tanstack/react-query";
+import {updateLinksProfile} from "../API/DataFetchingApi.js";
 
 const customStyles = {
     control: (provided, state) => ({
@@ -62,6 +65,9 @@ const errorReducer = (state, action) => {
 
 function ProfileDetails() {
     const dispatch_redux = useDispatch();
+    const navigate = useNavigate();
+    const profileDetailsFromQuery = useLoaderData();
+    const {id} = useParams();
     const {linksGroupImage} = useSelector((state) => state.profile);
     const fileInputRef = useRef(null);
     const [state, dispatch] = useReducer(errorReducer, { errorType: null, errorMessage: '', successMessage: "" });
@@ -81,6 +87,23 @@ function ProfileDetails() {
     const maxCategoryLength = 20;
     const maxLinkNameLength = 30;
     const maxDescriptionLength = 40;
+    const {mutate: saveNewProfileData, isLoading} = useMutation({
+        mutationFn: updateLinksProfile,
+        mutationKey: ["update-profile"],
+        onSuccess: () => {
+            navigate(`/edit-profile/${id}`)
+        }
+    })
+
+    useEffect(() => {
+        if (id) {
+            const {links, ...profileData} = profileDetailsFromQuery;
+            dispatch_redux(fetchLinks(links));
+            dispatch_redux(fetchProfileData(profileData));
+            dispatch_redux(saveData(profileDetailsFromQuery))
+
+        }
+    }, [profileDetailsFromQuery]);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -216,6 +239,14 @@ function ProfileDetails() {
         const background = backgrounds.find((image) => image.value === label);
         return background ? background.image: null;
     };
+
+    const handleEditLink = () => {
+         handleSave();
+         if(!categoryError && !linkNameError) {
+             saveNewProfileData({id, profile})
+         }
+    }
+
     const handleSave = () => {
         let hasError = false;
         let updatedProfile = {...profile}
@@ -456,7 +487,11 @@ function ProfileDetails() {
                 </div>
                 <div className="border-t border-light-grey-100 mt-10 -mx-10"></div>
                 <div className="mt-10 text-end">
-                    <Button  onclick={handleSave} type="save">Save</Button>
+                   {id ? (
+                        <Button onclick={handleEditLink}  type="save">Update</Button>
+                    ):(
+                        <Button onclick={handleSave} type="save">Save</Button>
+                    )}
                 </div>
                 {showModal && <Modal text={"Profile settings saved successfully"}/>}
             </section>

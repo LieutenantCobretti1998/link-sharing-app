@@ -1,4 +1,4 @@
-import {getLink} from "../GetLogic/GetMutation.js";
+import {getLink} from "../API/DataFetchingApi.js";
 
 export async function editLinkLoader({params}) {
 

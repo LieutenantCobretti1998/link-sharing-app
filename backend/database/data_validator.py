@@ -59,4 +59,51 @@ class GetAllLinksData(AbstractDataValidator):
             return chosen_link_group
         except OperationalError:
             raise OperationalError
-    # def update_links_group_data(self, links_group_id: int, links_group: LinksGroup):
+
+    def update_links(self, links: list, links_group_id: int):
+        """
+        links: list
+        links_group_id: int
+        return:
+        The method for links group update
+        """
+        try:
+            from .models import LinksGroup
+            chosen_link_group = self.db_session.query(LinksGroup).filter(LinksGroup.id == links_group_id)
+            if not chosen_link_group:
+                return {"message": "This Link isn't existed😒"}, 404
+            chosen_link_group.update({"links": links})
+            self.db_session.commit()
+            return {"message": "Links updated successfully"}, 200
+        except OperationalError:
+            self.db_session.rollback()
+            return {"error": "Database Fatal Error"}, 500
+
+    def update_profile_data(self, profile_data: dict, links_group_id: int):
+        try:
+            from .models import LinksGroup
+            chosen_link_group = self.db_session.query(LinksGroup).filter(LinksGroup.id == links_group_id).first()
+            if not chosen_link_group:
+                return {"message": "This Link isn't existed😒"}, 404
+            for key, value in profile_data.items():
+                setattr(chosen_link_group, key, value)
+            self.db_session.commit()
+            return {"message": "Profile updated successfully"}, 200
+
+        except OperationalError:
+            self.db_session.rollback()
+            return {"error": "Database Fatal Error"}, 500
+
+    def delete_links_group_data(self, links_group_id: int):
+        try:
+            from .models import LinksGroup
+            chosen_link_group = self.db_session.query(LinksGroup).filter(LinksGroup.id == links_group_id).first()
+            if not chosen_link_group:
+                return {"message": "This Link isn't existed😒"}, 404
+            self.db_session.delete(chosen_link_group)
+            self.db_session.commit()
+            return {"message": "LinksGroup deleted successfully"}, 200
+
+        except OperationalError:
+            self.db_session.rollback()
+            return {"error": "Database Fatal Error"}, 500

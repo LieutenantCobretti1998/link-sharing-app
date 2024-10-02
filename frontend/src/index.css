@@ -38,6 +38,7 @@ body {
 .active svg path {
     @apply fill-primaryPurple;
 }
+
 @layer components {
     .card-container {
     position: relative;
@@ -81,7 +82,20 @@ body {
         transition: top 0.3s ease, opacity 0.3s ease; /* Transition for smooth movement */
         opacity: 0; /* Initially hidden */
     }
-    .card-container:hover .edit-icon {
+
+    .delete-icon {
+        position: absolute;
+        top: -20px;
+        left: 10px;
+        cursor: pointer;
+        padding: 0.5rem;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 50%;
+        transition: top 0.3s ease, opacity 0.3s ease;
+        opacity: 0;
+    }
+
+    .card-container:hover .edit-icon , .card-container:hover .delete-icon {
         opacity: 1;
         top: 10px;
     }

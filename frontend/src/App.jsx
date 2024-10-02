@@ -19,7 +19,7 @@ const router = createBrowserRouter([
         {path: "/preview", element: <Preview />},
         {path: "/edit-links/:id", element: <Links />, loader: editLinkLoader},
         {path: "/edit-profile/:id", element: <ProfileDetails />, loader: editLinkLoader},
-        {path: "edit-preview/:id", element: <Preview />, loader: editLinkLoader}
+        {path: "edit-preview/:id", element: <Preview />}
     ]
   }
 ]);
