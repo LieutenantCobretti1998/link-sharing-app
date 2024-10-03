@@ -43,7 +43,7 @@ const optionsClicks = [
 ]
 function Sidebar() {
     return (
-        <aside className="w-[45%] gap-10 h-min flex flex-col   bg-white pl-10 pt-10 pb-10 rounded-md border-light-grey">
+        <aside className="w-[45%] h-full gap-10  flex flex-col   bg-white pl-10 pt-10 pb-10 rounded-md border-light-grey">
             <h1 className="font-bold text-primaryPurple text-2xl">Search</h1>
             <div>
                 <label htmlFor="search"></label>

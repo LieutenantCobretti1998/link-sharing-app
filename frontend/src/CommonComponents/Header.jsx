@@ -66,7 +66,9 @@ function Header({saveLinks}) {
                     </div>
 
                     <div>
-                        <Button onclick={checkValidity} type="shareLink">{location.pathname.includes("edit") ? "Update Group": "Create Group"}</Button>
+                        {!location.pathname.includes("edit") && (
+                            <Button onclick={checkValidity} type="shareLink">Create Group</Button>
+                        )}
                     </div>
                 </header>
             </div>

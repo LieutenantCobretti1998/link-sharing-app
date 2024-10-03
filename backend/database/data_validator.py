@@ -71,7 +71,7 @@ class GetAllLinksData(AbstractDataValidator):
             from .models import LinksGroup
             chosen_link_group = self.db_session.query(LinksGroup).filter(LinksGroup.id == links_group_id)
             if not chosen_link_group:
-                return {"message": "This Link isn't existed😒"}, 404
+                return {"error": "Not Found😒"}, 404
             chosen_link_group.update({"links": links})
             self.db_session.commit()
             return {"message": "Links updated successfully"}, 200
@@ -84,7 +84,7 @@ class GetAllLinksData(AbstractDataValidator):
             from .models import LinksGroup
             chosen_link_group = self.db_session.query(LinksGroup).filter(LinksGroup.id == links_group_id).first()
             if not chosen_link_group:
-                return {"message": "This Link isn't existed😒"}, 404
+                return {"error": "Not Found😒"}, 404
             for key, value in profile_data.items():
                 setattr(chosen_link_group, key, value)
             self.db_session.commit()
@@ -99,7 +99,7 @@ class GetAllLinksData(AbstractDataValidator):
             from .models import LinksGroup
             chosen_link_group = self.db_session.query(LinksGroup).filter(LinksGroup.id == links_group_id).first()
             if not chosen_link_group:
-                return {"message": "This Link isn't existed😒"}, 404
+                return {"error": "Not Found😒"}, 404
             self.db_session.delete(chosen_link_group)
             self.db_session.commit()
             return {"message": "LinksGroup deleted successfully"}, 200

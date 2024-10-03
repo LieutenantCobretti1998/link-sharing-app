@@ -1,8 +1,8 @@
 import React from 'react';
 
-function Modal({text}) {
+function Modal({text, isVisible}) {
     return (
-        <div className="absolute bottom-3  p-3 border-[.5px] rounded-md  bg-lightBlack-1 flex items-center justify-center gap-2">
+        <div className={`modal-container ${isVisible ? 'show' : ''}`}>
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 20 20">
                 <g clipPath="url(#a)">
                     <path fill="#fff"

@@ -26,7 +26,7 @@ function Links() {
     const linksReducer = useSelector((state) => state.link);
     const profile = useSelector((state) => state.profile);
     const [errors, setErrors] = useState({});
-    const [showModal, setShowModal] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
     const shouldShowComponent = showLinkForm || links.length > 0;
     const {mutate: saveNewLinks, isLoading} = useMutation({
         mutationFn: updateLinksGroup,
@@ -47,10 +47,12 @@ function Links() {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            setShowModal(false);
+            setIsVisible(false);
         }, 5000);
-        return () => clearTimeout(timer);
-    }, [showModal]);
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [isVisible]);
 
     useEffect(() => {
         dispatch(toggleModal(false));
@@ -62,8 +64,9 @@ function Links() {
     };
 
     const handleEditLink = () => {
-        handleSave();
-        if(Object.keys(errors).length > 0) {
+        const allErrors = handleSave();
+        if(Object.keys(allErrors).length === 0) {
+            setIsVisible(true);
             saveNewLinks({id, links})
         }
     }
@@ -117,6 +120,7 @@ function Links() {
       let errors = {};
       if (!link.url) {
           errors.emptyUrl = "This field cannot be empty";
+          return errors;
       } else {
           try {
               const parsedUrl = new URL(link.url);
@@ -145,14 +149,16 @@ function Links() {
         });
         if (hasError) {
             setErrors(allErrors);
-            setShowModal(false);
+            return allErrors;
         } else {
             setErrors({});
-            setShowModal(true);
+            allErrors = {};
+            setIsVisible(true);
             for (const field in linksReducer) {
                 if(field === "showForm") continue;
                  dispatch(saveChooses({ field: field, value: linksReducer[field] }));
             }
+            return allErrors
         }
     };
     return (
@@ -228,7 +234,7 @@ function Links() {
                                       opacity=".1"/>
                             </svg>
 
-                            <h2 className="font-bold text-lightBlack-1 text-3xl">Let's get you started</h2>
+                            <h2 className="font-bold text-lightBlack-1 text-3xl">Lets get you started</h2>
                             <p className="text-center w-70%">Use the “Add new link” button to get started. Once you have more
                                 than one link,
                                 you can reorder and edit them. We’re here to help you share your profiles with everyone!
@@ -243,7 +249,7 @@ function Links() {
                                 <Button onclick={handleSave} type="save">Save</Button>
                             )}
                         </div>
-                        {showModal && <Modal text={"Links saved successfully"}/>}
+                        <Modal isVisible={isVisible} text={"Links saved successfully"} />
                     </section>
                 </>
             )}

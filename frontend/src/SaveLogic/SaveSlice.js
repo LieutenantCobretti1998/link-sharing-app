@@ -37,7 +37,7 @@ const saveReducer = createSlice({
         },
         saveData: (state, action) => {
             return {...state, ...action.payload};
-        }
+        },
     }
 });
 

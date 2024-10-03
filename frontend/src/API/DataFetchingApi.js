@@ -6,7 +6,8 @@ export const getLinks = async () => {
     });
     const responseData = await response.json();
     if (!response.ok) {
-         throw new Error("Error to get Links");
+         const errorMessage = responseData?.error || "Error fetching links";
+         throw new Error(errorMessage);
     }
 
     return responseData;
@@ -18,7 +19,14 @@ export const getLink = async (id) => {
     });
     const responseData = await response.json();
     if (!response.ok) {
-        throw new Error("Error to get link");
+        switch (response.status) {
+            case 404:
+                throw new Response(responseData.error, {status:404});
+            case 500:
+                throw new Response(responseData.error, {status:500});
+            default:
+                throw new Response("Error to get Link");
+        }
     }
     return responseData;
 };
@@ -59,7 +67,14 @@ export const deleteLink = async (id) => {
     });
     const responseData = await response.json();
     if (!response.ok) {
-        throw new Error("Error to get link");
+        switch (response.status) {
+            case 404:
+                throw new Error(responseData.error);
+            case 500:
+                throw new Error(responseData.error);
+            default:
+                throw new Error("Error to delete Link");
+        }
     }
     return responseData;
 }

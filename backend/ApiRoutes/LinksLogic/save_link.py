@@ -9,6 +9,7 @@ save_bp = Blueprint('save', __name__)
 def save_link():
     data = request.get_json()
     base64_image = data.get("linksGroupImage")
+    
     if base64_image != "":
         try:
             filepath = save_base64_image(base64_image)

@@ -13,6 +13,7 @@ import {useLoaderData, useNavigate, useParams} from "react-router-dom";
 import {fetchLinks} from "../LinksAddition/LinkSlice.js";
 import {useMutation} from "@tanstack/react-query";
 import {updateLinksProfile} from "../API/DataFetchingApi.js";
+import Spinner from "../UI/Spinner.jsx";
 
 const customStyles = {
     control: (provided, state) => ({
@@ -83,7 +84,7 @@ function ProfileDetails() {
     const [textColor, setTextColor] = useState("#333333");
     const [commonColor, setCommonColor] = useState("#D9D9D9");
     const [backgroundColor, setbackgroundColor] = useState("#FFF");
-    const [showModal, setShowModal] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
     const maxCategoryLength = 20;
     const maxLinkNameLength = 30;
     const maxDescriptionLength = 40;
@@ -107,10 +108,10 @@ function ProfileDetails() {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            setShowModal(false);
+            setIsVisible(false);
         }, 5000);
         return () => clearTimeout(timer);
-    }, [showModal]);
+    }, [isVisible]);
 
     useEffect(() => {
         setTextColor(savedData.textColor || textColor);
@@ -124,76 +125,76 @@ function ProfileDetails() {
     };
 
     const handleImageUpload = (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
+      const file = e.target.files[0];
+      if (!file) return;
 
-  // Validate file format
-  const validTypes = ["image/png", "image/jpg", "image/jpeg"];
-  if (!validTypes.includes(file.type)) {
-    dispatch({
-      type: SET_ERROR,
-      errorType: 'invalidFormat',
-      errorMessage: 'Invalid file format. Please upload PNG or JPG.',
-    });
-    return;
-  }
-
-  // Load the image
-  const image = new Image();
-  image.src = URL.createObjectURL(file);
-
-  image.onload = () => {
-    const width = image.width;
-    const height = image.height;
-
-    // Check if the image dimensions exceed 1024x1024
-    if (width > 1024 || height > 1024) {
-      // Resize the image using a canvas
-      const MAX_SIZE = 1024;
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-
-      // Set canvas width and height to 1024x1024
-      canvas.width = MAX_SIZE;
-      canvas.height = MAX_SIZE;
-
-      // Draw the image on the canvas with resized dimensions
-      ctx.drawImage(image, 0, 0, MAX_SIZE, MAX_SIZE);
-
-      // Convert the canvas to a Data URL (base64 string)
-      const resizedImageUrl = canvas.toDataURL(file.type, 0.9); // You can adjust the quality if needed
-
-      dispatch({
-        type: SET_SUCCESS,
-        successMessage: 'Image was resized to 1024x1024 and uploaded successfully!',
-      });
-
-      // Store the resized image in Redux and as the preview
-      dispatch_redux(updateProfile({ field: "linksGroupImage", value: resizedImageUrl }));
-      setImagePreview(resizedImageUrl);
-
-    } else {
-      // If dimensions are within the limit, just use the original image
-      dispatch({ type: CLEAR_ERROR });
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result;
-        dispatch_redux(updateProfile({ field: "linksGroupImage", value: base64String }));
+      // Validate file format
+      const validTypes = ["image/png", "image/jpg", "image/jpeg"];
+      if (!validTypes.includes(file.type)) {
         dispatch({
-          type: 'SET_SUCCESS',
-          successMessage: 'Link Group Image uploaded successfully!',
+          type: SET_ERROR,
+          errorType: 'invalidFormat',
+          errorMessage: 'Invalid file format. Please upload PNG or JPG.',
         });
-        setImagePreview(base64String);
-      };
-      reader.readAsDataURL(file);
-    }
+        return;
+      }
 
-    // Clear the file input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = null;
-    }
-  };
-};
+      // Load the image
+      const image = new Image();
+      image.src = URL.createObjectURL(file);
+
+      image.onload = () => {
+        const width = image.width;
+        const height = image.height;
+
+        // Check if the image dimensions exceed 1024x1024
+        if (width > 1024 || height > 1024) {
+          // Resize the image using a canvas
+          const MAX_SIZE = 1024;
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+
+          // Set canvas width and height to 1024x1024
+          canvas.width = MAX_SIZE;
+          canvas.height = MAX_SIZE;
+
+          // Draw the image on the canvas with resized dimensions
+          ctx.drawImage(image, 0, 0, MAX_SIZE, MAX_SIZE);
+
+          // Convert the canvas to a Data URL (base64 string)
+          const resizedImageUrl = canvas.toDataURL(file.type, 0.9); // You can adjust the quality if needed
+
+          dispatch({
+            type: SET_SUCCESS,
+            successMessage: 'Image was resized to 1024x1024 and uploaded successfully!',
+          });
+
+          // Store the resized image in Redux and as the preview
+          dispatch_redux(updateProfile({ field: "linksGroupImage", value: resizedImageUrl }));
+          setImagePreview(resizedImageUrl);
+
+        } else {
+          // If dimensions are within the limit, just use the original image
+          dispatch({ type: CLEAR_ERROR });
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const base64String = reader.result;
+            dispatch_redux(updateProfile({ field: "linksGroupImage", value: base64String }));
+            dispatch({
+              type: 'SET_SUCCESS',
+              successMessage: 'Link Group Image uploaded successfully!',
+            });
+            setImagePreview(base64String);
+          };
+          reader.readAsDataURL(file);
+        }
+
+        // Clear the file input
+        if (fileInputRef.current) {
+          fileInputRef.current.value = null;
+        }
+      };
+    };
     const handleInputChange = (event) => {
         switch (event.target.name) {
             case "shortDescription":
@@ -241,46 +242,51 @@ function ProfileDetails() {
     };
 
     const handleEditLink = () => {
-         handleSave();
-         if(!categoryError && !linkNameError) {
+         const errors = handleSave();
+         if(Object.keys(errors).length === 0) {
              saveNewProfileData({id, profile})
          }
     }
 
     const handleSave = () => {
         let hasError = false;
-        let updatedProfile = {...profile}
-        if (!linkName && !savedData.linksGroupName) {
-            setLinkNameError('This field is required');
-            hasError = true;
-        }
-        else if(!linkName) {
-             dispatch_redux(updateProfile({ field: "linksGroupName", value: savedData.linksGroupName }));
-             updatedProfile.linksGroupName = savedData.linksGroupName;
-        }
-        else {
-            setLinkNameError('');
-        }
-        if (!category && !savedData.category) {
-            setCategoryError('This field is required');
-            hasError = true;
-        }
-        else if(!category) {
-            dispatch_redux(updateProfile({ field: "category", value: savedData.category }));
-            updatedProfile.category = savedData.category;
-        }
-        else {
-            setCategoryError('');
-        }
+        let updatedProfile = { ...profile };
+        let errors = {};
 
+        const validateField = (fieldValue, savedValue, fieldName, setError) => {
+            if (!fieldValue && !savedValue) {
+                setError('This field is required');
+                errors[fieldName] = 'This field is required';
+                return false;
+            } else if (!fieldValue) {
+                dispatch_redux(updateProfile({ field: fieldName, value: savedValue }));
+                updatedProfile[fieldName] = savedValue;
+            } else if (fieldValue.trim() === "") {
+                setError('This field cannot contain only white spaces');
+                errors[fieldName] = 'This field is required';
+                return false;
+            } else {
+                setError('');
+                updatedProfile[fieldName] = fieldValue;
+            }
+            return true;
+            };
+        const isLinkNameValid = validateField(linkName, savedData.linksGroupName, "linksGroupName", setLinkNameError);
+        const isCategoryValid = validateField(category, savedData.category, "category", setCategoryError);
+        if (!isLinkNameValid || !isCategoryValid) {
+            hasError = true;
+        }
         if (hasError) {
-            setShowModal(false);
-            return;
+            return errors;
         }
         for (const field in updatedProfile) {
             dispatch_redux(saveChooses({ field: field, value: updatedProfile[field] }));
         }
-        setShowModal(true);
+        setIsVisible(true);
+        return errors;
+    }
+    if(isLoading) {
+        return <Spinner />;
     }
     return (
         <>
@@ -296,7 +302,7 @@ function ProfileDetails() {
                     <h2 className="font-bold text-lightBlack-2 text-base">Links Group picture</h2>
                     <button
                         type="button"
-                        className={`relative h-32 w-32 rounded-lg ${imagePreview ? "bg-white": "bg-lightPurple1"} flex flex-col items-center justify-center`}
+                        className={`relative h-32 w-32 rounded-lg ${(imagePreview) ? "bg-white": "bg-lightPurple1"} flex flex-col items-center justify-center`}
                         onClick={handleImageLoadButton}
                     >
                         <input
@@ -306,14 +312,14 @@ function ProfileDetails() {
                             onChange={handleImageUpload}
                             className="hidden"
                         />
-                        {(imagePreview || savedData.linksGroupImage) && (
+                        {(imagePreview) && (
                             <img
-                                src={imagePreview ? imagePreview: savedData.linksGroupImage}
+                                src={imagePreview}
                                 alt="Uploaded Preview"
                                 className="absolute inset-0 w-max h-full rounded-lg"
                             />
                         )}
-                        {(!imagePreview || !linksGroupImage) && (
+                        {(!imagePreview) && (
                             <>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none"
                                      viewBox="0 0 40 40">
@@ -493,7 +499,7 @@ function ProfileDetails() {
                         <Button onclick={handleSave} type="save">Save</Button>
                     )}
                 </div>
-                {showModal && <Modal text={"Profile settings saved successfully"}/>}
+                <Modal isVisible={isVisible} text={"Profile settings saved successfully"}/>
             </section>
         </>
     );

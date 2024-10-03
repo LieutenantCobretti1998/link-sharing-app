@@ -1,7 +1,6 @@
 import base64
 import os
 import uuid
-from pathlib import Path
 from flask import current_app as app
 from werkzeug.utils import secure_filename
 
@@ -28,7 +27,6 @@ def save_base64_image(base64_string: str) -> str:
     file_extension = get_file_extension(base64_string)
     random_filename = f"{uuid.uuid4()}.{file_extension}"
     image_data = base64.b64decode(base64_string.split(',')[1])
-    print(Path(app.config['UPLOAD_FOLDER']))
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(random_filename))
     normed_path = os.path.normpath(file_path).replace("\\", "/")
     with open(normed_path, 'wb') as f:
