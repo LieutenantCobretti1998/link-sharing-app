@@ -12,8 +12,6 @@ import {useLoaderData, useNavigate, useParams} from "react-router-dom";
 import {fetchProfileData} from "../ProfileDetails/ProfileSlice.js";
 import {useMutation} from "@tanstack/react-query";
 import {updateLinksGroup} from "../API/DataFetchingApi.js";
-import Spinner from "../UI/Spinner.jsx";
-
 
 
 function Links() {
@@ -28,7 +26,7 @@ function Links() {
     const [errors, setErrors] = useState({});
     const [isVisible, setIsVisible] = useState(false);
     const shouldShowComponent = showLinkForm || links.length > 0;
-    const {mutate: saveNewLinks, isLoading} = useMutation({
+    const {mutate: saveNewLinks} = useMutation({
         mutationFn: updateLinksGroup,
         mutationKey: ["update-link"],
         onSuccess: () => {
@@ -162,10 +160,6 @@ function Links() {
         }
     };
     return (
-        <>
-            {isLoading ? (
-                <Spinner />
-            ): (
                 <>
                     <MobileOverview profile={profile} getBackgroundImage={getBackgroundImage} links={links} getPlatformColor={getPlatformColor} getPlatformIcon={getPlatformIcon} />
                     <section className="w-full bg-white p-10 relative rounded-md border-light-grey">
@@ -251,9 +245,6 @@ function Links() {
                         </div>
                         <Modal isVisible={isVisible} text={"Links saved successfully"} />
                     </section>
-                </>
-            )}
-
         </>
     );
 }

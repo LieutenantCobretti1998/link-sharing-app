@@ -2,7 +2,6 @@ from abc import ABC
 from sqlalchemy.exc import OperationalError, NoResultFound
 
 
-
 class AbstractDataValidator(ABC):
     def __init__(self, db_session):
         self.db_session = db_session
@@ -32,15 +31,30 @@ class GetAllLinksData(AbstractDataValidator):
     def __init__(self, db_session):
         super().__init__(db_session)
 
-    def get_all_links(self) -> list:
+    def get_all_links(self, page: int, per_page: int) -> list:
         """
+        :param page: int
+        :param per_page: int
         The method to get all data from the links database
         """
         try:
             from .models import LinksGroup
-            all_links = self.db_session.query(LinksGroup).all()
+            offset_value = (page - 1) * per_page
+            all_links = self.db_session.query(LinksGroup).offset(offset_value).limit(per_page).all()
             if not all_links:
                 return []
+            return all_links
+        except OperationalError:
+            raise OperationalError
+
+    def all_links_count(self) -> int:
+        """
+        :return: int
+        Check all available links in database
+        """
+        try:
+            from .models import LinksGroup
+            all_links = self.db_session.query(LinksGroup).count()
             return all_links
         except OperationalError:
             raise OperationalError

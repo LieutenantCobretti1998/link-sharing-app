@@ -11,8 +11,12 @@ links_bp = Blueprint('get_all_links', __name__)
 @links_bp.route('/all_links', methods=['GET'])
 def get_all_links():
     flask_server_url = "http://localhost:5000"
+    page = int(request.args.get('page'))
+    per_page = int(request.args.get('per_page'))
+    get_links_instance = GetAllLinksData(db.session)
     try:
-        all_links = GetAllLinksData(db.session).get_all_links()
+        all_links = get_links_instance.get_all_links(page, per_page)
+        all_links_count = get_links_instance.all_links_count()
         links_data = [
             {"id": link.id,
              "linksGroupImage": f"{flask_server_url}/{link.links_group_image}" if link.links_group_image else "",
@@ -25,16 +29,21 @@ def get_all_links():
              "links": link.links
              } for link in all_links
         ]
-        return jsonify(links_data), 200
+        return jsonify({
+            "links": links_data,
+            "current_page": page,
+            "per_page": per_page,
+            "total_links": all_links_count
+        }), 200
     except OperationalError:
         return jsonify({"error": "Database Fatal Error"}), 500
 
 
 @links_bp.route('/get-link/<int:links_group_id>', methods=['GET'])
 def get_link(links_group_id):
+    flask_server_url = "http://localhost:5000"
     try:
         chosen_link = GetAllLinksData(db.session).get_links_group_data(links_group_id)
-        flask_server_url = "http://localhost:5000"
         chosen_link_data = {
             "linksGroupImage": f"{flask_server_url}/{chosen_link.links_group_image}" if chosen_link.links_group_image else "",
              "linksGroupName": chosen_link.links_group_name,
@@ -61,7 +70,6 @@ def update_links(links_group_id):
 def update_links_profile(links_group_id):
     profile_data = request.json
     base64_image = profile_data.get("linksGroupImage")
-    print(base64_image.startswith("http://"))
     if base64_image != "" and base64_image and (not base64_image.startswith("http://") and not base64_image.startswith("https://")):
         try:
             filepath = save_base64_image(base64_image)

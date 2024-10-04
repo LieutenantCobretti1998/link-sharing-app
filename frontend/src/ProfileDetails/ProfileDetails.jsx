@@ -13,7 +13,7 @@ import {useLoaderData, useNavigate, useParams} from "react-router-dom";
 import {fetchLinks} from "../LinksAddition/LinkSlice.js";
 import {useMutation} from "@tanstack/react-query";
 import {updateLinksProfile} from "../API/DataFetchingApi.js";
-import Spinner from "../UI/Spinner.jsx";
+
 
 const customStyles = {
     control: (provided, state) => ({
@@ -88,7 +88,7 @@ function ProfileDetails() {
     const maxCategoryLength = 20;
     const maxLinkNameLength = 30;
     const maxDescriptionLength = 40;
-    const {mutate: saveNewProfileData, isLoading} = useMutation({
+    const {mutate: saveNewProfileData} = useMutation({
         mutationFn: updateLinksProfile,
         mutationKey: ["update-profile"],
         onSuccess: () => {
@@ -285,9 +285,7 @@ function ProfileDetails() {
         setIsVisible(true);
         return errors;
     }
-    if(isLoading) {
-        return <Spinner />;
-    }
+
     return (
         <>
             <MobileOverview profile={profile} getBackgroundImage={getBackgroundImage} links={links} getPlatformIcon={getPlatformIcon} getPlatformColor={getPlatformColor} />
