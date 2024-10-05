@@ -2,44 +2,59 @@ import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {deleteLink, getLinks} from "../../API/DataFetchingApi.js";
 import Spinner from "../../UI/Spinner.jsx";
 import {getBackgroundImage, getPlatformColor, getPlatformIcon} from "../../Helpers/SliceFunctions.js";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useNavigate, useSearchParams} from "react-router-dom";
 import ServerError from "../../UI/Errors/ServerError.jsx";
 import Pagination from "../../UI/Pagination.jsx";
 import {DEFAULT_PAGE, PER_PAGE} from "../../UI/GlobalVariables.js";
+import Delete from "../../UI/Delete.jsx";
 
 
 function AllLinks() {
     const [hoveredCardIndex, setHoveredCardIndex] = useState(null);
+    const [visible, setVisible] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
     const page = parseInt(searchParams.get("page")) || DEFAULT_PAGE;
     const queryClient = useQueryClient();
     const navigate = useNavigate();
+    const {mutate:deleteLinkGroup, isError: DeleteLinkError, isLoading: isDeleting} = useMutation({
+        mutationFn: deleteLink,
+        onSuccess: () => {
+            queryClient.resetQueries({
+                queryKey: ["userLinks", parseInt(page)],
+                exact: true,
+            });
+        }
+    });
     const {data, isError: AllLinksError, isLoading} = useQuery({
-        queryKey: ["userLinks", page],
-        queryFn: () => getLinks(page, PER_PAGE),
+        queryKey: ["userLinks", parseInt(page)],
+        queryFn: () => {
+            const cachedData = queryClient.getQueryData(["userLinks", parseInt(page)]);
+            if (cachedData) {
+                return cachedData;
+            }
+            return getLinks(page, PER_PAGE);
+        },
+        onSuccess: (fetchedData) => {
+             const totalPages = Math.ceil(fetchedData.total_links / fetchedData.per_page);
+             const currentPage = parseInt(searchParams.get("page")) || 1;
+            if (currentPage > totalPages && currentPage !== 1) {
+                setSearchParams({ page: (currentPage - 1).toString() });
+            }
+        },
         enabled: true,
         keepPreviousData: true,
     });
     const links = data?.links || [];
     const currentPage = data?.current_page || DEFAULT_PAGE;
-    const perPage = data?.per_page || PER_PAGE;
+    const perPage = data?.per_page || Number(PER_PAGE);
     const totalLinks = data?.total_links || 0;
     const totalPages = Math.ceil(totalLinks / perPage);
-    const {mutate:deleteLinkGroup, isError: DeleteLinkError, isLoading: isDeleting} = useMutation({
-        mutationFn: deleteLink,
-        onSuccess: () => {
-            queryClient.invalidateQueries("userLinks");
-        }
-    });
-    console.log(totalLinks, currentPage, perPage, totalPages)
-
     const handlePrevious = function () {
         if(currentPage > 1) {
             setSearchParams({page: (currentPage - 1).toString()})
         }
     };
-
     const handleNext = function () {
         if(data && currentPage < totalPages) {
             setSearchParams({page: (currentPage + 1).toString()})
@@ -48,10 +63,14 @@ function AllLinks() {
 
     const editLink = function (id) {
         navigate(`/edit-links/${id}`);
-    }
+    };
 
     const deleteUserLink = function (id) {
         deleteLinkGroup(id);
+    };
+
+    const toggleDeleteWindow = () => {
+        setVisible(true);
     }
 
     if (isLoading || isDeleting) {
@@ -134,7 +153,7 @@ function AllLinks() {
                                     <>
                                         <div
                                             className="delete-icon transition duration-300 hover:bg-primaryPurple flex items-center justify-center"
-                                            onClick={() => deleteUserLink(link.id)}
+                                            onClick={toggleDeleteWindow}
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" className="ionicon h-6 w-6"
                                                  viewBox="0 0 512 512">
@@ -165,7 +184,9 @@ function AllLinks() {
                                                     d="M459.94 53.25a16.06 16.06 0 00-23.22-.56L424.35 65a8 8 0 000 11.31l11.34 11.32a8 8 0 0011.34 0l12.06-12c6.1-6.09 6.67-16.01.85-22.38zM399.34 90L218.82 270.2a9 9 0 00-2.31 3.93L208.16 299a3.91 3.91 0 004.86 4.86l24.85-8.35a9 9 0 003.93-2.31L422 112.66a9 9 0 000-12.66l-9.95-10a9 9 0 00-12.71 0z"/>
                                             </svg>
                                         </div>
-
+                                        {visible && (
+                                            <Delete setVisibility={setVisible} deleteLogic={() => deleteUserLink(link.id)} />
+                                        )}
                                     </>
                                 )}
                                 <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 200 300">
@@ -231,7 +252,7 @@ function AllLinks() {
                         </div>
                         ))}
                 </section>
-                <Pagination handleNext={handleNext} handlePrev={handlePrevious} currentPage={currentPage} totalPages={totalLinks} />
+                <Pagination handleNext={handleNext} handlePrev={handlePrevious} currentPage={currentPage} totalPages={totalPages} />
             </div>
         )
     }

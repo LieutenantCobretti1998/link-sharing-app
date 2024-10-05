@@ -7,20 +7,25 @@ import {resetSaveState} from "../SaveLogic/SaveSlice.js";
 import {useDispatch} from "react-redux";
 import {useSearchParams} from "react-router-dom";
 import {DEFAULT_PAGE, PER_PAGE} from "../UI/GlobalVariables.js";
+import {useQueryClient} from "@tanstack/react-query";
 
 
 function HomePage() {
     const dispatch = useDispatch();
+    const queryClient = useQueryClient();
     const [searchParams, setSearchParams] = useSearchParams();
     useEffect(() => {
         dispatch(resetLinksState());
         dispatch(resetProfileState());
         dispatch(resetSaveState());
+        queryClient.resetQueries({
+            query: ["userLinks"],
+        })
     }, []);
+
     useEffect(() => {
         if(!searchParams.get("page")) {
             setSearchParams({page: DEFAULT_PAGE, per_page: PER_PAGE});
-
         }
     }, [searchParams, setSearchParams]);
     return (
