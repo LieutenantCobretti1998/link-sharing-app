@@ -135,7 +135,7 @@ function AllLinks() {
         return (
             <div className="flex flex-col w-full">
                 <section
-                        className="w-full  h-full flex flex-wrap gap-10  bg-white p-10 rounded-md border-light-grey ">
+                        className="w-full  h-full flex flex-wrap gap-10 hover:cursor-pointer bg-white p-10 rounded-md border-light-grey ">
                         {links.map((link, index) => (
                             <div
                                 key={link.id}
@@ -146,14 +146,21 @@ function AllLinks() {
                                     backgroundSize: "cover",
                                     backgroundPosition: "center"
                                 }}
+                                onClick={() => navigate(`/card-overview/${link.id}`)}
                                 onMouseEnter={() => setHoveredCardIndex(index)}
-                                onMouseLeave={() => setHoveredCardIndex(null)}
+                                onMouseLeave={() => {
+                                    setHoveredCardIndex(null);
+                                    setVisible(false);
+                                }}
                             >
                                 {hoveredCardIndex === index && (
                                     <>
                                         <div
                                             className="delete-icon transition duration-300 hover:bg-primaryPurple flex items-center justify-center"
-                                            onClick={toggleDeleteWindow}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                toggleDeleteWindow();
+                                            }}
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" className="ionicon h-6 w-6"
                                                  viewBox="0 0 512 512">
@@ -171,7 +178,10 @@ function AllLinks() {
                                         </div>
                                         <div
                                             className="edit-icon transition duration-300 hover:bg-primaryPurple flex items-center justify-center"
-                                            onClick={() => editLink(link.id)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                editLink(link.id);
+                                            }}
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" className="ionicon h-6 w-6"
                                                  viewBox="0 0 512 512">

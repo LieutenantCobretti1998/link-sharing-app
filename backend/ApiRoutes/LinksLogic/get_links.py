@@ -1,9 +1,9 @@
 from flask import Blueprint, jsonify, request
 from sqlalchemy.exc import OperationalError, NoResultFound
-
 from ...database import GetAllLinksData, db, map_frontend_to_backend
 from ...database.models import generate_short_unique_url
 from .helpers import save_base64_image
+from .ui_sets import perPage
 
 links_bp = Blueprint('get_all_links', __name__)
 
@@ -12,7 +12,7 @@ links_bp = Blueprint('get_all_links', __name__)
 def get_all_links():
     flask_server_url = "http://localhost:5000"
     page = int(request.args.get('page'))
-    per_page = int(request.args.get('per_page'))
+    per_page = perPage
     get_links_instance = GetAllLinksData(db.session)
     try:
         all_links = get_links_instance.get_all_links(page, per_page)

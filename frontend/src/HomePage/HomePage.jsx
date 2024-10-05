@@ -25,7 +25,7 @@ function HomePage() {
 
     useEffect(() => {
         if(!searchParams.get("page")) {
-            setSearchParams({page: DEFAULT_PAGE, per_page: PER_PAGE});
+            setSearchParams({page: DEFAULT_PAGE});
         }
     }, [searchParams, setSearchParams]);
     return (

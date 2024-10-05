@@ -52,19 +52,6 @@ function Sidebar() {
             <h1 className="font-bold text-primaryPurple text-2xl">Filter Searching by:</h1>
             <ul className="flex flex-col gap-5">
                 <li className="flex flex-col gap-3">
-                    <label htmlFor="category">Category</label>
-                    <Select
-                        options={optionsCategory}
-                        getOptionLabel={(e) => (
-                        <div className="flex items-center gap-1.5">
-                            {e.label}
-                            <span className="mr-2">{e.icon}</span>
-                        </div>
-                        )}
-                        styles={customStyles}
-                    />
-                </li>
-                <li className="flex flex-col gap-3">
                     <label htmlFor="clicks">Clicks</label>
                     <Select
                         options={optionsClicks}
