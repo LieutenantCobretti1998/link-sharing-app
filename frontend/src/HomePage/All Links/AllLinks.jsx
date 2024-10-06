@@ -13,31 +13,32 @@ import Delete from "../../UI/Delete.jsx";
 function AllLinks() {
     const [hoveredCardIndex, setHoveredCardIndex] = useState(null);
     const [visible, setVisible] = useState(false);
-    const [searchParams, setSearchParams] = useSearchParams();
+    let [searchParams, setSearchParams] = useSearchParams();
     const page = parseInt(searchParams.get("page")) || DEFAULT_PAGE;
+    const search = searchParams.get("search") || "";
     const queryClient = useQueryClient();
     const navigate = useNavigate();
     const {mutate:deleteLinkGroup, isError: DeleteLinkError, isLoading: isDeleting} = useMutation({
         mutationFn: deleteLink,
         onSuccess: () => {
             queryClient.resetQueries({
-                queryKey: ["userLinks", parseInt(page)],
-                exact: true,
+                queryKey: ["userLinks", parseInt(page), search],
             });
-        }
+        },
     });
     const {data, isError: AllLinksError, isLoading} = useQuery({
-        queryKey: ["userLinks", parseInt(page)],
+        queryKey: ["userLinks", parseInt(page), search],
         queryFn: () => {
-            const cachedData = queryClient.getQueryData(["userLinks", parseInt(page)]);
+            const cachedData = queryClient.getQueryData(["userLinks", parseInt(page), search]);
             if (cachedData) {
                 return cachedData;
             }
-            return getLinks(page, PER_PAGE);
+            return getLinks(page.toString(), search);
         },
         onSuccess: (fetchedData) => {
              const totalPages = Math.ceil(fetchedData.total_links / fetchedData.per_page);
              const currentPage = parseInt(searchParams.get("page")) || 1;
+            console.log(totalPages, currentPage);
             if (currentPage > totalPages && currentPage !== 1) {
                 setSearchParams({ page: (currentPage - 1).toString() });
             }
@@ -51,13 +52,27 @@ function AllLinks() {
     const totalLinks = data?.total_links || 0;
     const totalPages = Math.ceil(totalLinks / perPage);
     const handlePrevious = function () {
-        if(currentPage > 1) {
-            setSearchParams({page: (currentPage - 1).toString()})
+        if (currentPage > 1) {
+            const updatedParams = new URLSearchParams(searchParams);
+
+            if (search === "") {
+                updatedParams.delete("search");
+            }
+
+            updatedParams.set("page", (currentPage - 1).toString());
+            setSearchParams(updatedParams);
         }
     };
     const handleNext = function () {
-        if(data && currentPage < totalPages) {
-            setSearchParams({page: (currentPage + 1).toString()})
+        if (data && currentPage < totalPages) {
+            const updatedParams = new URLSearchParams(searchParams);
+
+            if (search === "") {
+                updatedParams.delete("search");
+            }
+
+            updatedParams.set("page", (currentPage + 1).toString());
+            setSearchParams(updatedParams);
         }
     }
 
@@ -135,7 +150,7 @@ function AllLinks() {
         return (
             <div className="flex flex-col w-full">
                 <section
-                        className="w-full  h-full flex flex-wrap gap-10 hover:cursor-pointer bg-white p-10 rounded-md border-light-grey ">
+                        className="w-full  h-full flex hover:cursor-pointer flex-wrap gap-10 bg-white p-10 rounded-md border-light-grey ">
                         {links.map((link, index) => (
                             <div
                                 key={link.id}

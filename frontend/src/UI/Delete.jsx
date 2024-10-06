@@ -15,7 +15,7 @@ function Delete({deleteLogic, setVisibility}) {
                     <h3 className="text-2xl">Are you sure ?</h3>
                     <div className="flex gap-4">
 
-                        <Button type="save" onlick={(e) => {e.stopPropagation(); handleConfirmDelete()}}>Yes</Button>
+                        <Button type="save" onclick={(e) => {e.stopPropagation(); handleConfirmDelete()}}>Yes</Button>
                         <Button type="save" onclick={(e) => {e.stopPropagation(); handleCancel()}}>No</Button>
                     </div>
                 </div>

@@ -1,8 +1,7 @@
 from flask import Blueprint, jsonify, request
 from sqlalchemy.exc import OperationalError, NoResultFound
 from ...database import GetAllLinksData, db, map_frontend_to_backend
-from ...database.models import generate_short_unique_url
-from .helpers import save_base64_image
+from .helpers import save_base64_image, format_links_data
 from .ui_sets import perPage
 
 links_bp = Blueprint('get_all_links', __name__)
@@ -12,28 +11,22 @@ links_bp = Blueprint('get_all_links', __name__)
 def get_all_links():
     flask_server_url = "http://localhost:5000"
     page = int(request.args.get('page'))
+    search = request.args.get('search', "").strip()
     per_page = perPage
     get_links_instance = GetAllLinksData(db.session)
     try:
-        all_links = get_links_instance.get_all_links(page, per_page)
-        all_links_count = get_links_instance.all_links_count()
-        links_data = [
-            {"id": link.id,
-             "linksGroupImage": f"{flask_server_url}/{link.links_group_image}" if link.links_group_image else "",
-             "linksGroupName": link.links_group_name,
-             "textColor": link.text_color,
-             "commonColor": link.common_color,
-             "backgroundColor": link.background_color,
-             "backgroundImage": link.background_image,
-             "category": link.category,
-             "links": link.links
-             } for link in all_links
-        ]
+        if search:
+            all_links = get_links_instance.get_searched_links(page, per_page, search)
+            total_links = get_links_instance.all_searched_links_count(search)
+        else:
+            all_links = get_links_instance.get_all_links(page, per_page)
+            total_links = get_links_instance.all_links_count()
+        links_data = [format_links_data(link, flask_server_url) for link in all_links]
         return jsonify({
             "links": links_data,
             "current_page": page,
             "per_page": per_page,
-            "total_links": all_links_count
+            "total_links": total_links
         }), 200
     except OperationalError:
         return jsonify({"error": "Database Fatal Error"}), 500

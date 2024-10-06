@@ -1,7 +1,7 @@
 "use strict";
 
-export const getLinks = async (page= "1", per_page = "1") => {
-    const response = await fetch(`http://127.0.0.1:5000/api/all_links?page=${page}&per_page=${per_page}`, {
+export const getLinks = async (page= "1", search = null) => {
+    const response = await fetch(`http://127.0.0.1:5000/api/all_links?page=${page}&search=${search}`, {
         method: "GET",
     });
     const responseData = await response.json();

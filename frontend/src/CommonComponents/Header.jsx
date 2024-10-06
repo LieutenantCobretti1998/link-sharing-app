@@ -25,6 +25,7 @@ function Header({saveLinks}) {
         dispatch(resetSaveState());
     };
 
+
     if (location.pathname === "/") {
         return (
             <header

@@ -1,4 +1,6 @@
 import Select from "react-select";
+import {useSearchParams} from "react-router-dom";
+import {DEFAULT_PAGE} from "../../UI/GlobalVariables.js";
 
 const customStyles = {
     control: (provided, state) => ({
@@ -30,24 +32,38 @@ const customStyles = {
 
     }),
 };
-const optionsCategory = [
-    {value: "chocolate", label: "Chocolate"},
-    {value: "chocolates", label: "Chocolates"},
-    {value: "chocolated", label: "Chocolated"},
-    {value: "chocolatea", label: "Chocolatea"},
-    {value: "chocolatee", label: "Chocolatee"},
-];
+// const optionsCategory = [
+//     {value: "chocolate", label: "Chocolate"},
+//     {value: "chocolates", label: "Chocolates"},
+//     {value: "chocolated", label: "Chocolated"},
+//     {value: "chocolatea", label: "Chocolatea"},
+//     {value: "chocolatee", label: "Chocolatee"},
+// ];
 const optionsClicks = [
     {value: "ascending", label: "Ascending"},
     {value: "descending", label: "Descending"},
 ]
 function Sidebar() {
+     let [searchParams, setSearchParams] = useSearchParams();
+     const handleSearchChange = (e) => {
+         const newSearch = (e.target.value).trim();
+         if (newSearch === "") {
+             const updatedParams = new URLSearchParams(searchParams);
+             updatedParams.delete("search")
+             setSearchParams(updatedParams);
+             return;
+         }
+         const updatedParams = new URLSearchParams(searchParams);
+         updatedParams.set("search", newSearch);
+         updatedParams.set("page", DEFAULT_PAGE);
+         setSearchParams(updatedParams);
+     }
     return (
         <aside className="w-[45%] h-full gap-10  flex flex-col   bg-white pl-10 pt-10 pb-10 rounded-md border-light-grey">
             <h1 className="font-bold text-primaryPurple text-2xl">Search</h1>
             <div>
                 <label htmlFor="search"></label>
-                <input   className=" border-2  placeholder-gray-400 p-2 rounded-md focus:border-lightPurple1 outline-none" type="text" id="search" placeholder="Search...🔍" />
+                <input onChange={handleSearchChange} className=" border-2  placeholder-gray-400 p-2 rounded-md focus:border-lightPurple1 outline-none" type="text" id="search" placeholder="Search...🔍" />
             </div>
             <h1 className="font-bold text-primaryPurple text-2xl">Filter Searching by:</h1>
             <ul className="flex flex-col gap-5">

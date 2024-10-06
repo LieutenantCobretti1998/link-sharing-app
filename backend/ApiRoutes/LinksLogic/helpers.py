@@ -32,3 +32,23 @@ def save_base64_image(base64_string: str) -> str:
     with open(normed_path, 'wb') as f:
         f.write(image_data)
     return normed_path
+
+
+def format_links_data(link: any, flask_server_url: str) -> dict:
+    """
+    :param link: any
+    :param flask_server_url: str
+    :return: dict
+    Just reduce the amount of code in the main get all links router
+    """
+    return {
+        "id": link.id,
+        "linksGroupImage": f"{flask_server_url}/{link.links_group_image}" if link.links_group_image else "",
+        "linksGroupName": link.links_group_name,
+        "textColor": link.text_color,
+        "commonColor": link.common_color,
+        "backgroundColor": link.background_color,
+        "backgroundImage": link.background_image,
+        "category": link.category,
+        "links": link.links
+    }

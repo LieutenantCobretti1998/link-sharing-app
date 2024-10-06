@@ -13,7 +13,7 @@ import {useQueryClient} from "@tanstack/react-query";
 function HomePage() {
     const dispatch = useDispatch();
     const queryClient = useQueryClient();
-    const [searchParams, setSearchParams] = useSearchParams();
+    let [searchParams, setSearchParams] = useSearchParams();
     useEffect(() => {
         dispatch(resetLinksState());
         dispatch(resetProfileState());
@@ -25,7 +25,9 @@ function HomePage() {
 
     useEffect(() => {
         if(!searchParams.get("page")) {
-            setSearchParams({page: DEFAULT_PAGE});
+            const updateParams = new URLSearchParams(searchParams);
+            updateParams.set("page", DEFAULT_PAGE);
+            setSearchParams(updateParams);
         }
     }, [searchParams, setSearchParams]);
     return (

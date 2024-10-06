@@ -1,4 +1,6 @@
 from abc import ABC
+
+from sqlalchemy import or_
 from sqlalchemy.exc import OperationalError, NoResultFound
 
 
@@ -33,7 +35,7 @@ class GetAllLinksData(AbstractDataValidator):
 
     def get_all_links(self, page: int, per_page: int) -> list:
         """
-        :param page: int
+        :param page: int,
         :param per_page: int
         The method to get all data from the links database
         """
@@ -55,6 +57,52 @@ class GetAllLinksData(AbstractDataValidator):
         try:
             from .models import LinksGroup
             all_links = self.db_session.query(LinksGroup).count()
+            return all_links
+        except OperationalError:
+            raise OperationalError
+
+    def get_searched_links(self, page: int, per_page: int, search: str) -> list:
+        """
+        :param search: str,
+        :param page: int,
+        :param per_page: int
+        :return: list
+        The same as the get_all_links method but with search filter
+        """
+        try:
+            from .models import LinksGroup
+            offset_value = (page - 1) * per_page
+            all_links = (
+                self.db_session.query(LinksGroup).filter(
+                    or_(
+                        LinksGroup.links_group_name.ilike(f"%{search}%"),
+                        LinksGroup.category.ilike(f"%{search}%"),
+                    )
+                )
+                .offset(offset_value)
+                .limit(per_page)
+                .all())
+            if not all_links:
+                return []
+            return all_links
+        except OperationalError:
+            raise OperationalError
+
+    def all_searched_links_count(self, search) -> int:
+        """
+        :param search: str
+        :return: int
+        Check all available links in database
+        """
+        try:
+            from .models import LinksGroup
+            all_links = (self.db_session.query(LinksGroup)
+            .filter(
+                or_(
+                    LinksGroup.links_group_name.ilike(f"%{search}%"),
+                    LinksGroup.category.ilike(f"%{search}%"),
+                )
+            )).count()
             return all_links
         except OperationalError:
             raise OperationalError
