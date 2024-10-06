@@ -13,9 +13,8 @@ The Link-Sharing App is a full-stack application that allows users to create, sa
 ## Tech Stack
 
 ### Frontend:
-- **React** (with various extensions such as React Router, Redux, etc.)
+- **React** (with various extensions such as React Router, Redux, Framer, Query etc.)
 - **Tailwind CSS** (for styling)
-- **Axios** (for API calls)
 - **Vite** (as a fast development build tool)
 
 ### Backend:
