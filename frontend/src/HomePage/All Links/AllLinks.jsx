@@ -161,7 +161,7 @@ function AllLinks() {
                                     backgroundSize: "cover",
                                     backgroundPosition: "center"
                                 }}
-                                onClick={() => navigate(`/card-overview/${link.id}`)}
+                                onClick={() => navigate(`/preview-linksGroup/${link.id}`)}
                                 onMouseEnter={() => setHoveredCardIndex(index)}
                                 onMouseLeave={() => {
                                     setHoveredCardIndex(null);

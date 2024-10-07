@@ -5,15 +5,25 @@ import Modal from "../UI/Modal.jsx";
 import {useEffect} from "react";
 import {setBlendedColor, toggleModal} from "../SaveLogic/SaveSlice.js";
 import {averageColors, hexToRgb, rgbToHex} from "../Helpers/ColorsConversion.js";
+import {useLocation, useParams} from "react-router-dom";
+import {useQuery} from "@tanstack/react-query";
+import {getLink} from "../API/DataFetchingApi.js";
+import Spinner from "../UI/Spinner.jsx";
 
 function Preview() {
     const dispatch = useDispatch();
+    const location = useLocation();
+    const { id} = useParams();
+    const {data: LinksGroupData, isError: FailedRequest, isLoading} = useQuery({
+        queryKey: ["linksGroupPreview", id],
+        queryFn: () => getLink(id),
+        enabled: !!id
+    });
     const {
         linksGroupName, links, shortDescription,
         linksGroupImage, textColor, commonColor,
         backgroundColor, backgroundImage, showModal
-        } = useSelector((state) => state.saveChooses);
-
+        } = id ? LinksGroupData || {}: useSelector((state) => state.saveChooses);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -49,10 +59,19 @@ function Preview() {
         dispatch(setBlendedColor(blendedColor));
     }
     useEffect(() => {
-        if (textColor !== "#333333" && commonColor !== "#D9D9D9" && backgroundColor !== "#FFF") {
-            handleCalculateAverageColor()
+       if (textColor && commonColor && backgroundColor) {
+            if (
+                textColor !== "#333333" &&
+                commonColor !== "#D9D9D9" &&
+                backgroundColor !== "#FFF"
+            ) {
+                handleCalculateAverageColor();
+            }
         }
-    }, []);
+    }, [textColor, commonColor, backgroundColor]);
+    if(isLoading && id) {
+        return <Spinner />
+    }
     return (
         <>
             <section className="drop-shadow-md relative top-[-120px] rounded-xl h-auto flex flex-col align-center justify-center"

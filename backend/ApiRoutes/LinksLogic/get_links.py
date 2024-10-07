@@ -84,6 +84,7 @@ def delete_link_group(links_group_id):
     message, code = GetAllLinksData(db.session).delete_links_group_data(links_group_id)
     return jsonify(message), code
 
+
 @links_bp.route('/link-overview/<int:links_group_id>', methods=['GET'])
 def link_overview(links_group_id):
     try:
