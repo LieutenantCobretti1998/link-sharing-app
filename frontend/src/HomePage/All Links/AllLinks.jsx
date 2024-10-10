@@ -38,7 +38,6 @@ function AllLinks() {
         onSuccess: (fetchedData) => {
              const totalPages = Math.ceil(fetchedData.total_links / fetchedData.per_page);
              const currentPage = parseInt(searchParams.get("page")) || 1;
-            console.log(totalPages, currentPage);
             if (currentPage > totalPages && currentPage !== 1) {
                 setSearchParams({ page: (currentPage - 1).toString() });
             }

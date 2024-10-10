@@ -12,7 +12,21 @@ function Header({saveLinks}) {
     const dispatch = useDispatch();
     const {linksGroupName, category, blendedColor} = useSelector(state => state.saveChooses);
     const savedParameters = useSelector(state => state.saveChooses);
+    const {shortenUrl} = useSelector(state => state.shortenUrl);
 
+    const copyToClipBoard = () => {
+        console.log(shortenUrl)
+        window.focus()
+        if(shortenUrl) {
+            navigator.clipboard.writeText(shortenUrl)
+                .then(() => {
+                    alert("Shortened Url copied to clipBoard");
+                })
+                .catch(err => {
+                    console.error("Failed to Copy", err);
+                })
+        }
+    }
 
     const checkValidity = () => {
         if (!linksGroupName || !category) {
@@ -37,6 +51,12 @@ function Header({saveLinks}) {
                         <Button type="header">
                             <NavLink className="w-full, h-full block pt-1"
                                      to={"/"}>Homepage</NavLink>
+                        </Button>
+                    </div>
+
+                    <div>
+                        <Button type="header" onclick={copyToClipBoard}>
+                            Copy Link
                         </Button>
                     </div>
 

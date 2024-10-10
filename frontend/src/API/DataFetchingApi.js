@@ -5,6 +5,7 @@ export const getLinks = async (page= "1", search = null) => {
         method: "GET",
     });
     const responseData = await response.json();
+    console.log(responseData)
     if (!response.ok) {
          const errorMessage = responseData?.error || "Error fetching links";
          throw new Error(errorMessage);

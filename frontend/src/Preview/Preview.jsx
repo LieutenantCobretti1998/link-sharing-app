@@ -5,14 +5,14 @@ import Modal from "../UI/Modal.jsx";
 import {useEffect} from "react";
 import {setBlendedColor, toggleModal} from "../SaveLogic/SaveSlice.js";
 import {averageColors, hexToRgb, rgbToHex} from "../Helpers/ColorsConversion.js";
-import {useLocation, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
 import {getLink} from "../API/DataFetchingApi.js";
 import Spinner from "../UI/Spinner.jsx";
+import {setShortenUrl} from "../ShortenUrl/ShortenUrlSlice.js";
 
 function Preview() {
     const dispatch = useDispatch();
-    const location = useLocation();
     const { id} = useParams();
     const {data: LinksGroupData, isError: FailedRequest, isLoading} = useQuery({
         queryKey: ["linksGroupPreview", id],
@@ -34,6 +34,13 @@ function Preview() {
 
         };
     }, [showModal]);
+
+    useEffect(() => {
+        console.log(LinksGroupData)
+        if(LinksGroupData && LinksGroupData.shorten_url) {
+            dispatch(setShortenUrl(LinksGroupData.shorten_url));
+        }
+    }, [LinksGroupData, dispatch]);
 
     const getBackgroundImage = (label) => {
         const background = backgrounds.find((image) => image.value === label);

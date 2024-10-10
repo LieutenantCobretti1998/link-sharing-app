@@ -43,6 +43,7 @@ def format_links_data(link: any, flask_server_url: str) -> dict:
     """
     return {
         "id": link.id,
+        ""
         "linksGroupImage": f"{flask_server_url}/{link.links_group_image}" if link.links_group_image else "",
         "linksGroupName": link.links_group_name,
         "textColor": link.text_color,

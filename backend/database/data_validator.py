@@ -49,6 +49,21 @@ class GetAllLinksData(AbstractDataValidator):
         except OperationalError:
             raise OperationalError
 
+    def link_via_shorten_url(self, username: str, links_group_id: int):
+        """
+        :param username: str,
+        :param links_group_id: int,
+        This method is checked the linksGroup chosen by users
+        """
+        try:
+            from .models import LinksGroup
+            link_group = self.db_session.query(LinksGroup).filter_by(shorten_url=f"http://localhost:5173/api/{username}/{links_group_id}").first()
+            if not link_group:
+                raise NoResultFound(f"LinksGroup with id {links_group_id} was not found")
+            return link_group
+
+        except OperationalError:
+            raise OperationalError
     def all_links_count(self) -> int:
         """
         :return: int
@@ -107,10 +122,11 @@ class GetAllLinksData(AbstractDataValidator):
         except OperationalError:
             raise OperationalError
 
-    def get_links_group_data(self, links_group_id: int):
+    def get_links_group_data(self, links_group_id: int, preview: str = "No"):
         """
         the method which get the links group data from the links database based on the id
-        :param links_group_id:
+        :param links_group_id: int
+        :param preview: str
         :return:
         """
         try:
