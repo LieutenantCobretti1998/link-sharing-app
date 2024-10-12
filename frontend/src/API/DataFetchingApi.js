@@ -5,7 +5,6 @@ export const getLinks = async (page= "1", search = null) => {
         method: "GET",
     });
     const responseData = await response.json();
-    console.log(responseData)
     if (!response.ok) {
          const errorMessage = responseData?.error || "Error fetching links";
          throw new Error(errorMessage);
@@ -31,6 +30,25 @@ export const getLink = async (id) => {
     }
     return responseData;
 };
+
+export const previewLink = async(username, id) => {
+    const response = await fetch(`http://127.0.0.1:5000/api/${username}/${id}`, {
+        "method": "GET",
+    });
+    const responseData = await response.json();
+    console.log(responseData);
+    if (!response.ok) {
+        switch (response.status) {
+            case 404:
+                throw new Response(responseData.error, {status:404});
+            case 500:
+                throw new Response(responseData.error, {status:500});
+            default:
+                throw new Response("Error to get Link");
+        }
+    }
+    return responseData;
+}
 
 export const updateLinksGroup = async ({id, links}) => {
     const response = await fetch(`http://127.0.0.1:5000/api/update-link/${id}`, {

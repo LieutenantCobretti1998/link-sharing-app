@@ -85,7 +85,8 @@ def delete_link_group(links_group_id):
     message, code = GetAllLinksData(db.session).delete_links_group_data(links_group_id)
     return jsonify(message), code
 
-@links_bp.route('/<string:username>/<int:links_group_id>', methods=['GET'])
+
+@links_bp.route('/<string:username>/<string:links_group_id>', methods=['GET'])
 def get_shorten_url(username, links_group_id):
     try:
         chosen_link = GetAllLinksData(db.session).link_via_shorten_url(username, links_group_id)
@@ -105,7 +106,6 @@ def get_shorten_url(username, links_group_id):
         return jsonify({"error": "Database Fatal Error"}), 500
     except NoResultFound:
         return jsonify({"error": "Not Found😒"}), 404
-
 
 
 @links_bp.route('/link-overview/<int:links_group_id>', methods=['GET'])

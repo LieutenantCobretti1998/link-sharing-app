@@ -49,7 +49,7 @@ class GetAllLinksData(AbstractDataValidator):
         except OperationalError:
             raise OperationalError
 
-    def link_via_shorten_url(self, username: str, links_group_id: int):
+    def link_via_shorten_url(self, username: str, links_group_id: str):
         """
         :param username: str,
         :param links_group_id: int,
@@ -57,7 +57,7 @@ class GetAllLinksData(AbstractDataValidator):
         """
         try:
             from .models import LinksGroup
-            link_group = self.db_session.query(LinksGroup).filter_by(shorten_url=f"http://localhost:5173/api/{username}/{links_group_id}").first()
+            link_group = self.db_session.query(LinksGroup).filter_by(shorten_url=f"http://localhost:5173/{username}/{links_group_id}").first()
             if not link_group:
                 raise NoResultFound(f"LinksGroup with id {links_group_id} was not found")
             return link_group

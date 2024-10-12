@@ -1,5 +1,5 @@
 import Button from "../UI/Button.jsx";
-import {NavLink, useLocation, useParams} from "react-router-dom";
+import {NavLink, useLocation, useMatch, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {resetSaveState, toggleModal} from "../SaveLogic/SaveSlice.js";
 import {resetLinksState} from "../LinksAddition/LinkSlice.js";
@@ -8,6 +8,7 @@ import {resetProfileState} from "../ProfileDetails/ProfileSlice.js";
 // eslint-disable-next-line react/prop-types
 function Header({saveLinks}) {
     const location = useLocation();
+    const dynamicMatch =  useMatch("/:username/:id");
     const {id} = useParams();
     const dispatch = useDispatch();
     const {linksGroupName, category, blendedColor} = useSelector(state => state.saveChooses);
@@ -91,6 +92,16 @@ function Header({saveLinks}) {
             </header>
         )
     }
+    else if(dynamicMatch) {
+        return (
+            <div className=" w-full h-64 rounded-b-3xl"
+                 style={{
+                     backgroundColor: blendedColor ? blendedColor : "#4015f8"
+                 }}
+            >
+            </div>
+        )
+    }
 
     return (location.pathname === "/preview" || location.pathname.startsWith("/edit-preview") ? (
             <div className=" w-full h-64 rounded-b-3xl"
@@ -102,7 +113,9 @@ function Header({saveLinks}) {
                     className="w-70 flex flex-row flex-md-row align-items-center bg-white p-5 relative top-2 ml-2 mr-2 rounded-md mb-4 justify-between font-instrumentBold">
                     <div>
                         <Button type="header">
-                            <NavLink className="w-full, h-full block pt-1" to={location.pathname.includes("edit") ? `/edit-links/${id}`: "/links"}>Back to Editor</NavLink>
+                            <NavLink className="w-full, h-full block pt-1"
+                                     to={location.pathname.includes("edit") ? `/edit-links/${id}` : "/links"}>Back to
+                                Editor</NavLink>
                         </Button>
                     </div>
 

@@ -1,46 +1,28 @@
 import {useDispatch, useSelector} from "react-redux";
 import {backgrounds} from "../BackgroundImages/BackgroundImages.jsx";
 import {platforms} from "../Platforms/PreDefaultPlatForms.jsx";
-import Modal from "../UI/Modal.jsx";
 import {useEffect} from "react";
 import {setBlendedColor, toggleModal} from "../SaveLogic/SaveSlice.js";
 import {averageColors, hexToRgb, rgbToHex} from "../Helpers/ColorsConversion.js";
 import {useParams} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
-import {getLink} from "../API/DataFetchingApi.js";
+import {previewLink} from "../API/DataFetchingApi.js";
 import Spinner from "../UI/Spinner.jsx";
-import {setShortenUrl} from "../ShortenUrl/ShortenUrlSlice.js";
 
-function Preview() {
+
+function CopyLinkPreview() {
     const dispatch = useDispatch();
-    const { id} = useParams();
-    const {data: LinksGroupData, isError: FailedRequest, isLoading} = useQuery({
-        queryKey: ["linksGroupPreview", id],
-        queryFn: () => getLink(id),
-        enabled: !!id
+    const {id, username} = useParams();
+    const {data: CopiedLinksData, isError: FailedRequest, isLoading} = useQuery({
+        queryKey: ["ChosenLinks", id, username],
+        queryFn: () => previewLink(username, id)
     });
     const {
-        linksGroupName, links, shortDescription,
-        linksGroupImage, textColor, commonColor,
-        backgroundColor, backgroundImage, showModal
-        } = id ? LinksGroupData || {}: useSelector((state) => state.saveChooses);
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            dispatch(toggleModal(false))
-        }, 5000);
-        return () => {
-            clearTimeout(timer)
-
-        };
-    }, [showModal]);
-
-    useEffect(() => {
-        if(LinksGroupData && LinksGroupData.shorten_url) {
-            dispatch(setShortenUrl(LinksGroupData.shorten_url));
-        }
-    }, [LinksGroupData, dispatch]);
-
+             linksGroupName, links, shortDescription,
+             linksGroupImage, textColor, commonColor,
+             backgroundColor, backgroundImage
+          } = CopiedLinksData || {};
+    console.log(links)
     const getBackgroundImage = (label) => {
         const background = backgrounds.find((image) => image.value === label);
         return background ? background.image: null;
@@ -75,7 +57,7 @@ function Preview() {
             }
         }
     }, [textColor, commonColor, backgroundColor]);
-    if(isLoading && id) {
+    if(isLoading) {
         return <Spinner />
     }
     return (
@@ -160,9 +142,9 @@ function Preview() {
                 ))}
                 </svg>
             </section>
-                {showModal && <Modal text={"Please check the required fields in the profile section"}/>}
+
         </>
     );
 }
 
-export default Preview;
+export default CopyLinkPreview;

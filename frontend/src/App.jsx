@@ -8,6 +8,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import HomePage from "./HomePage/HomePage.jsx";
 import {editLinkLoader} from "./Links/EditLinksPreLoader.js";
 import DynamicError from "./UI/Errors/DynamicError.jsx";
+import CopyLinkPreview from "./Preview/CopyLinkPreview.jsx";
 
 const router = createBrowserRouter([
   {
@@ -21,7 +22,8 @@ const router = createBrowserRouter([
         {path: "/preview-linksGroup/:id", element: <Preview />},
         {path: "/edit-links/:id", element: <Links />, loader: editLinkLoader, errorElement: <DynamicError />},
         {path: "/edit-profile/:id", element: <ProfileDetails />, loader: editLinkLoader, errorElement: <DynamicError />},
-        {path: "edit-preview/:id", element: <Preview />}
+        {path: "edit-preview/:id", element: <Preview />},
+        {path: "/:username/:id", element: <CopyLinkPreview />},
     ]
   }
 ]);
