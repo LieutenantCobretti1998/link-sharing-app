@@ -64,7 +64,7 @@ function NewLinkForm({id, index, onUpdate, onDelete, errors, findLinkById}) {
                             <span className="mr-2">{e.icon}</span>
                         </div>
                     )}
-                     defaultValue={platforms.find(platform => platform.label === findLinkById.label)}
+                    defaultValue={platforms.find(platform => platform.label === findLinkById.label)}
                     onChange = {handlePlatformChange}
                     styles={customStyles}
                     required

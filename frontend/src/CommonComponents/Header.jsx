@@ -8,16 +8,18 @@ import {resetProfileState} from "../ProfileDetails/ProfileSlice.js";
 // eslint-disable-next-line react/prop-types
 function Header({saveLinks}) {
     const location = useLocation();
-    const dynamicMatch =  useMatch("/:username/:id");
-    const {id} = useParams();
+    const dynamicMatch =  useMatch({
+        path: "/:username/:id",
+        caseSensitive: true
+    } );
+    const {id, username} = useParams();
     const dispatch = useDispatch();
     const {linksGroupName, category, blendedColor} = useSelector(state => state.saveChooses);
     const savedParameters = useSelector(state => state.saveChooses);
     const {shortenUrl} = useSelector(state => state.shortenUrl);
 
     const copyToClipBoard = () => {
-        console.log(shortenUrl)
-        window.focus()
+        window.focus();
         if(shortenUrl) {
             navigator.clipboard.writeText(shortenUrl)
                 .then(() => {
@@ -92,7 +94,7 @@ function Header({saveLinks}) {
             </header>
         )
     }
-    else if(dynamicMatch) {
+    else if(dynamicMatch?.pattern?.path === "/:username/:id" && username) {
         return (
             <div className=" w-full h-64 rounded-b-3xl"
                  style={{
