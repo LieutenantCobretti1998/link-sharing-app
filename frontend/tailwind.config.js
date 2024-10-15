@@ -32,10 +32,19 @@ export default {
           transform: 'translateY(-25%)',
           fill: "#633CFF"
         }
+      },
+      "spin": {
+          "0%": {
+          transform: "rotate(0deg)"
+          },
+          "100%": {
+              transform: "rotate(360deg)"
+          }
       }
     },
     animation: {
       "fill-bounce": "fill-bounce 1s infinite linear",
+      "spin": "spin 1s infinite linear"
     },
     extend: {},
   },

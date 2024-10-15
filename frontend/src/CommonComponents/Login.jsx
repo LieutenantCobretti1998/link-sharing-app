@@ -1,9 +1,17 @@
 import {useForm} from "react-hook-form";
 import Button from "../UI/Button.jsx";
-import {Link} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
+import toast, {Toaster} from "react-hot-toast";
+import {useEffect} from "react";
 
 function Login() {
     const {register, handleSubmit, formState: {errors} } = useForm();
+    const location = useLocation();
+    useEffect(() => {
+        if(location.state?.message) {
+        toast.success(location.state?.message)
+        }
+    }, []);
     const onSubmit = (data) => {
         console.log(data);
     }
@@ -30,8 +38,17 @@ function Login() {
                             <input placeholder="e.g jamil@gmail.com"
                                    type="email"
                                    id="email"
-                                   {...register("email", {required: "Email is required"})}
-                                   className="w-full pl-10 bg-white p-3 border-[.5px] rounded-md focus:outline-none focus:border-primaryPurple focus:shadow-sm focus:shadow-primaryPurple"/>
+                                   {...register("email", {
+                                       required: "Email is required",
+                                       validate: (value) => value.trim() !== "" || "Pure whitespaces are not allowed"
+                                   })}
+                                   className="relative w-full pl-10 bg-white p-3 border-[.5px] rounded-md focus:outline-none focus:border-primaryPurple focus:shadow-sm focus:shadow-primaryPurple"/>
+                            <svg className="absolute translate-x-4 translate-y-[-2rem]"
+                                 xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+                                 viewBox="0 0 16 16">
+                                <path fill="#737373"
+                                      d="M14 3H2a.5.5 0 0 0-.5.5V12a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V3.5A.5.5 0 0 0 14 3Zm-.5 9h-11V4.637l5.162 4.732a.5.5 0 0 0 .676 0L13.5 4.637V12Z"/>
+                            </svg>
                         </div>
                         <div>
                             <label htmlFor="password" className="block font-instrumentNormal mb-1">Password</label>
@@ -39,14 +56,24 @@ function Login() {
                                    type="password"
                                    id="password"
                                    minLength="8"
-                                   {...register("password", {required: "Password is required"})}
-                                   className="w-full pl-10 bg-white p-3 border-[.5px] rounded-md focus:outline-none focus:border-primaryPurple focus:shadow-sm focus:shadow-primaryPurple"/>
+                                   {...register("password", {
+                                       required: "Password is required",
+                                       validate: (value) => value.trim() !== "" || "Pure whitespaces are not allowed"
+                                   })}
+                                   className="relative w-full pl-10 bg-white p-3 border-[.5px] rounded-md focus:outline-none focus:border-primaryPurple focus:shadow-sm focus:shadow-primaryPurple"/>
+                            <svg className="absolute translate-x-4 translate-y-[-2rem]"
+                                 xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+                                 viewBox="0 0 16 16">
+                                <path fill="#737373"
+                                      d="M13 5h-2V3.5a3 3 0 0 0-6 0V5H3a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1ZM8.5 9.914V11.5a.5.5 0 0 1-1 0V9.914a1.5 1.5 0 1 1 1 0ZM10 5H6V3.5a2 2 0 1 1 4 0V5Z"/>
+                            </svg>
                         </div>
-                        <Button type={"login"} typeForm={true} >Login</Button>
-                    <p className="font-instrumentNormal">Don't have an account ? <Link to="/create-user" className="text-primaryPurple font-instrumentNormal">Create account</Link></p>
+                        <Button type={"login"} typeForm={true}>Login</Button>
+                        <p className="font-instrumentNormal">Don't have an account ? <Link to="/create-user" className="text-primaryPurple font-instrumentNormal">Create account</Link></p>
                     </form>
                 </section>
             </div>
+            <Toaster />
         </main>
     );
 }

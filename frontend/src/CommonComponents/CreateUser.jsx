@@ -1,9 +1,14 @@
 import {useForm, useWatch} from "react-hook-form";
 import Button from "../UI/Button.jsx";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import {useMutation} from "@tanstack/react-query";
+import {createUser} from "../API/Login.js";
+import MiniSpinner from "../UI/MiniSpinner.jsx";
+import toast, {Toaster} from "react-hot-toast";
 
 function CreateUser() {
-    const {register, handleSubmit, control, formState: {errors} } = useForm();
+    const navigate = useNavigate();
+    const {register, handleSubmit, setError, control, formState: {errors} } = useForm();
     const password = useWatch(
         {
             control: control,
@@ -11,10 +16,18 @@ function CreateUser() {
             defaultValue: "",
             exact: true
         });
-
+    const {mutate:createNewUser, isLoading, isError} = useMutation({
+            mutationFn: (data) => createUser(data.username, data.password, data.email),
+            onSuccess: () => navigate("/login", {
+                state: {
+                    "message": "User created successfully"
+                }
+            }),
+            onError: (error) => toast.error(error.message || "An Error occurred. Please try again later ")
+    });
     const onSubmit = (data) => {
-        console.log(data);
-    }
+        createNewUser(data);
+        }
     return (
         <main className="flex justify-center items-center h-screen">
             <div className="flex flex-col gap-5">
@@ -38,22 +51,68 @@ function CreateUser() {
                             <input placeholder="e.g jamil@gmail.com"
                                    type="email"
                                    id="email"
-                                   {...register("email", {required: "Email is required"})}
-                                   className="w-full pl-10 bg-white p-3 border-[.5px] rounded-md focus:outline-none focus:border-primaryPurple focus:shadow-sm focus:shadow-primaryPurple"/>
-                            {errors.email && <p className="text-red text-end font-instrumentBold ">{errors.email.message}</p>}
+                                   {...register("email", {
+                                       required: "Email is required",
+                                       pattern: {
+                                           value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                           message: "Invalid email format"
+                                       },
+                                       validate: (value) => value.trim() !== "" || "Pure whitespaces are not allowed"
+
+                                   })}
+                                   className="relative w-full pl-10 bg-white p-3 border-[.5px] rounded-md focus:outline-none focus:border-primaryPurple focus:shadow-sm focus:shadow-primaryPurple"/>
+                            <svg className="absolute translate-x-4 translate-y-[-2rem]"
+                                 xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+                                 viewBox="0 0 16 16">
+                                <path fill="#737373"
+                                      d="M14 3H2a.5.5 0 0 0-.5.5V12a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V3.5A.5.5 0 0 0 14 3Zm-.5 9h-11V4.637l5.162 4.732a.5.5 0 0 0 .676 0L13.5 4.637V12Z"/>
+                            </svg>
+                            {errors.email &&
+                                <p className="text-red text-end font-instrumentBold ">{errors.email.message}</p>}
                         </div>
                         <div>
-                            <label htmlFor="password" className="block font-instrumentNormal mb-1">Create password</label>
+                            <label htmlFor="username" className="block font-instrumentNormal mb-1">Username</label>
+                            <input placeholder="Lieutenant Cobretti 98"
+                                   type="text"
+                                   id="username"
+                                   maxLength="25"
+                                   {...register("username", {
+                                       required: "Username is required",
+                                       maxLength: "Max 24 char is allowed",
+                                       validate: (value) => value.trim() !== "" || "Pure whitespaces are not allowed"
+                                   })}
+                                   className="relative w-full pl-10 bg-white p-3 border-[.5px] rounded-md focus:outline-none focus:border-primaryPurple focus:shadow-sm focus:shadow-primaryPurple"/>
+                            <svg className="absolute translate-x-4 translate-y-[-2rem]"
+                                 xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+                                 viewBox="0 0 16 16">
+                                <path fill="#737373"
+                                      d="M14 3H2a.5.5 0 0 0-.5.5V12a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V3.5A.5.5 0 0 0 14 3Zm-.5 9h-11V4.637l5.162 4.732a.5.5 0 0 0 .676 0L13.5 4.637V12Z"/>
+                            </svg>
+                            {errors.username && <p className="text-red text-end font-instrumentBold ">{errors.username.message}</p>}
+                        </div>
+                        <div>
+                            <label htmlFor="password" className="block font-instrumentNormal mb-1">Create
+                                password</label>
                             <input placeholder="At least 8 characters"
                                    type="password"
                                    id="password"
                                    minLength="8"
+                                   maxLength="12"
                                    {...register("password", {
                                        required: "Password is required",
-                                       minLength: {value: 8, message: "Password must be at least 8 characters"}
+                                       minLength: {value: 8, message: "Password must be at least 8 characters"},
+                                       maxLength: {value: 12, message: "Password must be no more than 12 characters"},
+                                       validate: (value) => value.trim() !== "" || "Pure whitespaces are not allowed"
                                    })}
-                                   className="w-full pl-10 bg-white p-3 border-[.5px] rounded-md focus:outline-none focus:border-primaryPurple focus:shadow-sm focus:shadow-primaryPurple"/>
-                            {errors.password && <p className="text-red text-end font-instrumentBold">{errors.password.message}</p>}
+                                   className="relative w-full pl-10 bg-white p-3 border-[.5px] rounded-md focus:outline-none focus:border-primaryPurple focus:shadow-sm focus:shadow-primaryPurple"/>
+                            <svg className="absolute translate-x-4 translate-y-[-2rem]"
+                                 xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+                                 viewBox="0 0 16 16">
+                                <path fill="#737373"
+                                      d="M13 5h-2V3.5a3 3 0 0 0-6 0V5H3a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1ZM8.5 9.914V11.5a.5.5 0 0 1-1 0V9.914a1.5 1.5 0 1 1 1 0ZM10 5H6V3.5a2 2 0 1 1 4 0V5Z"/>
+                            </svg>
+                            {errors.password &&
+                                <p className="text-red text-end font-instrumentBold">{errors.password.message}</p>}
                         </div>
                         <div>
                             <label htmlFor="confirm" className="block font-instrumentNormal mb-1">Confirm
@@ -61,18 +120,29 @@ function CreateUser() {
                             <input type="password"
                                    id="confirm"
                                    minLength="8"
+                                   maxLength="12"
                                    {...register("confirm", {
                                        required: "Please confirm your password",
+                                       minLength: {value: 8, message: "Password must be at least 8 characters"},
+                                       maxLength: {value: 12, message: "Password must be no more than 12 characters"},
                                        validate: (value) => value === password || "Passwords does not match"
                                    })}
-                                   className="w-full pl-10 bg-white p-3 border-[.5px] rounded-md focus:outline-none focus:border-primaryPurple focus:shadow-sm focus:shadow-primaryPurple"/>
-                            {errors.confirm && <p className="text-red text-end font-instrumentBold">{errors.confirm.message}</p>}
+                                   className="relative w-full pl-10 bg-white p-3 border-[.5px] rounded-md focus:outline-none focus:border-primaryPurple focus:shadow-sm focus:shadow-primaryPurple"/>
+                            <svg className="absolute translate-x-4 translate-y-[-2rem]"
+                                 xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+                                 viewBox="0 0 16 16">
+                                <path fill="#737373"
+                                      d="M13 5h-2V3.5a3 3 0 0 0-6 0V5H3a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1ZM8.5 9.914V11.5a.5.5 0 0 1-1 0V9.914a1.5 1.5 0 1 1 1 0ZM10 5H6V3.5a2 2 0 1 1 4 0V5Z"/>
+                            </svg>
+                            {errors.confirm &&
+                                <p className="text-red text-end font-instrumentBold">{errors.confirm.message}</p>}
                         </div>
-                        <Button type={"login"} typeForm={true}>Create user</Button>
+                        <Button type={"login"} typeForm={true}>{isLoading ? <MiniSpinner />: "Create user"}</Button>
                         <p className="font-instrumentNormal">Already have an account ? <Link to="/login" className="text-primaryPurple font-instrumentNormal">Login</Link></p>
                     </form>
                 </section>
             </div>
+            <Toaster />
         </main>
     );
 }

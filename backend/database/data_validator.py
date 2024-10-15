@@ -1,4 +1,5 @@
 from abc import ABC
+from operator import truediv
 
 from sqlalchemy import or_
 from sqlalchemy.exc import OperationalError, NoResultFound
@@ -182,6 +183,42 @@ class GetAllLinksData(AbstractDataValidator):
             self.db_session.commit()
             return {"message": "LinksGroup deleted successfully"}, 200
 
+        except OperationalError:
+            self.db_session.rollback()
+            return {"error": "Database Fatal Error"}, 500
+
+class UserLogic(AbstractDataValidator):
+    def __init__(self, db_session):
+        super().__init__(db_session)
+
+    def find_user(self, username: str) -> bool:
+        """
+        username: str
+        return: bool
+        Checking user existence
+        """
+        from .models import User
+        user_exist = self.db_session.query(User).filter(User.username == username).first()
+        if user_exist:
+            return True
+        else:
+            return False
+
+    def create_user(self, **kwargs) -> tuple:
+        """
+        user_data: dict
+        return: tuple
+        Create a user method
+        """
+        try:
+            from .models import User
+            new_user = User()
+            for key, value in kwargs.items():
+                if hasattr(new_user, key):
+                    setattr(new_user, key, value)
+            self.db_session.add(new_user)
+            self.db_session.commit()
+            return {"message": "User created successfully"}, 200
         except OperationalError:
             self.db_session.rollback()
             return {"error": "Database Fatal Error"}, 500

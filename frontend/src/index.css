@@ -28,7 +28,7 @@
 }
 
 body {
-    @apply bg-light-grey
+    @apply bg-light-grey font-instrumentNormal
 }
 
 
@@ -546,5 +546,12 @@ body {
         margin-left: -190px;
         text-align: center;
       }
+    }
+    .mini-spinner {
+        border: 2px solid rgba(0, 0, 0, 0.1);
+        border-left-color: #FFFFFF;
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
     }
 }

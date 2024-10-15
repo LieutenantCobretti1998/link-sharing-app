@@ -1,5 +1,4 @@
-import React from 'react';
-
+// eslint-disable-next-line react/prop-types
 function Modal({text, isVisible}) {
     return (
         <div className={`modal-container ${isVisible ? 'show' : ''}`}>

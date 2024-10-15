@@ -1,8 +1,18 @@
 import random
 import string
-from sqlalchemy import Column, Integer, String, DateTime, JSON
+from flask_login import UserMixin
+from sqlalchemy import Column, Integer, String, DateTime, JSON, VARCHAR
 from backend.database import Base, db
 import os
+
+
+class User(Base, UserMixin):
+    __tablename__ = 'users'
+    id = db.Column(Integer, primary_key=True)
+    email = db.Column(VARCHAR, unique=False, nullable=False)
+    username = db.Column(VARCHAR(25), unique=True, nullable=False)
+    password = db.Column(VARCHAR(), nullable=False, unique=False)
+    role = db.Column(VARCHAR(20), nullable=False, default='user')
 
 
 class LinksGroup(Base):

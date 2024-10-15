@@ -1,10 +1,11 @@
 import os
 from flask import Flask
 from flask_migrate import Migrate
-
-from .ApiRoutes import init_routes
+from .ApiRoutes import init_links_routes
+from .LoginRoutes import init_log_routes
 from .config import DevelopmentConfig, ProductionConfig, TestingConfig
 from .database import db
+from .extensions import login_manager
 
 
 def create_app(config_class=None):
@@ -23,7 +24,9 @@ def create_app(config_class=None):
 
     # Load the configuration
     app.config.from_object(config_class)
-    init_routes(app)
+    init_links_routes(app)
+    init_log_routes(app)
+    login_manager.init_app(app)
     db.init_app(app)
     migrate = Migrate()
     migrate.init_app(app, db)
