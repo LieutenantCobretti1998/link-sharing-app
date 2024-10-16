@@ -1,8 +1,11 @@
 from abc import ABC
 from operator import truediv
+from typing import Any
 
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_
 from sqlalchemy.exc import OperationalError, NoResultFound
+from werkzeug.security import check_password_hash
 
 
 class AbstractDataValidator(ABC):
@@ -191,34 +194,75 @@ class UserLogic(AbstractDataValidator):
     def __init__(self, db_session):
         super().__init__(db_session)
 
+    def check_user(self, password: str, username: str) -> Any | None:
+        """
+        password: str,
+        username: str,
+        return: Any | None
+        Check if the user exists and then log it in
+        """
+        from .models import User
+        user = self.db_session.query(User).filter(User.email == username).first()
+        if user and check_password_hash(pwhash=password, password=password):
+            return user
+        else:
+            return None
+
     def find_user(self, username: str) -> bool:
         """
         username: str
         return: bool
         Checking user existence
         """
-        from .models import User
-        user_exist = self.db_session.query(User).filter(User.username == username).first()
+        from .models import Profile
+        user_exist = self.db_session.query(Profile).filter(Profile.username == username).first()
         if user_exist:
             return True
         else:
             return False
 
-    def create_user(self, **kwargs) -> tuple:
+    def find_email(self, email: str) -> bool | list:
         """
-        user_data: dict
+                email: str
+                return: bool
+                Checking user existence
+                """
+        from .models import User
+        user_exist = self.db_session.query(User).filter(User.email == email).first()
+        if user_exist:
+            return user_exist
+        else:
+            return False
+
+    def create_user(self, username:str, **kwargs) -> tuple:
+        """
+        username: str
+        **kwargs
         return: tuple
         Create a user method
         """
         try:
-            from .models import User
-            new_user = User()
-            for key, value in kwargs.items():
-                if hasattr(new_user, key):
-                    setattr(new_user, key, value)
-            self.db_session.add(new_user)
-            self.db_session.commit()
-            return {"message": "User created successfully"}, 200
+            from .models import User, Profile
+            existed_user = self.find_email(kwargs["email"])
+            if not existed_user:
+                new_user = User()
+                for key, value in kwargs.items():
+                    if hasattr(new_user, key):
+                        setattr(new_user, key, value)
+                self.db_session.flush()
+                new_profile = Profile(username=username, user_id=new_user.id)
+                self.db_session.add(new_user, new_profile)
+                self.db_session.commit()
+                return {"message": "User created successfully"}, 200
+            else:
+                print(existed_user.can_create_profile())
+                if existed_user.can_create_profile():
+                    new_profile = Profile(username=username, user_id=existed_user)
+                    self.db_session.add(new_profile)
+                    self.db_session.commit()
+                    return {"message": "User created successfully"}, 200
+                else:
+                    return {"message": "Maximum capacity of users reached"}, 409
         except OperationalError:
             self.db_session.rollback()
-            return {"error": "Database Fatal Error"}, 500
+            return {"message": "Database Fatal Error"}, 500

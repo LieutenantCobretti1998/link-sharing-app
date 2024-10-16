@@ -17,4 +17,8 @@ export const createUser = async (username, password, email) => {
          throw new Error(responseData.message);
     }
     return responseData;
+};
+
+export const loginUser = async (email, password) => {
+
 }

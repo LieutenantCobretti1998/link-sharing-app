@@ -1,19 +1,29 @@
 import random
 import string
 from flask_login import UserMixin
-from sqlalchemy import Column, Integer, String, DateTime, JSON, VARCHAR
+from sqlalchemy import Column, Integer, String, DateTime, JSON, VARCHAR, ForeignKey
+from sqlalchemy.orm import relationship
+
 from backend.database import Base, db
 import os
 
 
 class User(Base, UserMixin):
     __tablename__ = 'users'
-    id = db.Column(Integer, primary_key=True)
-    email = db.Column(VARCHAR, unique=False, nullable=False)
-    username = db.Column(VARCHAR(25), unique=True, nullable=False)
+    id = Column(Integer, primary_key=True)
+    email = Column(VARCHAR, unique=True, nullable=False)
     password = db.Column(VARCHAR(), nullable=False, unique=False)
-    role = db.Column(VARCHAR(20), nullable=False, default='user')
+    role = Column(VARCHAR(20), nullable=False, default='user')
+    profiles = relationship("Profile", backref="user", cascade="all, delete", lazy=True)
 
+    def can_create_profile(self):
+        return len(self.profiles) < 3
+
+class Profile(Base):
+    __tablename__ = 'profiles'
+    id = Column(Integer, primary_key=True)
+    username = Column(VARCHAR(25), unique=True, nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
 
 class LinksGroup(Base):
     __tablename__ = 'links_group'
