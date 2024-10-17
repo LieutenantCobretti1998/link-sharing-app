@@ -41,7 +41,7 @@ class GetAllLinksData(AbstractDataValidator):
         """
         :param page: int,
         :param per_page: int
-        The method to get all data from the links database
+        The method to get all data from the links Database
         """
         try:
             from .models import LinksGroup
@@ -71,7 +71,7 @@ class GetAllLinksData(AbstractDataValidator):
     def all_links_count(self) -> int:
         """
         :return: int
-        Check all available links in database
+        Check all available links in Database
         """
         try:
             from .models import LinksGroup
@@ -111,7 +111,7 @@ class GetAllLinksData(AbstractDataValidator):
         """
         :param search: str
         :return: int
-        Check all available links in database
+        Check all available links in Database
         """
         try:
             from .models import LinksGroup
@@ -128,7 +128,7 @@ class GetAllLinksData(AbstractDataValidator):
 
     def get_links_group_data(self, links_group_id: int, preview: str = "No"):
         """
-        the method which get the links group data from the links database based on the id
+        the method which get the links group data from the links Database based on the id
         :param links_group_id: int
         :param preview: str
         :return:
@@ -194,7 +194,7 @@ class UserLogic(AbstractDataValidator):
     def __init__(self, db_session):
         super().__init__(db_session)
 
-    def check_user(self, password: str, username: str) -> Any | None:
+    def check_user(self, password: str, email: str) -> Any | None:
         """
         password: str,
         username: str,
@@ -202,8 +202,8 @@ class UserLogic(AbstractDataValidator):
         Check if the user exists and then log it in
         """
         from .models import User
-        user = self.db_session.query(User).filter(User.email == username).first()
-        if user and check_password_hash(pwhash=password, password=password):
+        user = self.db_session.query(User).filter(User.email == email).first()
+        if user and check_password_hash(pwhash=user.password, password=password):
             return user
         else:
             return None
@@ -249,20 +249,20 @@ class UserLogic(AbstractDataValidator):
                 for key, value in kwargs.items():
                     if hasattr(new_user, key):
                         setattr(new_user, key, value)
-                self.db_session.flush()
-                new_profile = Profile(username=username, user_id=new_user.id)
-                self.db_session.add(new_user, new_profile)
+                # self.db_session.flush()
+                # new_profile = Profile(username=username, user_id=new_user.id)
+                self.db_session.add(new_user)
                 self.db_session.commit()
                 return {"message": "User created successfully"}, 200
             else:
-                print(existed_user.can_create_profile())
-                if existed_user.can_create_profile():
-                    new_profile = Profile(username=username, user_id=existed_user)
-                    self.db_session.add(new_profile)
-                    self.db_session.commit()
-                    return {"message": "User created successfully"}, 200
-                else:
-                    return {"message": "Maximum capacity of users reached"}, 409
+                return {"message": "User Already exists"}, 409
+                # if existed_user.can_create_profile():
+                #     new_profile = Profile(username=username, user_id=existed_user.id)
+                #     self.db_session.add(new_profile)
+                #     self.db_session.commit()
+                #     return {"message": "User created successfully"}, 200
+                # else:
+                #     return {"message": "Maximum capacity of users reached"}, 409
         except OperationalError:
             self.db_session.rollback()
             return {"message": "Database Fatal Error"}, 500

@@ -4,7 +4,7 @@ from flask_login import UserMixin
 from sqlalchemy import Column, Integer, String, DateTime, JSON, VARCHAR, ForeignKey
 from sqlalchemy.orm import relationship
 
-from backend.database import Base, db
+from backend.Database import Base, db
 import os
 
 

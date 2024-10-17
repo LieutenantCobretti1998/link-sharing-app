@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from sqlalchemy.exc import OperationalError, NoResultFound
-from ...database import GetAllLinksData, db, map_frontend_to_backend
+from ...Database import GetAllLinksData, db, map_frontend_to_backend
 from .helpers import save_base64_image, format_links_data
 from .ui_sets import perPage
 

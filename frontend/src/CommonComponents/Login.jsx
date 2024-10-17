@@ -1,19 +1,28 @@
 import {useForm} from "react-hook-form";
 import Button from "../UI/Button.jsx";
-import {Link, useLocation, useNavigate} from "react-router-dom";
+import {Link, replace, useLocation, useNavigate} from "react-router-dom";
 import toast, {Toaster} from "react-hot-toast";
 import {useEffect} from "react";
+import {useMutation} from "@tanstack/react-query";
+import {loginUser} from "../API/Login.js";
+import MiniSpinner from "../UI/MiniSpinner.jsx";
 
 function Login() {
     const {register, handleSubmit, formState: {errors} } = useForm();
     const location = useLocation();
+    const navigate = useNavigate();
     useEffect(() => {
-        if(location.state?.message) {
+        if(location.state?.message && location.state?.code === "success") {
         toast.success(location.state?.message)
         }
     }, []);
+    const {mutate:Login, isLoading} = useMutation({
+        mutationFn: (data) => loginUser(data.email, data.password),
+        onSuccess: () => navigate("/", {replace: true}),
+        onError: (error) => toast.error(error.message || "An Error occurred. Please try again later ")
+    })
     const onSubmit = (data) => {
-        console.log(data);
+        Login(data)
     }
     return (
         <main className="flex justify-center items-center h-screen">
@@ -56,8 +65,11 @@ function Login() {
                                    type="password"
                                    id="password"
                                    minLength="8"
+                                   maxLength="12"
                                    {...register("password", {
                                        required: "Password is required",
+                                       minLength: {value: 8, message: "Password must be at least 8 characters"},
+                                       maxLength: {value: 12, message: "Password must be no more than 12 characters"},
                                        validate: (value) => value.trim() !== "" || "Pure whitespaces are not allowed"
                                    })}
                                    className="relative w-full pl-10 bg-white p-3 border-[.5px] rounded-md focus:outline-none focus:border-primaryPurple focus:shadow-sm focus:shadow-primaryPurple"/>
@@ -68,7 +80,7 @@ function Login() {
                                       d="M13 5h-2V3.5a3 3 0 0 0-6 0V5H3a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1ZM8.5 9.914V11.5a.5.5 0 0 1-1 0V9.914a1.5 1.5 0 1 1 1 0ZM10 5H6V3.5a2 2 0 1 1 4 0V5Z"/>
                             </svg>
                         </div>
-                        <Button type={"login"} typeForm={true}>Login</Button>
+                        <Button type={"login"} typeForm={true}>{isLoading ? <MiniSpinner />: "Login"}</Button>
                         <p className="font-instrumentNormal">Don't have an account ? <Link to="/create-user" className="text-primaryPurple font-instrumentNormal">Create account</Link></p>
                     </form>
                 </section>

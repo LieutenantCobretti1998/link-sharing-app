@@ -20,7 +20,8 @@ function CreateUser() {
             mutationFn: (data) => createUser(data.username, data.password, data.email),
             onSuccess: () => navigate("/login", {
                 state: {
-                    "message": "User created successfully"
+                    "message": "User created successfully",
+                    "code": "success"
                 }
             }),
             onError: (error) => toast.error(error.message || "An Error occurred. Please try again later ")
@@ -70,26 +71,26 @@ function CreateUser() {
                             {errors.email &&
                                 <p className="text-red text-end font-instrumentBold ">{errors.email.message}</p>}
                         </div>
-                        <div>
-                            <label htmlFor="username" className="block font-instrumentNormal mb-1">Username</label>
-                            <input placeholder="Lieutenant Cobretti 98"
-                                   type="text"
-                                   id="username"
-                                   maxLength="25"
-                                   {...register("username", {
-                                       required: "Username is required",
-                                       maxLength: "Max 24 char is allowed",
-                                       validate: (value) => value.trim() !== "" || "Pure whitespaces are not allowed"
-                                   })}
-                                   className="relative w-full pl-10 bg-white p-3 border-[.5px] rounded-md focus:outline-none focus:border-primaryPurple focus:shadow-sm focus:shadow-primaryPurple"/>
-                            <svg className="absolute translate-x-4 translate-y-[-2rem]"
-                                 xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
-                                 viewBox="0 0 16 16">
-                                <path fill="#737373"
-                                      d="M14 3H2a.5.5 0 0 0-.5.5V12a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V3.5A.5.5 0 0 0 14 3Zm-.5 9h-11V4.637l5.162 4.732a.5.5 0 0 0 .676 0L13.5 4.637V12Z"/>
-                            </svg>
-                            {errors.username && <p className="text-red text-end font-instrumentBold ">{errors.username.message}</p>}
-                        </div>
+                        {/*<div>*/}
+                        {/*    <label htmlFor="username" className="block font-instrumentNormal mb-1">Username</label>*/}
+                        {/*    <input placeholder="Lieutenant Cobretti 98"*/}
+                        {/*           type="text"*/}
+                        {/*           id="username"*/}
+                        {/*           maxLength="25"*/}
+                        {/*           {...register("username", {*/}
+                        {/*               required: "Username is required",*/}
+                        {/*               maxLength: "Max 24 char is allowed",*/}
+                        {/*               validate: (value) => value.trim() !== "" || "Pure whitespaces are not allowed"*/}
+                        {/*           })}*/}
+                        {/*           className="relative w-full pl-10 bg-white p-3 border-[.5px] rounded-md focus:outline-none focus:border-primaryPurple focus:shadow-sm focus:shadow-primaryPurple"/>*/}
+                        {/*    <svg className="absolute translate-x-4 translate-y-[-2rem]"*/}
+                        {/*         xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"*/}
+                        {/*         viewBox="0 0 16 16">*/}
+                        {/*        <path fill="#737373"*/}
+                        {/*              d="M14 3H2a.5.5 0 0 0-.5.5V12a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V3.5A.5.5 0 0 0 14 3Zm-.5 9h-11V4.637l5.162 4.732a.5.5 0 0 0 .676 0L13.5 4.637V12Z"/>*/}
+                        {/*    </svg>*/}
+                        {/*    {errors.username && <p className="text-red text-end font-instrumentBold ">{errors.username.message}</p>}*/}
+                        {/*</div>*/}
                         <div>
                             <label htmlFor="password" className="block font-instrumentNormal mb-1">Create
                                 password</label>

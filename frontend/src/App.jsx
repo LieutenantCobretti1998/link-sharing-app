@@ -11,21 +11,23 @@ import DynamicError from "./UI/Errors/DynamicError.jsx";
 import CopyLinkPreview from "./Preview/CopyLinkPreview.jsx";
 import Login from "./CommonComponents/Login.jsx";
 import CreateUser from "./CommonComponents/CreateUser.jsx";
+import ProtectedRoute from "./CommonComponents/ProtectedRoute.jsx";
+import {AuthProvider} from "./CustomLogic/AuthProvider.jsx";
 
 const router = createBrowserRouter([
   {
         path: "/",
-        element: <Layout />,
+      element: <ProtectedRoute><Layout /></ProtectedRoute>,
         children: [
-            {path: "/", element: <HomePage />},
-            {path: "/links", element: <Links />},
-            {path: "/profile", element: <ProfileDetails />},
-            {path: "/preview", element: <Preview />},
-            {path: "/preview-linksGroup/:id", element: <Preview />},
-            {path: "/edit-links/:id", element: <Links />, loader: editLinkLoader, errorElement: <DynamicError />},
-            {path: "/edit-profile/:id", element: <ProfileDetails />, loader: editLinkLoader, errorElement: <DynamicError />},
-            {path: "edit-preview/:id", element: <Preview />},
-            {path: "/:username/:id", element: <CopyLinkPreview />},
+            {path: "/", element: <ProtectedRoute><HomePage /></ProtectedRoute>},
+            {path: "/links", element: <ProtectedRoute><Links /></ProtectedRoute>},
+            {path: "/profile", element: <ProtectedRoute><ProfileDetails /></ProtectedRoute>},
+            {path: "/preview", element: <ProtectedRoute><Preview /></ProtectedRoute>},
+            {path: "/preview-linksGroup/:id", element: <ProtectedRoute><Preview /></ProtectedRoute>},
+            {path: "/edit-links/:id", element: <ProtectedRoute><Links /></ProtectedRoute>, loader: editLinkLoader, errorElement: <DynamicError />},
+            {path: "/edit-profile/:id", element: <ProtectedRoute><ProfileDetails /></ProtectedRoute>, loader: editLinkLoader, errorElement: <DynamicError />},
+            {path: "edit-preview/:id", element: <ProtectedRoute><Preview /></ProtectedRoute>},
+            {path: "/:username/:id", element: <ProtectedRoute><CopyLinkPreview /></ProtectedRoute>},
         ]
     },
     {
@@ -43,8 +45,10 @@ const queryClient = new QueryClient();
 function App() {
   return (
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router}></RouterProvider>
-        <ReactQueryDevtools />
+          <AuthProvider>
+            <RouterProvider router={router}></RouterProvider>
+          </AuthProvider>
+          <ReactQueryDevtools />
       </QueryClientProvider>
   )
 }
