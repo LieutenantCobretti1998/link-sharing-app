@@ -5,7 +5,7 @@ export const AuthContext = createContext();
 
 export function AuthProvider({children}) {
     const [authStatus, setAuthStatus] = useState({
-        authenticated: false,
+        authenticated: null,
         userCredentials: {
             "email": null,
             "profiles": null
