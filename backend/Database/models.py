@@ -1,6 +1,5 @@
 import random
 import string
-from flask_login import UserMixin
 from sqlalchemy import Column, Integer, String, DateTime, JSON, VARCHAR, ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -8,7 +7,7 @@ from backend.Database import Base, db
 import os
 
 
-class User(Base, UserMixin):
+class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
     email = Column(VARCHAR, unique=True, nullable=False)

@@ -2,23 +2,31 @@ import {useForm} from "react-hook-form";
 import Button from "../UI/Button.jsx";
 import {Link, replace, useLocation, useNavigate} from "react-router-dom";
 import toast, {Toaster} from "react-hot-toast";
-import {useEffect} from "react";
+import {useContext, useEffect} from "react";
 import {useMutation} from "@tanstack/react-query";
 import {loginUser} from "../API/Login.js";
 import MiniSpinner from "../UI/MiniSpinner.jsx";
+import {AuthContext} from "../CustomLogic/AuthProvider.jsx";
 
 function Login() {
+    const {setAuthStatus} = useContext(AuthContext);
     const {register, handleSubmit, formState: {errors} } = useForm();
     const location = useLocation();
     const navigate = useNavigate();
     useEffect(() => {
-        if(location.state?.message && location.state?.code === "success") {
+        if(location.state?.message) {
         toast.success(location.state?.message)
         }
     }, []);
     const {mutate:Login, isLoading} = useMutation({
         mutationFn: (data) => loginUser(data.email, data.password),
-        onSuccess: () => navigate("/", {replace: true}),
+        onSuccess: (data) => {
+            setAuthStatus({
+                authenticated: true,
+                userCredentials: data.user_data
+            });
+            navigate("/profiles", {replace: true});
+        },
         onError: (error) => toast.error(error.message || "An Error occurred. Please try again later ")
     })
     const onSubmit = (data) => {

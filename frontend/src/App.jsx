@@ -13,6 +13,7 @@ import Login from "./CommonComponents/Login.jsx";
 import CreateUser from "./CommonComponents/CreateUser.jsx";
 import ProtectedRoute from "./CommonComponents/ProtectedRoute.jsx";
 import {AuthProvider} from "./CustomLogic/AuthProvider.jsx";
+import Profiles from "./CommonComponents/Profiles.jsx";
 
 const router = createBrowserRouter([
   {
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
     {
         path: "/create-user",
         element: <CreateUser />
+    },
+    {
+        path: "/profiles",
+        element: <ProtectedRoute><Profiles /></ProtectedRoute>
     }
 ]);
 

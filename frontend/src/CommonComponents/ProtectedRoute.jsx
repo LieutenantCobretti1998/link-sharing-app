@@ -4,11 +4,15 @@ import {useContext} from "react";
 
 function ProtectedRoute({children}) {
     const {authStatus} = useContext(AuthContext);
-    console.log(authStatus.authenticated)
-    if (authStatus.authenticated === false) {
-        return <Navigate to="/login" replace />
+    switch (authStatus.authenticated ) {
+        case null:
+            return;
+        case false:
+            return <Navigate to="/login" replace />;
+        case true:
+            return children
+
     }
-    return children;
 }
 
 export default ProtectedRoute;

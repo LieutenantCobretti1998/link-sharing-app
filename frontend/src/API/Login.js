@@ -1,7 +1,7 @@
 "use strict";
 
 export const createUser = async (username, password, email) => {
-    const response = await fetch("http://localhost:5000/api/register", {
+    const response = await fetch("/api/register", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -20,7 +20,7 @@ export const createUser = async (username, password, email) => {
 };
 
 export const loginUser = async (email, password) => {
-        const response = await fetch("http://localhost:5000/api/login", {
+        const response = await fetch("/api/login", {
             method: "POST",
             headers: {
                  "Content-Type": "application/json"
@@ -34,17 +34,25 @@ export const loginUser = async (email, password) => {
         if (!response.ok) {
              throw new Error(responseData.message);
         }
+        localStorage.setItem("access-token", responseData.access_token);
         return responseData;
 };
 
 export const checkAuthStatus = async () => {
-    const response = await fetch("http://localhost:5000/api/auth_status", {
+    const token = localStorage.getItem("access-token");
+    if (!token) {
+        throw new Error("User is not authenticated");
+    }
+    const response = await fetch("/api/auth_status", {
         method: "GET",
-        credentials: "include"
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
     });
     if (response.ok) {
-        return await response.json()
+        const responsedData = await response.json()
+        return responsedData;
     } else {
-        throw new Error("Failed to chck user's authentication");
+        throw new Error("Failed to check user's authentication");
     }
 };

@@ -20,8 +20,7 @@ function CreateUser() {
             mutationFn: (data) => createUser(data.username, data.password, data.email),
             onSuccess: () => navigate("/login", {
                 state: {
-                    "message": "User created successfully",
-                    "code": "success"
+                    "message": "User created successfully"
                 }
             }),
             onError: (error) => toast.error(error.message || "An Error occurred. Please try again later ")

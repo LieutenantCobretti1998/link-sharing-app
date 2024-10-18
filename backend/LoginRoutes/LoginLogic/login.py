@@ -1,16 +1,11 @@
 from flask import Blueprint, request, jsonify
-from flask_login import login_user, logout_user, login_required, current_user
-from flask_cors import cross_origin
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from ...Database import db
-from ...extensions import login_manager
 from backend.Database.models import User
 from backend.Database.data_validator import UserLogic
 
 login_bp = Blueprint('login', __name__)
 
-@login_manager.user_loader
-def load_user(user_id):
-    return db.session.query(User).get(user_id)
 
 @login_bp.route('/login', methods=["POST", "GET"])
 def login():
@@ -18,23 +13,37 @@ def login():
     user_instance = UserLogic(db.session)
     user = user_instance.check_user(data.get("password"), data.get("email"))
     if user:
-        login_user(user, remember=True)
-        return jsonify({"message": "Successfully logged in"}), 200
+        access_token = create_access_token(identity=user.id)
+        profiles = []
+        for profile in user.profiles:
+            profiles.append({
+                "username": profile.username,
+            })
+        user_data = {
+            "email": user.email,
+            "profiles": profiles,
+        }
+        return jsonify({"message": "Successfully logged in",
+                        "access_token": access_token,
+                        "user_data": user_data
+                        }), 200
     return jsonify({"message": "Invalid username or password"}), 401
 
 @login_bp.route('/auth_status', methods=['GET'])
+@jwt_required()
 def auth_status():
-    print(current_user.is_authenticated)
-    if current_user.is_authenticated:
+    user_id = get_jwt_identity()
+    user = db.session.query(User).filter_by(id=user_id).first()
+    if user:
         profiles = []
-        for profile in current_user.profiles:
+        for profile in user.profiles:
             profiles.append({
                 "username": profile.username,
             })
         return jsonify({
             "authenticated": True,
             "user": {
-                "email": current_user.email,
+                "email": user.email,
                 "profiles": profiles,
             }
         }), 200

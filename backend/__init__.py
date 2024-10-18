@@ -1,13 +1,16 @@
 import os
 from flask import Flask
+from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from .ApiRoutes import init_links_routes
 from .LoginRoutes import init_log_routes
 from .ProfilesRoutes import init_profile_routes
 from .config import DevelopmentConfig, ProductionConfig, TestingConfig
 from .Database import db
-from .extensions import login_manager
 
+jwt = JWTManager()
+cors = CORS()
 
 def create_app(config_class=None):
     app = Flask(__name__, static_folder="../static")
@@ -28,8 +31,9 @@ def create_app(config_class=None):
     init_links_routes(app)
     init_log_routes(app)
     init_profile_routes(app)
-    login_manager.init_app(app)
     db.init_app(app)
+    jwt.init_app(app)
+    cors.init_app(app, supports_credentials=True, resources={r"/*": {"origins": "http://localhost:5173"}})
     migrate = Migrate()
     migrate.init_app(app, db)
     with app.app_context():
