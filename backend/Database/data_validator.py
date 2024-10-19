@@ -61,13 +61,15 @@ class GetAllLinksData(AbstractDataValidator):
         """
         try:
             from .models import LinksGroup
-            link_group = self.db_session.query(LinksGroup).filter_by(shorten_url=f"http://localhost:5173/{username}/{links_group_id}").first()
+            link_group = self.db_session.query(LinksGroup).filter_by(
+                shorten_url=f"http://localhost:5173/{username}/{links_group_id}").first()
             if not link_group:
                 raise NoResultFound(f"LinksGroup with id {links_group_id} was not found")
             return link_group
 
         except OperationalError:
             raise OperationalError
+
     def all_links_count(self) -> int:
         """
         :return: int
@@ -80,8 +82,9 @@ class GetAllLinksData(AbstractDataValidator):
         except OperationalError:
             raise OperationalError
 
-    def get_searched_links(self, page: int, per_page: int, search: str) -> list:
+    def get_searched_links(self, page: int, per_page: int, search: str, profile_id: int) -> list:
         """
+        :param profile_id: int
         :param search: str,
         :param page: int,
         :param per_page: int
@@ -93,6 +96,7 @@ class GetAllLinksData(AbstractDataValidator):
             offset_value = (page - 1) * per_page
             all_links = (
                 self.db_session.query(LinksGroup).filter(
+                    LinksGroup.profile_id == profile_id,
                     or_(
                         LinksGroup.links_group_name.ilike(f"%{search}%"),
                         LinksGroup.category.ilike(f"%{search}%"),
@@ -190,6 +194,7 @@ class GetAllLinksData(AbstractDataValidator):
             self.db_session.rollback()
             return {"error": "Database Fatal Error"}, 500
 
+
 class UserLogic(AbstractDataValidator):
     def __init__(self, db_session):
         super().__init__(db_session)
@@ -221,6 +226,19 @@ class UserLogic(AbstractDataValidator):
         else:
             return False
 
+    def find_profile(self, profile_name: str) -> tuple:
+        """
+        :param profile_name: str
+        :return: tuple
+        Chosen profile and its data
+        """
+        from .models import Profile
+        chosen_profile = self.db_session.query(Profile).filter(Profile.username == profile_name).first()
+        if chosen_profile:
+            return {"profile_name": chosen_profile.username, "profile_id": chosen_profile.id}, {"message": "Profile is loaded successfully"},  200
+        else:
+            return None, {"message": "Profile is not existed"}, 500
+
     def find_email(self, email: str) -> bool | list:
         """
                 email: str
@@ -234,7 +252,7 @@ class UserLogic(AbstractDataValidator):
         else:
             return False
 
-    def create_user(self, username:str, **kwargs) -> tuple:
+    def create_user(self, username: str, **kwargs) -> tuple:
         """
         username: str
         **kwargs
@@ -263,6 +281,29 @@ class UserLogic(AbstractDataValidator):
                 #     return {"message": "User created successfully"}, 200
                 # else:
                 #     return {"message": "Maximum capacity of users reached"}, 409
+        except OperationalError:
+            self.db_session.rollback()
+            return {"message": "Database Fatal Error"}, 500
+
+    def create_profile(self, user_id: int, **kwargs) -> tuple:
+        """
+        :param user_id: int
+        :return:
+        The method for profile creation
+        """
+        try:
+            from .models import User, Profile
+            existed_user = self.db_session.query(User).filter(User.id == user_id).first()
+            existed_profile = self.db_session.query(Profile).filter(Profile.username == kwargs["username"]).first()
+            if existed_user and kwargs["username"]:
+                if not existed_user.can_create_profile():
+                    return {"message": "Maximum capacity of users reached"}, 409
+                if existed_profile:
+                    return {"message": "Profile already exists"}, 409
+                new_profile = Profile(username=kwargs["username"], user_id=user_id)
+                self.db_session.add(new_profile)
+                self.db_session.commit()
+                return {"message": "Profile created successfully", "username": kwargs["username"]}, 200
         except OperationalError:
             self.db_session.rollback()
             return {"message": "Database Fatal Error"}, 500

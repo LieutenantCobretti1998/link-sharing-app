@@ -18,15 +18,19 @@ class User(Base):
     def can_create_profile(self):
         return len(self.profiles) < 3
 
+
 class Profile(Base):
     __tablename__ = 'profiles'
     id = Column(Integer, primary_key=True)
     username = Column(VARCHAR(25), unique=True, nullable=False)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    link_groups = relationship("LinksGroup", backref="profile", cascade="all, delete", lazy=True)
+
 
 class LinksGroup(Base):
     __tablename__ = 'links_group'
     id = Column(Integer, primary_key=True)
+    profile_id = Column(Integer, ForeignKey('profiles.id'), nullable=False)
     created_at = Column(DateTime, default=db.func.current_timestamp())
     shorten_url = Column(String(100), unique=True, nullable=False)
     clicks = Column(Integer, default=0)

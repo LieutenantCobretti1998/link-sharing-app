@@ -7,8 +7,8 @@ from .ui_sets import perPage
 links_bp = Blueprint('get_all_links', __name__)
 
 
-@links_bp.route('/all_links', methods=['GET'])
-def get_all_links():
+@links_bp.route('/all_links/<int:profile_id>', methods=['GET'])
+def get_all_links(profile_id):
     flask_server_url = "http://localhost:5000"
     page = int(request.args.get('page'))
     search = request.args.get('search', "").strip()

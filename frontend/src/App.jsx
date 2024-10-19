@@ -14,13 +14,16 @@ import CreateUser from "./CommonComponents/CreateUser.jsx";
 import ProtectedRoute from "./CommonComponents/ProtectedRoute.jsx";
 import {AuthProvider} from "./CustomLogic/AuthProvider.jsx";
 import Profiles from "./CommonComponents/Profiles.jsx";
+import CreateProfile from "./CommonComponents/CreateProfile.jsx";
+import {ProfileProvider} from "./CustomLogic/ProfileProvider.jsx";
 
 const router = createBrowserRouter([
   {
-        path: "/",
+      path: "/",
       element: <ProtectedRoute><Layout /></ProtectedRoute>,
         children: [
             {path: "/", element: <ProtectedRoute><HomePage /></ProtectedRoute>},
+            {path: "/:username/home", element: <ProtectedRoute><HomePage /></ProtectedRoute>},
             {path: "/links", element: <ProtectedRoute><Links /></ProtectedRoute>},
             {path: "/profile", element: <ProtectedRoute><ProfileDetails /></ProtectedRoute>},
             {path: "/preview", element: <ProtectedRoute><Preview /></ProtectedRoute>},
@@ -40,6 +43,10 @@ const router = createBrowserRouter([
         element: <CreateUser />
     },
     {
+        "path": "/create-profile",
+        element: <CreateProfile />
+    },
+    {
         path: "/profiles",
         element: <ProtectedRoute><Profiles /></ProtectedRoute>
     }
@@ -51,7 +58,9 @@ function App() {
   return (
       <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            <RouterProvider router={router}></RouterProvider>
+              <ProfileProvider>
+                <RouterProvider router={router}></RouterProvider>
+              </ProfileProvider>
           </AuthProvider>
           <ReactQueryDevtools />
       </QueryClientProvider>

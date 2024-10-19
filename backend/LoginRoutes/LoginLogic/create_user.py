@@ -1,10 +1,10 @@
 from flask import Blueprint, request, jsonify
-from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash
 from ...Database import db
 from backend.Database.data_validator import UserLogic
 
 create_user_bp = Blueprint('create_user', __name__)
+
 
 @create_user_bp.route('/register', methods=['POST'])
 def register():

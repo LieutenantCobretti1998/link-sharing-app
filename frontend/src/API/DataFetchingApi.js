@@ -1,7 +1,12 @@
 "use strict";
 
 export const getLinks = async (page= "1", search = null) => {
-    const response = await fetch(`/api/all_links?page=${page}&search=${search}`, {
+    const profile_data = localStorage.getItem("current-profile");
+    const parsedProfileData = JSON.parse(profile_data);
+    if (!parsedProfileData) {
+        throw new Error("Profile is missed!");
+    }
+    const response = await fetch(`/api/all_links/${parsedProfileData.profile_id}?page=${page}&search=${search}`, {
         method: "GET",
     });
     const responseData = await response.json();

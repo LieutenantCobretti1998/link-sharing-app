@@ -1,30 +1,34 @@
-import {useContext, useEffect} from "react";
-import {AuthContext} from "../CustomLogic/AuthProvider.jsx";
+import Button from "../UI/Button.jsx";
+import MiniSpinner from "../UI/MiniSpinner.jsx";
 import {useNavigate} from "react-router-dom";
+import toast, {Toaster} from "react-hot-toast";
+import {useForm} from "react-hook-form";
 import {useMutation} from "@tanstack/react-query";
-import {chosenProfile} from "../API/Profiles.js";
-import toast from "react-hot-toast";
+import {createProfile} from "../API/Profiles.js";
+import {useContext} from "react";
+import {AuthContext} from "../CustomLogic/AuthProvider.jsx";
 
-
-function Profiles() {
-    const {authStatus} = useContext(AuthContext);
+function CreateProfile() {
     const navigate = useNavigate();
-    const profiles = authStatus.userCredentials.profiles;
-    useEffect(() => {
-        if (profiles.length === 0) {
-            navigate("/create-profile");
-        }
-    }, []);
-
-    const {mutate: choseProfile, isLoading} = useMutation({
-        mutationFn: (profileName) => chosenProfile(profileName),
-        onSuccess: (data) => {
-            console.log(data);
-            localStorage.setItem("current-profile", JSON.stringify(data.profile));
-            navigate(`/${data.profile.profile_name}/home`, {replace: true});
+    const {setAuthStatus} = useContext(AuthContext);
+    const {register, handleSubmit, setError, control, formState: {errors} } = useForm();
+    const {mutate: createNewProfile, isLoading} = useMutation({
+        mutationFn: (profileName) => createProfile(profileName),
+        onSuccess: (newProfile) => {
+            setAuthStatus((prevStatus) => ({
+                ...prevStatus,
+                userCredentials: {
+                    ...prevStatus.userCredentials,
+                    profiles: [...prevStatus.userCredentials.profiles, newProfile],
+                }
+            }));
+            navigate("/profiles")
         },
         onError: (error) => toast.error(error.message || "An Error occurred. Please try again later ")
-    })
+    });
+    const onSubmit = (data) => {
+        createNewProfile(data.username);
+    }
     return (
         <main className="flex justify-center items-center h-screen">
             <div className="flex flex-col gap-5">
@@ -40,17 +44,37 @@ function Profiles() {
                 </svg>
                 <section className=" bg-white p-[10%] w-[700px] rounded-xl">
                     <div className="mb-10 text-center">
-                        <h1 className="text-3xl mb-2 font-instrumentBold"><b>Choose your profile</b></h1>
+                        <h1 className="text-3xl mb-2 font-instrumentBold"><b>Create your first profile</b></h1>
+                        <p className="font-instrumentNormal">Let's get started sharing your links</p>
                     </div>
-                    {profiles.map((profile, index) => (
-                        <div onClick={() => choseProfile(profile.username)} key={index} className="group p-4 border rounded-md mb-2 border-lightPurple2 bg-lightPurple2 hover:bg-primaryPurple hover:border-primaryPurple transition-colors duration-300 cursor-pointer">
-                            <p className="text-lg text-center font-bold text-black group-hover:text-white transition-colors duration-300">{profile.username}</p>
+                    <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+                        <div>
+                            <label htmlFor="username" className="block font-instrumentNormal mb-1">Username</label>
+                            <input placeholder="Lieutenant Cobretti 98"
+                                   type="text"
+                                   id="username"
+                                   maxLength="25"
+                                   {...register("username", {
+                                       required: "Username is required",
+                                       maxLength: "Max 24 char is allowed",
+                                       validate: (value) => value.trim() !== "" || "Pure whitespaces are not allowed"
+                                   })}
+                                   className="relative w-full pl-10 bg-white p-3 border-[.5px] rounded-md focus:outline-none focus:border-primaryPurple focus:shadow-sm focus:shadow-primaryPurple"/>
+                            <svg className="absolute translate-x-4 translate-y-[-2rem]"
+                                 xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+                                 viewBox="0 0 16 16">
+                                <path fill="#737373"
+                                      d="M14 3H2a.5.5 0 0 0-.5.5V12a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V3.5A.5.5 0 0 0 14 3Zm-.5 9h-11V4.637l5.162 4.732a.5.5 0 0 0 .676 0L13.5 4.637V12Z"/>
+                            </svg>
+                            {errors.username && <p className="text-red text-end font-instrumentBold ">{errors.username.message}</p>}
                         </div>
-                    ))}
+                        <Button type={"login"} typeForm={true}>{isLoading ? <MiniSpinner/> : "Create profile"}</Button>
+                    </form>
                 </section>
             </div>
+            <Toaster/>
         </main>
     );
 }
 
-export default Profiles;
+export default CreateProfile;

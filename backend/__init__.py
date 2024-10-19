@@ -12,6 +12,7 @@ from .Database import db
 jwt = JWTManager()
 cors = CORS()
 
+
 def create_app(config_class=None):
     app = Flask(__name__, static_folder="../static")
     # Get the environment from the FLASK_ENV variable (default to 'development')

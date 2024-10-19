@@ -29,6 +29,7 @@ def login():
                         }), 200
     return jsonify({"message": "Invalid username or password"}), 401
 
+
 @login_bp.route('/auth_status', methods=['GET'])
 @jwt_required()
 def auth_status():

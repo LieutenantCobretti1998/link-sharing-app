@@ -50,8 +50,7 @@ export const checkAuthStatus = async () => {
         }
     });
     if (response.ok) {
-        const responsedData = await response.json()
-        return responsedData;
+        return await response.json();
     } else {
         throw new Error("Failed to check user's authentication");
     }
