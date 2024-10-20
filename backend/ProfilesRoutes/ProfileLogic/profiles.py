@@ -1,8 +1,8 @@
 from flask import Blueprint, jsonify, request
 from ...ApiRoutes.LinksLogic.get_links import links_bp
-from ...Database import db
+from ...Database import db, UserLogic
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from backend.Database.data_validator import UserLogic
+
 
 profiles_bp = Blueprint('profiles', __name__)
 
@@ -33,5 +33,7 @@ def choose_profile(profile_name):
             "profile": profile,
 
         }), code
+    else:
+        return jsonify({'message': 'User does not authenticated'}), 401
 
 

@@ -7,15 +7,17 @@ function ProtectedRoute({children}) {
     const {authStatus} = useContext(AuthContext);
     const {chosenProfile} = useContext(ProfileContext);
     const location = useLocation();
+    console.log(authStatus);
+    console.log(chosenProfile)
     switch (authStatus.authenticated ) {
         case null:
             return;
         case false:
             return <Navigate to="/login" replace />;
         case true:
-            if (!chosenProfile && location.pathname !== "/profiles") {
-                return <Navigate to="/profiles" replace />;
-            }
+            // if (!chosenProfile && location.pathname !== "/profiles") {
+            //     return <Navigate to="/profiles" replace />;
+            // }
             return children
 
     }

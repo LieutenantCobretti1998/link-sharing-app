@@ -4,6 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {resetSaveState, toggleModal} from "../SaveLogic/SaveSlice.js";
 import {resetLinksState} from "../LinksAddition/LinkSlice.js";
 import {resetProfileState} from "../ProfileDetails/ProfileSlice.js";
+import {useEffect} from "react";
 
 // eslint-disable-next-line react/prop-types
 function Header({saveLinks}) {
@@ -17,6 +18,9 @@ function Header({saveLinks}) {
     const {linksGroupName, category, blendedColor} = useSelector(state => state.saveChooses);
     const savedParameters = useSelector(state => state.saveChooses);
     const {shortenUrl} = useSelector(state => state.shortenUrl);
+    const profile_data = localStorage.getItem("current-profile");
+    const parsedProfileData = profile_data ? JSON.parse(profile_data) : null;
+    const profileName = parsedProfileData.profile_name;
 
     const copyToClipBoard = () => {
         window.focus();
@@ -68,12 +72,12 @@ function Header({saveLinks}) {
         )
     }
 
-    if (location.pathname === "/") {
+    if (location.pathname.includes("home")) {
         return (
             <header
                 className="w-70 flex flex-row flex-md-row align-items-center bg-white p-5 relative top-2 ml-2 mr-2 rounded-md mb-4 justify-between font-instrumentBold">
                 <div>
-                    <Button disabled={location.pathname === "/"} type="home">
+                    <Button disabled={location.pathname.includes("home")} type="home">
                         <svg xmlns="http://www.w3.org/2000/svg" width="183" height="40" fill="none"
                              viewBox="0 0 183 40">
                             <path fill="#633CFF" fillRule="evenodd"
@@ -88,24 +92,25 @@ function Header({saveLinks}) {
                 </div>
                 <div>
                     <Button type="header">
-                        <NavLink className="w-full, h-full block pt-1" to="/links">Create New Group</NavLink>
+                        <NavLink className="w-full, h-full block pt-1" to={`${profileName}/create-links`}>Create New Group</NavLink>
                     </Button>
                 </div>
             </header>
         )
     }
-    else if(dynamicMatch?.pattern?.path === "/:username/:id" && username) {
-        return (
-            <div className=" w-full h-64 rounded-b-3xl"
-                 style={{
-                     backgroundColor: blendedColor ? blendedColor : "#4015f8"
-                 }}
-            >
-            </div>
-        )
-    }
+    // else if(dynamicMatch?.pattern?.path === "/:username/:id" && username) {
+    //     console.log(dynamicMatch)
+    //     return (
+    //         <div className=" w-full h-64 rounded-b-3xl"
+    //              style={{
+    //                  backgroundColor: blendedColor ? blendedColor : "#4015f8"
+    //              }}
+    //         >
+    //         </div>
+    //     )
+    // }
 
-    return (location.pathname === "/preview" || location.pathname.startsWith("/edit-preview") ? (
+    return (location.pathname.includes("new-group-preview")  || location.pathname.includes("/edit-preview") ? (
             <div className=" w-full h-64 rounded-b-3xl"
                  style={{
                      backgroundColor: blendedColor ? blendedColor : "#4015f8"
@@ -116,8 +121,9 @@ function Header({saveLinks}) {
                     <div>
                         <Button type="header">
                             <NavLink className="w-full, h-full block pt-1"
-                                     to={location.pathname.includes("edit") ? `/edit-links/${id}` : "/links"}>Back to
-                                Editor</NavLink>
+                                     to={location.pathname.includes("edit") ? `${profileName}/edit-links/${id}` : `${profileName}/create-links`}>
+                                Back to Editor
+                            </NavLink>
                         </Button>
                     </div>
 
@@ -133,8 +139,8 @@ function Header({saveLinks}) {
             <header
                 className="flex flex-row flex-md-row align-items-center bg-white p-5 m-2 rounded-md mb-4 justify-between font-instrumentBold">
                 <div>
-                     <Button disabled={location.pathname === "/"} type="home">
-                         <NavLink to="/">
+                     <Button disabled={location.pathname.includes("home")} type="home">
+                         <NavLink to={`${profileName}/home`}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="183" height="40" fill="none" viewBox="0 0 183 40">
                                 <path fill="#633CFF" fillRule="evenodd"
                                       d="M5.774 34.225c2.443 2.442 6.37 2.442 14.226 2.442 7.857 0 11.785 0 14.225-2.442 2.442-2.438 2.442-6.368 2.442-14.225 0-7.857 0-11.785-2.442-14.226-2.438-2.44-6.368-2.44-14.225-2.44-7.857 0-11.785 0-14.226 2.44-2.44 2.443-2.44 6.37-2.44 14.226 0 7.857 0 11.785 2.44 14.225Zm10.06-19.642A5.416 5.416 0 1 0 21.25 20a1.25 1.25 0 1 1 2.5 0 7.917 7.917 0 1 1-7.916-7.916 1.25 1.25 0 0 1 0 2.5ZM29.584 20a5.417 5.417 0 0 1-5.417 5.417 1.25 1.25 0 0 0 0 2.5A7.917 7.917 0 1 0 16.25 20a1.25 1.25 0 0 0 2.5 0 5.416 5.416 0 1 1 10.834 0Z"
@@ -148,12 +154,12 @@ function Header({saveLinks}) {
                     </Button>
                 </div>
                 <div className="flex items-center gap-7">
-                    <Button type="links" isActive={location.pathname === "/links" || location.pathname.startsWith("/edit-links")}>
+                    <Button type="links" isActive={location.pathname.includes("create-links")  || location.pathname.includes("/edit-links")}>
                         <NavLink onClick={(e) => {
-                            if (location.pathname === "/links") {
+                            if (location.pathname.includes("create-links")) {
                                 e.preventDefault();
                             }
-                        }} className="flex p-3 py-1 items-center gap-0.5 justify-center w-max group" to={location.pathname.startsWith("/profile") ? "/links": `/edit-links/${id}`}>
+                        }} className="flex p-3 py-1 items-center gap-0.5 justify-center w-max group" to={ location.pathname.includes("/create-profile") ? `${profileName}/create-links`: `${profileName}/edit-links/${id}`}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="21" height="20" fill="none"
                                  viewBox="0 0 21 20">
                                 <path className="group-hover:fill-primaryPurple transition duration-300 ease-in-out"
@@ -164,8 +170,8 @@ function Header({saveLinks}) {
                         </NavLink>
                     </Button>
                     <div>
-                        <Button type="links" isActive={location.pathname === "/profile" || location.pathname.startsWith("/edit-profile")}>
-                            <NavLink to={location.pathname.startsWith("/links") ? "/profile": `/edit-profile/${id}`}
+                        <Button type="links" isActive={ location.pathname.includes("/create-profile") || location.pathname.includes("edit-profile")}>
+                            <NavLink to={location.pathname.includes("/create-links") ? `${profileName}/create-profile`: `${profileName}/edit-profile/${id}`}
                                      className="p-3 py-1 flex items-center gap-0.5 justify-center w-max group">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="21" height="20" fill="none"
                                      viewBox="0 0 21 20">
@@ -181,7 +187,7 @@ function Header({saveLinks}) {
 
                 <div>
                     <Button type="header">
-                        <NavLink className="w-full, h-full block pt-1" to={location.pathname.includes("edit") ? `/edit-preview/${id}`: "/preview"}>Preview</NavLink>
+                        <NavLink className="w-full, h-full block pt-1" to={location.pathname.includes("edit") ? `${profileName}/edit-preview/${id}`: `${profileName}/new-group-preview`}>Preview</NavLink>
                     </Button>
                 </div>
             </header>

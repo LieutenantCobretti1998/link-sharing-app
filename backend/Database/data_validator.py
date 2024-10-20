@@ -37,8 +37,9 @@ class GetAllLinksData(AbstractDataValidator):
     def __init__(self, db_session):
         super().__init__(db_session)
 
-    def get_all_links(self, page: int, per_page: int) -> list:
+    def get_all_links(self, page: int, per_page: int, profile_id: int) -> list:
         """
+        :param profile_id: int
         :param page: int,
         :param per_page: int
         The method to get all data from the links Database
@@ -46,7 +47,7 @@ class GetAllLinksData(AbstractDataValidator):
         try:
             from .models import LinksGroup
             offset_value = (page - 1) * per_page
-            all_links = self.db_session.query(LinksGroup).offset(offset_value).limit(per_page).all()
+            all_links = self.db_session.query(LinksGroup).filter(LinksGroup.profile_id == profile_id).offset(offset_value).limit(per_page).all()
             if not all_links:
                 return []
             return all_links
@@ -70,14 +71,15 @@ class GetAllLinksData(AbstractDataValidator):
         except OperationalError:
             raise OperationalError
 
-    def all_links_count(self) -> int:
+    def all_links_count(self, profile_id: int) -> int:
         """
+        :param profile_id: int
         :return: int
         Check all available links in Database
         """
         try:
             from .models import LinksGroup
-            all_links = self.db_session.query(LinksGroup).count()
+            all_links = self.db_session.query(LinksGroup).filter(LinksGroup.profile_id == profile_id).count()
             return all_links
         except OperationalError:
             raise OperationalError
@@ -111,8 +113,9 @@ class GetAllLinksData(AbstractDataValidator):
         except OperationalError:
             raise OperationalError
 
-    def all_searched_links_count(self, search) -> int:
+    def all_searched_links_count(self, search, profile_id: int) -> int:
         """
+        :param profile_id: int
         :param search: str
         :return: int
         Check all available links in Database
@@ -121,6 +124,7 @@ class GetAllLinksData(AbstractDataValidator):
             from .models import LinksGroup
             all_links = (self.db_session.query(LinksGroup)
             .filter(
+                LinksGroup.profile_id == profile_id,
                 or_(
                     LinksGroup.links_group_name.ilike(f"%{search}%"),
                     LinksGroup.category.ilike(f"%{search}%"),
@@ -212,6 +216,20 @@ class UserLogic(AbstractDataValidator):
             return user
         else:
             return None
+
+    def check_user_profile_match(self, user_id: int, profile_id: int) -> bool:
+        """
+        :param user_id: int
+        :param profile_id: int
+        :return: bool
+        Check if the user could use profile id
+        """
+        from .models import Profile
+        is_allowed = self.db_session.query(Profile).filter(Profile.id == profile_id, Profile.user_id == user_id).first()
+        if is_allowed:
+            return True
+        else:
+            return False
 
     def find_user(self, username: str) -> bool:
         """

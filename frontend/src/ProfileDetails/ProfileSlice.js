@@ -1,6 +1,12 @@
 import {createSlice} from '@reduxjs/toolkit'
 
+
+const profile_data = localStorage.getItem("current-profile");
+const parsedProfileData = profile_data ? JSON.parse(profile_data) : null;
+const profileName = parsedProfileData ? parsedProfileData.profile_name : null;
+
 const initialState = {
+    profileName: profileName,
     linksGroupImage: "",
     linksGroupName: "",
     shortDescription: "",

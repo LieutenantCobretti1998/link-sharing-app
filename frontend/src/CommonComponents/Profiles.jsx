@@ -19,7 +19,6 @@ function Profiles() {
     const {mutate: choseProfile, isLoading} = useMutation({
         mutationFn: (profileName) => chosenProfile(profileName),
         onSuccess: (data) => {
-            console.log(data);
             localStorage.setItem("current-profile", JSON.stringify(data.profile));
             navigate(`/${data.profile.profile_name}/home`, {replace: true});
         },

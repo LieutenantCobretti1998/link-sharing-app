@@ -13,7 +13,8 @@ export function AuthProvider({children}) {
     });
     const refreshAuthStatus = () => {
         const token = localStorage.getItem("access-token");
-        if(!token) {
+        const profile_data = localStorage.getItem("current-profile");
+        if(!token || !profile_data) {
              setAuthStatus({
                 authenticated: false,
                 userCredentials: {

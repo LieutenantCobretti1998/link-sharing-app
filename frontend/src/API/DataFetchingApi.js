@@ -6,8 +6,16 @@ export const getLinks = async (page= "1", search = null) => {
     if (!parsedProfileData) {
         throw new Error("Profile is missed!");
     }
+    const token = localStorage.getItem("access-token");
+    if (!token) {
+        throw new Error("User is not authenticated");
+    }
     const response = await fetch(`/api/all_links/${parsedProfileData.profile_id}?page=${page}&search=${search}`, {
         method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+             "Authorization": `Bearer ${token}`
+        },
     });
     const responseData = await response.json();
     if (!response.ok) {
