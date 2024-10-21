@@ -25,12 +25,15 @@ function Links() {
     const profile = useSelector((state) => state.profile);
     const [errors, setErrors] = useState({});
     const [isVisible, setIsVisible] = useState(false);
+    const profile_data = localStorage.getItem("current-profile");
+    const parsedProfileData = profile_data ? JSON.parse(profile_data) : null;
+    const profileName = parsedProfileData.profile_name;
     const shouldShowComponent = showLinkForm || links.length > 0;
     const {mutate: saveNewLinks} = useMutation({
         mutationFn: updateLinksGroup,
         mutationKey: ["update-link"],
         onSuccess: () => {
-            navigate(`/edit-links/${id}`)
+            navigate(`/${profileName}/edit-links/${id}`)
         }
     })
     useEffect(() => {

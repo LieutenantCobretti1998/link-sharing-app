@@ -6,18 +6,17 @@ import {ProfileContext} from "../CustomLogic/ProfileProvider.jsx";
 function ProtectedRoute({children}) {
     const {authStatus} = useContext(AuthContext);
     const {chosenProfile} = useContext(ProfileContext);
-    const location = useLocation();
-    console.log(authStatus);
-    console.log(chosenProfile)
+    const tokenIsExist = localStorage.getItem("access-token");
+    const profileIsExist = localStorage.getItem("current-profile");
     switch (authStatus.authenticated ) {
         case null:
             return;
         case false:
             return <Navigate to="/login" replace />;
         case true:
-            // if (!chosenProfile && location.pathname !== "/profiles") {
-            //     return <Navigate to="/profiles" replace />;
-            // }
+            if (!tokenIsExist) {
+                return <Navigate to="/login" replace />;
+            }
             return children
 
     }

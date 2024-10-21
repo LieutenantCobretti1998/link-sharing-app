@@ -16,22 +16,23 @@ import {AuthProvider} from "./CustomLogic/AuthProvider.jsx";
 import Profiles from "./CommonComponents/Profiles.jsx";
 import CreateProfile from "./CommonComponents/CreateProfile.jsx";
 import {ProfileProvider} from "./CustomLogic/ProfileProvider.jsx";
+import NotFoundError from "./UI/Errors/NotFoundError.jsx";
 
 const router = createBrowserRouter([
   {
       path: "/",
       element: <ProtectedRoute><Layout /></ProtectedRoute>,
+      errorElement: <NotFoundError />,
         children: [
-            {path: "/", element: <ProtectedRoute><HomePage /></ProtectedRoute>},
-            {path: "/:username/home", element: <ProtectedRoute><HomePage /></ProtectedRoute>},
-            {path: "/:username/create-links", element: <ProtectedRoute><Links /></ProtectedRoute>},
-            {path: "/:username/create-profile", element: <ProtectedRoute><ProfileDetails /></ProtectedRoute>},
-            {path: "/:username/new-group-preview", element: <ProtectedRoute><Preview /></ProtectedRoute>},
-            {path: "/:username/preview-linksGroup/:id", element: <ProtectedRoute><Preview /></ProtectedRoute>},
+            {path: "/", element: <ProtectedRoute><HomePage /></ProtectedRoute>, errorElement: <NotFoundError />},
+            {path: "/:username/create-links", element: <ProtectedRoute><Links /></ProtectedRoute>, errorElement: <NotFoundError />},
+            {path: "/:username/create-profile", element: <ProtectedRoute><ProfileDetails /></ProtectedRoute>, errorElement: <NotFoundError />},
+            {path: "/:username/new-group-preview", element: <ProtectedRoute><Preview /></ProtectedRoute>, errorElement: <NotFoundError />},
+            {path: "/:username/preview-linksGroup/:id", element: <ProtectedRoute><Preview /></ProtectedRoute>, errorElement: <NotFoundError />},
             {path: "/:username/edit-links/:id", element: <ProtectedRoute><Links /></ProtectedRoute>, loader: editLinkLoader, errorElement: <DynamicError />},
             {path: "/:username/edit-profile/:id", element: <ProtectedRoute><ProfileDetails /></ProtectedRoute>, loader: editLinkLoader, errorElement: <DynamicError />},
             {path: "/:username/edit-preview/:id", element: <ProtectedRoute><Preview /></ProtectedRoute>},
-            {path: "/:username/:id", element: <ProtectedRoute><CopyLinkPreview /></ProtectedRoute>},
+            {path: "/:username/:id", element: <ProtectedRoute><CopyLinkPreview /></ProtectedRoute>, errorElement: <NotFoundError />},
         ]
     },
     {

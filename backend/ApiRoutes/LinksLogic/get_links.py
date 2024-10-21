@@ -8,9 +8,9 @@ from .ui_sets import perPage
 links_bp = Blueprint('get_all_links', __name__)
 
 
-@links_bp.route('/all_links/<int:profile_id>', methods=['GET'])
+@links_bp.route('/all_links/<int:profile_id>/<string:profile_name>', methods=['GET'])
 @jwt_required()
-def get_all_links(profile_id):
+def get_all_links(profile_id, profile_name):
     flask_server_url = "http://localhost:5000"
     page = int(request.args.get('page'))
     search = request.args.get('search', "").strip()
@@ -19,7 +19,7 @@ def get_all_links(profile_id):
     user_instance = UserLogic(db.session)
     user_id = get_jwt_identity()
     if user_id:
-        user_allowed_profile = user_instance.check_user_profile_match(user_id, profile_id)
+        user_allowed_profile = user_instance.check_user_profile_match(user_id, profile_id, profile_name)
         if user_allowed_profile:
             try:
                 if search:
@@ -43,34 +43,54 @@ def get_all_links(profile_id):
         return jsonify({'message': 'User does not authenticated'}), 401
 
 
-@links_bp.route('/get-link/<int:links_group_id>', methods=['GET'])
-def get_link(links_group_id):
-    try:
-        chosen_link = GetAllLinksData(db.session).get_links_group_data(links_group_id)
-        flask_server_url = "http://localhost:5000"
-        chosen_link_data = {
-            "linksGroupImage": f"{flask_server_url}/{chosen_link.links_group_image}" if chosen_link.links_group_image else "",
-            "shorten_url": chosen_link.shorten_url,
-            "linksGroupName": chosen_link.links_group_name,
-            "textColor": chosen_link.text_color,
-            "commonColor": chosen_link.common_color,
-            "backgroundColor": chosen_link.background_color,
-            "backgroundImage": chosen_link.background_image,
-            "category": chosen_link.category,
-            "links": chosen_link.links
-        }
-        return jsonify(chosen_link_data), 200
-    except OperationalError:
-        return jsonify({"error": "Database Fatal Error"}), 500
-    except NoResultFound:
-        return jsonify({"error": "Not Found😒"}), 404
+@links_bp.route('/get-link/<int:profile_id>/<string:profile_name>/<int:links_group_id>', methods=['GET'])
+@jwt_required()
+def get_link(links_group_id, profile_name, profile_id):
+    user_id = get_jwt_identity()
+    user_instance = UserLogic(db.session)
+    if user_id:
+        user_allowed_profile = user_instance.check_user_profile_match(user_id, profile_id, profile_name)
+        if user_allowed_profile:
+            try:
+                chosen_link = GetAllLinksData(db.session).get_links_group_data(links_group_id)
+                flask_server_url = "http://localhost:5000"
+                chosen_link_data = {
+                    "linksGroupImage": f"{flask_server_url}/{chosen_link.links_group_image}" if chosen_link.links_group_image else "",
+                    "shorten_url": chosen_link.shorten_url,
+                    "linksGroupName": chosen_link.links_group_name,
+                    "textColor": chosen_link.text_color,
+                    "commonColor": chosen_link.common_color,
+                    "backgroundColor": chosen_link.background_color,
+                    "backgroundImage": chosen_link.background_image,
+                    "category": chosen_link.category,
+                    "links": chosen_link.links
+                }
+                return jsonify(chosen_link_data), 200
+            except OperationalError:
+                return jsonify({"error": "Database Fatal Error"}), 500
+            except NoResultFound:
+                return jsonify({"error": "Not Found😒"}), 404
+        else:
+            return jsonify({"error": "Something happened"}), 500
+    else:
+        return jsonify({'message': 'User does not authenticated'}), 401
 
 
-@links_bp.route('/update-link/<int:links_group_id>', methods=['PATCH'])
-def update_links(links_group_id):
-    links_data = request.json
-    message, code = GetAllLinksData(db.session).update_links(links_data, links_group_id)
-    return jsonify(message), code
+@links_bp.route('/update-link/<int:profile_id>/<string:profile_name>/<int:links_group_id>', methods=['PATCH'])
+@jwt_required()
+def update_links(links_group_id, profile_id, profile_name):
+    user_id = get_jwt_identity()
+    user_instance = UserLogic(db.session)
+    if user_id:
+        user_allowed_profile = user_instance.check_user_profile_match(user_id, profile_id, profile_name)
+        if user_allowed_profile:
+            links_data = request.json
+            message, code = GetAllLinksData(db.session).update_links(links_data, links_group_id)
+            return jsonify(message), code
+        else:
+            return jsonify({"error": "Something happened"}), 500
+    else:
+        return jsonify({'message': 'User does not authenticated'}), 401
 
 
 @links_bp.route('/update-links-profile/<int:links_group_id>', methods=["PATCH"])
@@ -91,10 +111,20 @@ def update_links_profile(links_group_id):
     return jsonify(message), code
 
 
-@links_bp.route('/delete-link-group/<int:links_group_id>', methods=['DELETE'])
-def delete_link_group(links_group_id):
-    message, code = GetAllLinksData(db.session).delete_links_group_data(links_group_id)
-    return jsonify(message), code
+@links_bp.route('/delete-link-group/<int:profile_id>/<string:profile_name>/<int:links_group_id>', methods=['DELETE'])
+@jwt_required()
+def delete_link_group(links_group_id, profile_name, profile_id):
+    user_id = get_jwt_identity()
+    user_instance = UserLogic(db.session)
+    if user_id:
+        user_allowed_profile = user_instance.check_user_profile_match(user_id, profile_id, profile_name)
+        if user_allowed_profile:
+            message, code = GetAllLinksData(db.session).delete_links_group_data(links_group_id)
+            return jsonify(message), code
+        else:
+            return jsonify({"error": "Something happened"}), 500
+    else:
+        return jsonify({'message': 'User does not authenticated'}), 401
 
 
 @links_bp.route('/<string:username>/<string:links_group_id>', methods=['GET'])

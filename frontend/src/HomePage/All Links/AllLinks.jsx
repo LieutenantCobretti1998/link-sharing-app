@@ -2,12 +2,13 @@ import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {deleteLink, getLinks} from "../../API/DataFetchingApi.js";
 import Spinner from "../../UI/Spinner.jsx";
 import {getBackgroundImage, getPlatformColor, getPlatformIcon} from "../../Helpers/SliceFunctions.js";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {useNavigate, useSearchParams} from "react-router-dom";
 import ServerError from "../../UI/Errors/ServerError.jsx";
 import Pagination from "../../UI/Pagination.jsx";
 import {DEFAULT_PAGE, PER_PAGE} from "../../UI/GlobalVariables.js";
 import Delete from "../../UI/Delete.jsx";
+import {useSelector} from "react-redux";
 
 
 function AllLinks() {
@@ -18,6 +19,9 @@ function AllLinks() {
     const search = searchParams.get("search") || "";
     const queryClient = useQueryClient();
     const navigate = useNavigate();
+    const profile_data = localStorage.getItem("current-profile");
+    const parsedProfileData = profile_data ? JSON.parse(profile_data) : null;
+    const profileName = parsedProfileData.profile_name;
     const {mutate:deleteLinkGroup, isError: DeleteLinkError, isLoading: isDeleting} = useMutation({
         mutationFn: deleteLink,
         onSuccess: () => {
@@ -76,7 +80,7 @@ function AllLinks() {
     }
 
     const editLink = function (id) {
-        navigate(`/edit-links/${id}`);
+        navigate(`${profileName}/edit-links/${id}`);
     };
 
     const deleteUserLink = function (id) {
@@ -160,7 +164,7 @@ function AllLinks() {
                                     backgroundSize: "cover",
                                     backgroundPosition: "center"
                                 }}
-                                onClick={() => navigate(`/preview-linksGroup/${link.id}`)}
+                                onClick={() => navigate(`/${profileName}/preview-linksGroup/${link.id}`)}
                                 onMouseEnter={() => setHoveredCardIndex(index)}
                                 onMouseLeave={() => {
                                     setHoveredCardIndex(null);

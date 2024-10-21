@@ -8,10 +8,12 @@ function Layout() {
     const location = useLocation();
     const dynamicMatch = useMatch("/:username/:id");
     const navigate = useNavigate();
+    const profile_data = localStorage.getItem("current-profile");
+    const parsedProfileData = profile_data ? JSON.parse(profile_data) : null;
     const mutation = useMutation({
         mutationFn: saveLink,
         onSuccess: () => {
-            navigate("/", {replace: true});
+            navigate(`/`, {replace: true});
         },
         onError: () => {
             return <ServerError />
@@ -25,7 +27,7 @@ function Layout() {
             ): (
                 <>
                 <Header saveLinks={mutation.mutate} />
-                <main className={`flex bg-light-grey m-2 flex-grow gap-5 font-instrumentNormal ${location.pathname === "/preview" || location.pathname.startsWith("/edit-preview") || location.pathname.startsWith("/preview-linksGroup") || dynamicMatch  ? "justify-center" : ""}`}>
+                <main className={`flex bg-light-grey m-2 flex-grow gap-5 font-instrumentNormal ${location.pathname.includes("preview-linksGroup")  || location.pathname.includes("/edit-preview")  || dynamicMatch  ? "justify-center" : ""}`}>
                     <Outlet/>
                 </main>
                 </>

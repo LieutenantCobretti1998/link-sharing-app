@@ -24,6 +24,7 @@ function NotFoundError() {
             <div className="message-box">
                 <h1>404</h1>
                 <p>Page not found</p>
+                <p>Maybe refresh the page😊</p>
             </div>
         </>
     );

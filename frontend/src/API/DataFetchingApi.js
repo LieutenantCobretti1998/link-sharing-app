@@ -10,12 +10,12 @@ export const getLinks = async (page= "1", search = null) => {
     if (!token) {
         throw new Error("User is not authenticated");
     }
-    const response = await fetch(`/api/all_links/${parsedProfileData.profile_id}?page=${page}&search=${search}`, {
+    const response = await fetch(`/api/all_links/${parsedProfileData.profile_id}/${parsedProfileData.profile_name}?page=${page}&search=${search}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
              "Authorization": `Bearer ${token}`
-        },
+        }
     });
     const responseData = await response.json();
     if (!response.ok) {
@@ -27,8 +27,20 @@ export const getLinks = async (page= "1", search = null) => {
 };
 
 export const getLink = async (id) => {
-    const response = await fetch(`/api/get-link/${id}`, {
+    const profile_data = localStorage.getItem("current-profile");
+    const parsedProfileData = JSON.parse(profile_data);
+    if (!parsedProfileData) {
+        throw new Error("Profile is missed!");
+    }
+    const token = localStorage.getItem("access-token");
+    if (!token) {
+        throw new Error("User is not authenticated");
+    }
+    const response = await fetch(`/api/get-link/${parsedProfileData.profile_id}/${parsedProfileData.profile_name}/${id}`, {
         "method": "GET",
+        headers: {
+             "Authorization": `Bearer ${token}`
+        }
     });
     const responseData = await response.json();
     if (!response.ok) {
@@ -63,11 +75,21 @@ export const previewLink = async(username, id) => {
 }
 
 export const updateLinksGroup = async ({id, links}) => {
-    const response = await fetch(`/api/update-link/${id}`, {
+    const profile_data = localStorage.getItem("current-profile");
+    const parsedProfileData = JSON.parse(profile_data);
+    if (!parsedProfileData) {
+        throw new Error("Profile is missed!");
+    }
+    const token = localStorage.getItem("access-token");
+    if (!token) {
+        throw new Error("User is not authenticated");
+    }
+    const response = await fetch(`/api/update-link/${parsedProfileData.profile_id}/${parsedProfileData.profile_name}/${id}`, {
          method: "PATCH",
          body: JSON.stringify(links),
          headers: {
-             "Content-Type": "application/json"
+             "Content-Type": "application/json",
+             "Authorization": `Bearer ${token}`
          },
     });
     const responseData = await response.json();
@@ -93,8 +115,20 @@ export const updateLinksProfile = async ({id, profile}) => {
 };
 
 export const deleteLink = async (id) => {
-    const response = await fetch(`/api/delete-link-group/${id}`, {
+    const profile_data = localStorage.getItem("current-profile");
+    const parsedProfileData = JSON.parse(profile_data);
+    if (!parsedProfileData) {
+        throw new Error("Profile is missed!");
+    }
+    const token = localStorage.getItem("access-token");
+    if (!token) {
+        throw new Error("User is not authenticated");
+    }
+    const response = await fetch(`/api/delete-link-group/${parsedProfileData.profile_id}/${parsedProfileData.profile_name}/${id}`, {
         method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
     });
     const responseData = await response.json();
     if (!response.ok) {

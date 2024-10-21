@@ -4,10 +4,13 @@ import {useNavigate} from "react-router-dom";
 import {useMutation} from "@tanstack/react-query";
 import {chosenProfile} from "../API/Profiles.js";
 import toast from "react-hot-toast";
+import {useDispatch} from "react-redux";
+import {updateProfile} from "../ProfileDetails/ProfileSlice.js";
 
 
 function Profiles() {
     const {authStatus} = useContext(AuthContext);
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const profiles = authStatus.userCredentials.profiles;
     useEffect(() => {
@@ -20,7 +23,7 @@ function Profiles() {
         mutationFn: (profileName) => chosenProfile(profileName),
         onSuccess: (data) => {
             localStorage.setItem("current-profile", JSON.stringify(data.profile));
-            navigate(`/${data.profile.profile_name}/home`, {replace: true});
+            navigate(`/`, {replace: true});
         },
         onError: (error) => toast.error(error.message || "An Error occurred. Please try again later ")
     })

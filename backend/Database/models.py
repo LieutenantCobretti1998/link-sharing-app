@@ -46,27 +46,28 @@ class LinksGroup(Base):
     blended_color = Column(String(20), nullable=True)
 
 
-def generate_short_url(length=6, domain=None) -> str:
+def generate_short_url(user_profile: str, length=6, domain=None) -> str:
     """
     The simple generator of unique 6 lettered identifier for the shorten url
     :param domain:
-    :param length:
-    :return: string
+    :param user_profile: str
+    :param length: int
+    :return: str
     """
     characters = string.ascii_letters + string.digits
     random_str = ''.join(random.choice(characters) for _ in range(length))
     if domain is None:
         if os.getenv("FLASK_ENV") == "development":
-            domain = "http://localhost:5173/jamil/"
+            domain = f"http://localhost:5173/{user_profile}/"
     return f'{domain}{random_str}'
 
 
-def generate_short_unique_url(database) -> str:
+def generate_short_unique_url(database, user_profile: str) -> str:
     """
     Generate url until it found it
     :return: str
     """
-    short_url = generate_short_url()
+    short_url = generate_short_url(user_profile=user_profile)
     while database.query(LinksGroup).filter(LinksGroup.shorten_url == short_url).first() is not None:
-        short_url = generate_short_url()
+        short_url = generate_short_url(user_profile=user_profile)
     return short_url

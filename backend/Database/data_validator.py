@@ -217,15 +217,16 @@ class UserLogic(AbstractDataValidator):
         else:
             return None
 
-    def check_user_profile_match(self, user_id: int, profile_id: int) -> bool:
+    def check_user_profile_match(self, user_id: int, profile_id: int, profile_name: str) -> bool:
         """
         :param user_id: int
+        :param profile_name: str
         :param profile_id: int
         :return: bool
         Check if the user could use profile id
         """
         from .models import Profile
-        is_allowed = self.db_session.query(Profile).filter(Profile.id == profile_id, Profile.user_id == user_id).first()
+        is_allowed = self.db_session.query(Profile).filter(Profile.id == profile_id, Profile.user_id == user_id, Profile.username == profile_name).first()
         if is_allowed:
             return True
         else:
