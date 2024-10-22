@@ -88,11 +88,14 @@ function ProfileDetails() {
     const maxCategoryLength = 20;
     const maxLinkNameLength = 30;
     const maxDescriptionLength = 40;
+    const profile_data = localStorage.getItem("current-profile");
+    const parsedProfileData = profile_data ? JSON.parse(profile_data) : null;
+    const profileName = parsedProfileData.profile_name;
     const {mutate: saveNewProfileData} = useMutation({
         mutationFn: updateLinksProfile,
         mutationKey: ["update-profile"],
         onSuccess: () => {
-            navigate(`/edit-profile/${id}`)
+            navigate(`/${profileName}/edit-profile/${id}`)
         }
     })
 

@@ -100,11 +100,21 @@ export const updateLinksGroup = async ({id, links}) => {
 };
 
 export const updateLinksProfile = async ({id, profile}) => {
-    const response = await fetch(`/api/update-links-profile/${id}`, {
+    const profile_data = localStorage.getItem("current-profile");
+    const parsedProfileData = JSON.parse(profile_data);
+    if (!parsedProfileData) {
+        throw new Error("Profile is missed!");
+    }
+    const token = localStorage.getItem("access-token");
+    if (!token) {
+        throw new Error("User is not authenticated");
+    }
+    const response = await fetch(`/api/update-links-profile/${parsedProfileData.profile_id}/${parsedProfileData.profile_name}/${id}`, {
          method: "PATCH",
          body: JSON.stringify(profile),
          headers: {
-             "Content-Type": "application/json"
+             "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
          },
     });
     const responseData = await response.json();

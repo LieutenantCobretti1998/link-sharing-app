@@ -32,8 +32,13 @@ const router = createBrowserRouter([
             {path: "/:username/edit-links/:id", element: <ProtectedRoute><Links /></ProtectedRoute>, loader: editLinkLoader, errorElement: <DynamicError />},
             {path: "/:username/edit-profile/:id", element: <ProtectedRoute><ProfileDetails /></ProtectedRoute>, loader: editLinkLoader, errorElement: <DynamicError />},
             {path: "/:username/edit-preview/:id", element: <ProtectedRoute><Preview /></ProtectedRoute>},
-            {path: "/:username/:id", element: <ProtectedRoute><CopyLinkPreview /></ProtectedRoute>, errorElement: <NotFoundError />},
         ]
+    },
+    {
+        path: "/:username/:id",
+        element: <CopyLinkPreview />,
+        errorElement: <NotFoundError />
+
     },
     {
         path: "/login",

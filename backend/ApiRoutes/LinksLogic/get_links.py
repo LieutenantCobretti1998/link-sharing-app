@@ -93,22 +93,33 @@ def update_links(links_group_id, profile_id, profile_name):
         return jsonify({'message': 'User does not authenticated'}), 401
 
 
-@links_bp.route('/update-links-profile/<int:links_group_id>', methods=["PATCH"])
-def update_links_profile(links_group_id):
-    profile_data = request.json
-    base64_image = profile_data.get("linksGroupImage")
-    if base64_image != "" and base64_image and (
-            not base64_image.startswith("http://") and not base64_image.startswith("https://")):
-        try:
-            filepath = save_base64_image(base64_image)
-            profile_data["linksGroupImage"] = filepath
-        except ValueError:
-            message = "Invalid image extension. Please provide a valid image extension."
-            return jsonify(message), 400
-    backend_data = map_frontend_to_backend(profile_data)
-    backend_data["links_group_image"] = "/static" + backend_data["links_group_image"].split("/static")[1]
-    message, code = GetAllLinksData(db.session).update_profile_data(backend_data, links_group_id)
-    return jsonify(message), code
+@links_bp.route('/update-links-profile/<int:profile_id>/<string:profile_name>/<int:links_group_id>', methods=["PATCH"])
+@jwt_required()
+def update_links_profile(links_group_id, profile_id, profile_name):
+    user_id = get_jwt_identity()
+    user_instance = UserLogic(db.session)
+    if user_id:
+        user_allowed_profile = user_instance.check_user_profile_match(user_id, profile_id, profile_name)
+        if user_allowed_profile:
+            profile_data = request.json
+            base64_image = profile_data.get("linksGroupImage")
+            if base64_image != "" and base64_image and (
+                    not base64_image.startswith("http://") and not base64_image.startswith("https://")):
+                try:
+                    filepath = save_base64_image(base64_image)
+                    profile_data["linksGroupImage"] = filepath
+                except ValueError:
+                    message = "Invalid image extension. Please provide a valid image extension."
+                    return jsonify(message), 400
+            backend_data = map_frontend_to_backend(profile_data)
+            if backend_data.get("links_group_image") and (backend_data["links_group_image"].startswith("http") or backend_data["links_group_image"].startswith("https")):
+                backend_data["links_group_image"] = "/static" + backend_data["links_group_image"].split("/static")[1]
+            message, code = GetAllLinksData(db.session).update_profile_data(backend_data, links_group_id)
+            return jsonify(message), code
+        else:
+            return jsonify({"error": "Something happened"}), 500
+    else:
+        return jsonify({'message': 'User does not authenticated'}), 401
 
 
 @links_bp.route('/delete-link-group/<int:profile_id>/<string:profile_name>/<int:links_group_id>', methods=['DELETE'])
