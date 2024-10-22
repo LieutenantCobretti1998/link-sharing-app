@@ -2,7 +2,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {backgrounds} from "../BackgroundImages/BackgroundImages.jsx";
 import {platforms} from "../Platforms/PreDefaultPlatForms.jsx";
 import Modal from "../UI/Modal.jsx";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {setBlendedColor, toggleModal} from "../SaveLogic/SaveSlice.js";
 import {averageColors, hexToRgb, rgbToHex} from "../Helpers/ColorsConversion.js";
 import {useParams} from "react-router-dom";
@@ -13,6 +13,7 @@ import {setShortenUrl} from "../ShortenUrl/ShortenUrlSlice.js";
 
 function Preview() {
     const dispatch = useDispatch();
+    const [visible, setIsVisible] = useState(true);
     const { id} = useParams();
     const {data: LinksGroupData, isError: FailedRequest, isLoading} = useQuery({
         queryKey: ["linksGroupPreview", id],
@@ -26,14 +27,13 @@ function Preview() {
         } = id ? LinksGroupData || {}: useSelector((state) => state.saveChooses);
 
     useEffect(() => {
+    if (showModal) {
         const timer = setTimeout(() => {
-            dispatch(toggleModal(false))
+            dispatch(toggleModal(false));
         }, 5000);
-        return () => {
-            clearTimeout(timer)
-
-        };
-    }, [showModal]);
+        return () => clearTimeout(timer);  // Clean up the timer
+    }
+}, [showModal]);
 
     useEffect(() => {
         if(LinksGroupData && LinksGroupData.shorten_url) {
@@ -160,7 +160,7 @@ function Preview() {
                 ))}
                 </svg>
             </section>
-                {showModal && <Modal text={"Please check the required fields in the profile section"}/>}
+                <Modal text={"Please check the required fields in the profile section"} isVisible={showModal}/>
         </>
     );
 }

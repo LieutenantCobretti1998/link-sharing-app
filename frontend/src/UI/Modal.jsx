@@ -1,7 +1,8 @@
+
 // eslint-disable-next-line react/prop-types
 function Modal({text, isVisible}) {
     return (
-        <div className={`modal-container ${isVisible ? 'show' : ''}`}>
+        <div className={`modal-container ${isVisible? 'show' : ''}`}>
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 20 20">
                 <g clipPath="url(#a)">
                     <path fill="#fff"

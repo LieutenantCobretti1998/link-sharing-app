@@ -8,7 +8,7 @@ import ServerError from "../../UI/Errors/ServerError.jsx";
 import Pagination from "../../UI/Pagination.jsx";
 import {DEFAULT_PAGE, PER_PAGE} from "../../UI/GlobalVariables.js";
 import Delete from "../../UI/Delete.jsx";
-import {useSelector} from "react-redux";
+import toast, {Toaster} from "react-hot-toast";
 
 
 function AllLinks() {
@@ -24,10 +24,11 @@ function AllLinks() {
     const profileName = parsedProfileData.profile_name;
     const {mutate:deleteLinkGroup, isError: DeleteLinkError, isLoading: isDeleting} = useMutation({
         mutationFn: deleteLink,
-        onSuccess: () => {
+        onSuccess: (data) => {
             queryClient.resetQueries({
                 queryKey: ["userLinks", parseInt(page), search],
             });
+            toast.success(data.message || "LinksGroup deleted successfully ");
         },
     });
     const {data, isError: AllLinksError, isLoading} = useQuery({
@@ -99,6 +100,7 @@ function AllLinks() {
     }
     else if(links.length === 0) {
         return (
+            <>
             <div className="flex bg-light-grey items-center flex-col p-10 gap-4 pb-12 rounded-md border-light-grey">
                 <svg xmlns="http://www.w3.org/2000/svg" width="250" height="161" fill="none" viewBox="0 0 250 161">
                     <path fill="#fff"
@@ -148,6 +150,8 @@ function AllLinks() {
                     We're here to help you showcase and share your profiles with ease!
                 </p>
             </div>
+                <Toaster />
+            </>
         )
     } else {
         return (
@@ -281,7 +285,9 @@ function AllLinks() {
                         ))}
                 </section>
                 <Pagination handleNext={handleNext} handlePrev={handlePrevious} currentPage={currentPage} totalPages={totalPages} />
+                <Toaster />
             </div>
+
         )
     }
 }
