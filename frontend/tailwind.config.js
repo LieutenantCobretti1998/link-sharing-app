@@ -14,13 +14,14 @@ export default {
       "lightBlack-3": "#797878",
       "grey": "#D9D9D9",
       "light-grey": "#FAFAFA",
+      "light-grey-2": "#e5e5e5",
       "white": "#ffffff",
       "red": "#FF3939"
     },
     fontFamily: {
-        instrumentBold: ["InInstrumentSans-Bold", "sans-serif"],
-        instrumentNormal: ["IInstrumentSans-Regular", "sans-serif"],
-        instrumentSemiBold: ["IInstrumentSans-SemiBold", "sans-serif"],
+        instrumentBold: ["InstrumentSans-Bold", "sans-serif"],
+        instrumentNormal: ["InstrumentSans-Regular", "sans-serif"],
+        instrumentSemiBold: ["InstrumentSans-SemiBold", "sans-serif"],
     },
     keyframes: {
       "fill-bounce": {

@@ -1,6 +1,6 @@
 import {useForm} from "react-hook-form";
 import Button from "../UI/Button.jsx";
-import {Link, replace, useLocation, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import toast, {Toaster} from "react-hot-toast";
 import {useContext, useEffect} from "react";
 import {useMutation} from "@tanstack/react-query";

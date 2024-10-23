@@ -56,7 +56,7 @@ function CreateProfile() {
                                    maxLength="25"
                                    {...register("username", {
                                        required: "Username is required",
-                                       maxLength: "Max 24 char is allowed",
+                                       maxLength: "Max 25 char is allowed",
                                        validate: (value) => value.trim() !== "" || "Pure whitespaces are not allowed"
                                    })}
                                    className="relative w-full pl-10 bg-white p-3 border-[.5px] rounded-md focus:outline-none focus:border-primaryPurple focus:shadow-sm focus:shadow-primaryPurple"/>

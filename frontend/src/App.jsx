@@ -17,6 +17,7 @@ import Profiles from "./CommonComponents/Profiles.jsx";
 import CreateProfile from "./CommonComponents/CreateProfile.jsx";
 import {ProfileProvider} from "./CustomLogic/ProfileProvider.jsx";
 import NotFoundError from "./UI/Errors/NotFoundError.jsx";
+import Settings from "./CommonComponents/Settings.jsx";
 
 const router = createBrowserRouter([
   {
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
     {
         path: "/profiles",
         element: <ProtectedRoute><Profiles /></ProtectedRoute>
+    },
+    {
+        path: "/:username/settings",
+        element : <ProtectedRoute><Settings/></ProtectedRoute>
     }
 ]);
 

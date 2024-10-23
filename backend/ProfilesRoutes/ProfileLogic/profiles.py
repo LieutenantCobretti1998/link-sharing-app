@@ -27,7 +27,7 @@ def choose_profile(profile_name):
     user_id = get_jwt_identity()
     if user_id:
         user_instance = UserLogic(db.session)
-        profile, message, code = user_instance.find_profile(profile_name)
+        profile, message, code = user_instance.find_profile(profile_name, user_id)
         return jsonify({
             "message": message,
             "profile": profile,

@@ -245,16 +245,19 @@ class UserLogic(AbstractDataValidator):
         else:
             return False
 
-    def find_profile(self, profile_name: str) -> tuple:
+    def find_profile(self, profile_name: str, user_id: int) -> tuple:
         """
         :param profile_name: str
+        :param user_id: int
         :return: tuple
         Chosen profile and its data
         """
-        from .models import Profile
+        from .models import Profile, User
+        current_user = self.db_session.query(User).filter(User.id == user_id).first()
+        print(current_user.email)
         chosen_profile = self.db_session.query(Profile).filter(Profile.username == profile_name).first()
-        if chosen_profile:
-            return {"profile_name": chosen_profile.username, "profile_id": chosen_profile.id}, {"message": "Profile is loaded successfully"},  200
+        if chosen_profile and current_user:
+            return {"profile_name": chosen_profile.username, "profile_id": chosen_profile.id, "current_user": current_user.email}, {"message": "Profile is loaded successfully"},  200
         else:
             return None, {"message": "Profile is not existed"}, 500
 
