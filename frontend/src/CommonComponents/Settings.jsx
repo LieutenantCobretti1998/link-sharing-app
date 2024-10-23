@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {Link, Navigate, useNavigate} from "react-router-dom";
 import ManageProfile from "../UI/ManageProfile.jsx";
 
 function Settings() {
@@ -61,12 +61,14 @@ function Settings() {
                 <div className="h-[720px] p-8 w-full relative">
                     <div className="flex justify-between items-center">
                         <h1 className="font-instrumentBold text-3xl ">{selectedMenu}</h1>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="ionicon w-10" viewBox="0 0 512 512">
-                            <path d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z"
-                                  fill="lightGrey" stroke="ligghtGrey" strokeMiterlimit="10" strokeWidth="32"/>
-                            <path fill="none" stroke="grey" strokeLinecap="round" strokeLinejoin="round"
-                                  strokeWidth="32" d="M320 320L192 192M192 320l128-128"/>
-                        </svg>
+                        <Link to="/" className="group">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="ionicon w-10" viewBox="0 0 512 512">
+                                <path d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z"
+                                      fill="lightGrey" stroke="ligghtGrey" strokeMiterlimit="10" strokeWidth="32" className="group-hover:fill-primaryPurple group-hover:stroke-primaryPurple transition-colors duration-300"/>
+                                <path fill="none" stroke="grey" strokeLinecap="round" strokeLinejoin="round"
+                                      strokeWidth="32" d="M320 320L192 192M192 320l128-128" className="group-hover:stroke-white transition-colors duration-300"/>
+                            </svg>
+                        </Link>
                     </div>
                     <div className="inset-x-0 absolute">
                         <hr className="my-3 border-t-[3px] border-light-grey-2  w-full"/>
