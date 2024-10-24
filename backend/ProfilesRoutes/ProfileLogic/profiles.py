@@ -25,7 +25,6 @@ def create_profile():
 @jwt_required()
 def choose_profile(profile_name):
     user_id = get_jwt_identity()
-    # user_instance = UserLogic(db.session)
     if user_id:
         user_instance = UserLogic(db.session)
         profile, message, code = user_instance.find_profile(profile_name, user_id)
@@ -60,4 +59,12 @@ def change_profile_name(profile_id, profile_name):
 def delete_profile(profile_id, profile_name):
     user_id = get_jwt_identity()
     user_instance = UserLogic(db.session)
-    # if user_id:
+    if user_id:
+        user_allowed_profile = user_instance.check_user_profile_match(user_id, profile_id, profile_name)
+        if user_allowed_profile:
+            message, code = user_instance.delete_profile(profile_id, profile_name)
+            return jsonify(message), code
+        else:
+            return jsonify({"error": "Something happened"}), 500
+    else:
+        return jsonify({'message': 'User does not authenticated'}), 401

@@ -2,18 +2,21 @@ import {useForm} from "react-hook-form";
 import MiniSpinner from "./MiniSpinner.jsx";
 import Button from "./Button.jsx";
 import {useMutation} from "@tanstack/react-query";
-import {updateProfileName} from "../API/Profiles.js";
+import {deleteProfile, updateProfileName} from "../API/Profiles.js";
 import toast from "react-hot-toast";
 import {useNavigate} from "react-router-dom";
+import {useContext} from "react";
+import {AuthContext} from "../CustomLogic/AuthProvider.jsx";
 
 
 function ManageProfile({onProfileNameChange}) {
     const profile_data = localStorage.getItem("current-profile");
+    const { refreshAuthStatus } = useContext(AuthContext)
     const navigate = useNavigate();
     const parsedProfileData = profile_data ? JSON.parse(profile_data) : null;
     const profileName = parsedProfileData.profile_name;
     const {register, handleSubmit, formState: {errors} } = useForm();
-    const{mutate: saveNewProfileName, isLoading, isError} = useMutation({
+    const{mutate: saveNewProfileName, isLoading} = useMutation({
         mutationFn: (new_profile_name) => updateProfileName(new_profile_name),
         onSuccess: (data) => {
             onProfileNameChange(data.new_name);
@@ -22,19 +25,31 @@ function ManageProfile({onProfileNameChange}) {
         onError: (error) => {
             toast.error(error.message || "An Error occurred");
         }
-    })
+    });
     const goToProfilesPage = () => {
         navigate("/profiles");
-    }
+    };
+
+    const {mutate: deleteCurrentProfile, isLoading: isDeleting} = useMutation({
+        mutationFn: (new_profile_name) => deleteProfile(),
+        onSuccess: () => {
+            refreshAuthStatus();
+            navigate("/profiles", {replace: true});
+        },
+        onError: (error) => {
+            toast.error(error.message || "An Error occurred");
+        }
+    })
     const onSubmit = (data) => {
         const trimmedUsername = data.change_user.trim();
         saveNewProfileName(trimmedUsername);
-    }
+    };
     return (
         <form className="flex flex-col gap-5 mt-10" onSubmit={handleSubmit(onSubmit)}>
             <div className="flex gap-10 items-center">
-                <label htmlFor="change-user" className="block font-instrumentSemiBold text-lightBlack-1 text-[1.2rem]">Change
-                    Profile Name</label>
+                <label htmlFor="change-user" className="block font-instrumentSemiBold text-lightBlack-1 text-[1.2rem]">
+                    Change Profile Name
+                </label>
                 <input
                     placeholder={profileName}
                     type="text"
@@ -53,7 +68,7 @@ function ManageProfile({onProfileNameChange}) {
                 <hr className="my-3 border-t-[3px] border-light-grey-2  w-full"/>
             </div>
             <div className="top-[88%] left-[2%]">
-                <Button type={"delete"} typeForm={false} onclick={goToProfilesPage}>Delete</Button>
+                <Button type={"delete"} typeForm={false} onclick={deleteCurrentProfile}>{isDeleting ? <MiniSpinner/> : "Delete"}</Button>
             </div>
             <div className="absolute top-[88%] left-[2%]">
                 <Button type={"login"} typeForm={false} onclick={goToProfilesPage}>Change profile</Button>

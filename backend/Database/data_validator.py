@@ -353,3 +353,24 @@ class UserLogic(AbstractDataValidator):
         except OperationalError:
             self.db_session.rollback()
             return {"error": "Database Fatal Error"}, 500
+
+    def delete_profile(self, profile_id: int, profile_name: str) -> tuple:
+        """
+        :param profile_id: int
+        :param profile_name: str
+        :return: tuple
+        Method for deleting the corresponding profile
+        """
+        try:
+            from .models import Profile
+            user = self.db_session.query(Profile).filter(Profile.id == profile_id, Profile.username == profile_name).first()
+            if user:
+                self.db_session.delete(user)
+                self.db_session.commit()
+                return {"message": "Profile deleted successfully"}, 200
+            else:
+                return {"message": "Profile does not exist"}, 409
+
+        except OperationalError:
+            self.db_session.rollback()
+            return {"error": "Database Fatal Error"}, 500

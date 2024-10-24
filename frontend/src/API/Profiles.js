@@ -62,8 +62,31 @@ export const updateProfileName = async(new_profile_name) => {
     });
     const responseData = await response.json();
     if (!response.ok) {
-        console.log(responseData)
         throw new Error(responseData.error);
     }
     return responseData;
 };
+
+export const deleteProfile = async() => {
+    const profile_data = localStorage.getItem("current-profile");
+    const parsedProfileData = JSON.parse(profile_data);
+    if (!parsedProfileData) {
+        throw new Error("Profile is missed!");
+    }
+    const token = localStorage.getItem("access-token");
+    if (!token) {
+        throw new Error("User is not authenticated");
+    }
+     const response = await fetch(`/api/delete-profile/${parsedProfileData.profile_id}/${parsedProfileData.profile_name}`, {
+         method: "DELETE",
+         headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    });
+    const responseData = await response.json();
+    console.log(responseData);
+    if (!response.ok) {
+        throw new Error(responseData.error);
+    }
+    return responseData;
+}
