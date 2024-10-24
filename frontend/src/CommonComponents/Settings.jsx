@@ -1,19 +1,27 @@
 import {useState} from "react";
-import {Link, Navigate, useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import ManageProfile from "../UI/ManageProfile.jsx";
+import {Toaster} from "react-hot-toast";
 
 function Settings() {
     const [selectedMenu, setSelectedMenu] = useState("Manage Profile");
-    const navigate = useNavigate();
-    const profile_data = localStorage.getItem("current-profile");
-    const parsedProfileData = profile_data ? JSON.parse(profile_data) : null;
+    const [parsedProfileData, setParsedProfileData] = useState(() => {
+        const profile_data = localStorage.getItem("current-profile");
+        return profile_data ? JSON.parse(profile_data) : null;
+    });
     const profileName = parsedProfileData.profile_name;
-    const currentUser = parsedProfileData.current_user
+    const currentUser = parsedProfileData.current_user;
+
+    const handleProfileChange = (newProfileName) => {
+        const updatedProfileData = {...parsedProfileData, profile_name: newProfileName};
+        setParsedProfileData(updatedProfileData);
+        localStorage.setItem("current-profile", JSON.stringify(updatedProfileData));
+    }
 
     const renderContent = () => {
         switch (selectedMenu) {
             case "Manage Profile":
-                return <ManageProfile />;
+                return <ManageProfile onProfileNameChange={handleProfileChange} />;
             case "logOut":
                 return null;
         }
@@ -76,6 +84,7 @@ function Settings() {
                     {renderContent()}
                 </div>
             </section>
+            <Toaster />
         </main>
     );
 }

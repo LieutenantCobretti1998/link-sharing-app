@@ -34,9 +34,15 @@ function Button({type, children, isActive, onclick, disabled, typeForm}) {
             buttonClasses = "w-40 h-9 p-0 border-[.5px] border-primaryPurple " +
                 "rounded-md text-white font-bold bg-primaryPurple hover:bg-primaryPurple3 transition duration-300 ease-in-out";
             break;
+        case "update":
+            buttonClasses = "mt-6 p-2 w-[75px] h-auto hover:bg-primaryPurple rounded-md text-white bg-lightPurple1 font-regular transition duration-300 ease-in-out"
+            break;
+        case "delete":
+            buttonClasses = "mt-6 p-2 w-[75px] h-auto hover:bg-dark-red rounded-md text-white bg-red font-regular transition duration-300 ease-in-out"
+            break;
     }
     return (
-        <button type={typeForm && "submit"} disabled={type==="main" && disabled} onClick={onclick} className={buttonClasses}>{children}</button>
+        <button type={typeForm ? "submit": "button"} disabled={type==="main" && disabled} onClick={onclick} className={buttonClasses}>{children}</button>
     );
 }
 

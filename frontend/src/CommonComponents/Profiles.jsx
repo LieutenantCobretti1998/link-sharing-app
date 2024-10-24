@@ -4,13 +4,11 @@ import {useNavigate} from "react-router-dom";
 import {useMutation} from "@tanstack/react-query";
 import {chosenProfile} from "../API/Profiles.js";
 import toast from "react-hot-toast";
-import {useDispatch} from "react-redux";
-import {updateProfile} from "../ProfileDetails/ProfileSlice.js";
+import Button from "../UI/Button.jsx";
 
 
 function Profiles() {
     const {authStatus} = useContext(AuthContext);
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const profiles = authStatus.userCredentials.profiles;
     useEffect(() => {
@@ -26,7 +24,10 @@ function Profiles() {
             navigate(`/`, {replace: true});
         },
         onError: (error) => toast.error(error.message || "An Error occurred. Please try again later ")
-    })
+    });
+    const goToCreateProfilesPage = () => {
+        navigate("/create-profile");
+    }
     return (
         <main className="flex justify-center items-center h-screen">
             <div className="flex flex-col gap-5">
@@ -49,6 +50,7 @@ function Profiles() {
                             <p className="text-lg text-center font-bold text-black group-hover:text-white transition-colors duration-300">{profile.username}</p>
                         </div>
                     ))}
+                    {profiles.length < 3 && <Button type={"main"} onclick={goToCreateProfilesPage}>New Profile</Button>}
                 </section>
             </div>
         </main>

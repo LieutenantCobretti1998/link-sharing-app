@@ -226,6 +226,7 @@ class UserLogic(AbstractDataValidator):
         Check if the user could use profile id
         """
         from .models import Profile
+        print(user_id, profile_id, profile_name)
         is_allowed = self.db_session.query(Profile).filter(Profile.id == profile_id, Profile.user_id == user_id, Profile.username == profile_name).first()
         if is_allowed:
             return True
@@ -254,7 +255,6 @@ class UserLogic(AbstractDataValidator):
         """
         from .models import Profile, User
         current_user = self.db_session.query(User).filter(User.id == user_id).first()
-        print(current_user.email)
         chosen_profile = self.db_session.query(Profile).filter(Profile.username == profile_name).first()
         if chosen_profile and current_user:
             return {"profile_name": chosen_profile.username, "profile_id": chosen_profile.id, "current_user": current_user.email}, {"message": "Profile is loaded successfully"},  200
@@ -329,3 +329,27 @@ class UserLogic(AbstractDataValidator):
         except OperationalError:
             self.db_session.rollback()
             return {"message": "Database Fatal Error"}, 500
+
+    def update_profile_name(self, profile_id: int, profile_name: str, updated_name: str) -> tuple:
+        """
+        :param updated_name: str
+        :param profile_id: int
+        :param profile_name: str
+        :return:
+        The method for updating profile name
+        """
+        try:
+            from .models import Profile
+            user = self.db_session.query(Profile).filter(Profile.id == profile_id, Profile.username == profile_name).first()
+            if user:
+                profile_exist = self.db_session.query(Profile).filter(Profile.username == updated_name).first()
+                if profile_exist:
+                    return {"error": "Profile already exists"}, 409
+                user.username = updated_name
+                self.db_session.commit()
+                return {"message": "Profile name updated successfully", "new_name": updated_name}, 200
+            else:
+                return {"error": "Profile does not exist"}, 409
+        except OperationalError:
+            self.db_session.rollback()
+            return {"error": "Database Fatal Error"}, 500

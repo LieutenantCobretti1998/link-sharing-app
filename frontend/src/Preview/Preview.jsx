@@ -25,7 +25,7 @@ function Preview() {
         linksGroupImage, textColor, commonColor,
         backgroundColor, backgroundImage, showModal
         } = id ? LinksGroupData || {}: useSelector((state) => state.saveChooses);
-
+    console.log(linksGroupName)
     useEffect(() => {
     if (showModal) {
         const timer = setTimeout(() => {
