@@ -9,14 +9,21 @@ import {useQuery} from "@tanstack/react-query";
 import {previewLink} from "../API/DataFetchingApi.js";
 import Spinner from "../UI/Spinner.jsx";
 import CopyPageHeader from "./CopyPageHeader.jsx";
+import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
 
 
 function CopyLinkPreview() {
     const dispatch = useDispatch();
     const {id, username} = useParams();
+    const handleSessionExpired = useHandleSessionExpired();
     const {data: CopiedLinksData, isError: FailedRequest, isLoading} = useQuery({
         queryKey: ["ChosenLinks", id, username],
-        queryFn: () => previewLink(username, id)
+        queryFn: () => previewLink(username, id),
+        onError: (error) => {
+            if (error.message === "Session expired. Please log in again.") {
+                handleSessionExpired();
+            }
+        }
     });
     const {
              linksGroupName, links, shortDescription,

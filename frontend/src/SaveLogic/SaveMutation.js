@@ -1,5 +1,8 @@
 "use strict";
 
+import {getCSRFToken} from "../Helpers/AuthHelpers.js";
+import {refreshAccessToken} from "../API/Login.js";
+
 const saveLink = async (newLinkData) => {
     const {showModal, ...rest} = newLinkData;
     const profile_data = localStorage.getItem("current-profile");
@@ -7,21 +10,26 @@ const saveLink = async (newLinkData) => {
     if (!parsedProfileData) {
         throw new Error("Profile is missed!");
     }
-    const token = localStorage.getItem("access-token");
-    if (!token) {
-        throw new Error("User is not authenticated");
-    }
     const response = await fetch(`/api/save_link/${parsedProfileData.profile_id}`, {
         method: "POST",
         body: JSON.stringify(rest),
         headers: {
             "Content-Type": "application/json",
-             "Authorization": `Bearer ${token}`
-        }
+            "X-CSRF-TOKEN": getCSRFToken()
+        },
+        credentials: "include"
     });
     const responseData = await response.json();
     if (!response.ok) {
+        if (response.status === 401) {
+            const refreshed = await refreshAccessToken();
+            if (refreshed) {
+            } else {
+                throw new Error('Session expired. Please log in again.');
+            }
+        }
          throw new Error(responseData.message);
+
     }
     return responseData;
 }

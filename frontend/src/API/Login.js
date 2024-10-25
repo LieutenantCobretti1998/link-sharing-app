@@ -1,10 +1,12 @@
 "use strict";
 
+import {getRefreshCSRFToken} from "../Helpers/AuthHelpers.js";
+
 export const createUser = async (username, password, email) => {
     const response = await fetch("/api/register", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         },
         body: JSON.stringify({
             username: username,
@@ -25,6 +27,7 @@ export const loginUser = async (email, password) => {
             headers: {
                  "Content-Type": "application/json"
             },
+            credentials: "include",
             body: JSON.stringify({
                 email: email,
                 password: password
@@ -34,24 +37,36 @@ export const loginUser = async (email, password) => {
         if (!response.ok) {
              throw new Error(responseData.message);
         }
-        localStorage.setItem("access-token", responseData.access_token);
         return responseData;
 };
 
+export async function refreshAccessToken() {
+    const response = await fetch("/api/token/refresh", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            'X-CSRF-TOKEN': getRefreshCSRFToken(),
+        },
+        credentials: "include"
+    });
+    return response.ok;
+}
+
 export const checkAuthStatus = async () => {
-    const token = localStorage.getItem("access-token");
-    if (!token) {
-        throw new Error("User is not authenticated");
-    }
     const response = await fetch("/api/auth_status", {
         method: "GET",
-        headers: {
-            "Authorization": `Bearer ${token}`
-        }
+        credentials: "include",
     });
     if (response.ok) {
         return await response.json();
     } else {
+        if (response.status === 401) {
+            const refreshed = await refreshAccessToken();
+            if (refreshed) {
+            } else {
+                throw new Error('Session expired. Please log in again.');
+            }
+        }
         throw new Error("Failed to check user's authentication");
     }
 };

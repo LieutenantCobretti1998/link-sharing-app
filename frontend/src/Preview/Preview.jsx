@@ -10,22 +10,27 @@ import {useQuery} from "@tanstack/react-query";
 import {getLink} from "../API/DataFetchingApi.js";
 import Spinner from "../UI/Spinner.jsx";
 import {setShortenUrl} from "../ShortenUrl/ShortenUrlSlice.js";
+import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
 
 function Preview() {
     const dispatch = useDispatch();
-    const [visible, setIsVisible] = useState(true);
+    const handleSessionExpired = useHandleSessionExpired();
     const { id} = useParams();
     const {data: LinksGroupData, isError: FailedRequest, isLoading} = useQuery({
         queryKey: ["linksGroupPreview", id],
         queryFn: () => getLink(id),
-        enabled: !!id
+        enabled: !!id,
+        onError: (error) => {
+            if (error.message === "Session expired. Please log in again.") {
+                handleSessionExpired();
+            }
+        }
     });
     const {
         linksGroupName, links, shortDescription,
         linksGroupImage, textColor, commonColor,
         backgroundColor, backgroundImage, showModal
         } = id ? LinksGroupData || {}: useSelector((state) => state.saveChooses);
-    console.log(linksGroupName)
     useEffect(() => {
     if (showModal) {
         const timer = setTimeout(() => {

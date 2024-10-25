@@ -13,6 +13,7 @@ import {useLoaderData, useNavigate, useParams} from "react-router-dom";
 import {fetchLinks} from "../LinksAddition/LinkSlice.js";
 import {useMutation} from "@tanstack/react-query";
 import {updateLinksProfile} from "../API/DataFetchingApi.js";
+import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
 
 
 const customStyles = {
@@ -66,6 +67,7 @@ const errorReducer = (state, action) => {
 
 function ProfileDetails() {
     const dispatch_redux = useDispatch();
+    const handleSessionExpired = useHandleSessionExpired();
     const navigate = useNavigate();
     const profileDetailsFromQuery = useLoaderData();
     const {id} = useParams();
@@ -96,6 +98,11 @@ function ProfileDetails() {
         mutationKey: ["update-profile"],
         onSuccess: () => {
             navigate(`/${profileName}/edit-profile/${id}`)
+        },
+        onError: (error) => {
+            if (error.message === "Session expired. Please log in again.") {
+                handleSessionExpired();
+            }
         }
     })
 

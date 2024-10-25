@@ -12,11 +12,13 @@ import {useLoaderData, useNavigate, useParams} from "react-router-dom";
 import {fetchProfileData} from "../ProfileDetails/ProfileSlice.js";
 import {useMutation} from "@tanstack/react-query";
 import {updateLinksGroup} from "../API/DataFetchingApi.js";
+import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
 
 
 function Links() {
     const {id} = useParams();
     const navigate = useNavigate();
+    const handleSessionExpired = useHandleSessionExpired();
     const linksFromQuery = useLoaderData();
     const dispatch = useDispatch();
     const showLinkForm = useSelector((state) => state.link.showForm);
@@ -34,6 +36,11 @@ function Links() {
         mutationKey: ["update-link"],
         onSuccess: () => {
             navigate(`/${profileName}/edit-links/${id}`)
+        },
+        onError: (error) => {
+            if (error.message === "Session expired. Please log in again.") {
+                handleSessionExpired();
+            }
         }
     })
     useEffect(() => {

@@ -1,18 +1,20 @@
 import {useContext, useEffect} from "react";
 import {AuthContext} from "../CustomLogic/AuthProvider.jsx";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {useMutation} from "@tanstack/react-query";
 import {chosenProfile} from "../API/Profiles.js";
 import toast from "react-hot-toast";
 import Button from "../UI/Button.jsx";
+import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
 
 
 function Profiles() {
-    const {authStatus} = useContext(AuthContext);
+    const handleSessionExpired = useHandleSessionExpired();
     const navigate = useNavigate();
-    const profiles = authStatus.userCredentials.profiles;
+    const location = useLocation();
+    const profiles = location.state.userCredentials.profiles;
     useEffect(() => {
-        if (profiles.length === 0) {
+        if (profiles?.length === 0) {
             navigate("/create-profile");
         }
     }, []);
@@ -23,7 +25,11 @@ function Profiles() {
             localStorage.setItem("current-profile", JSON.stringify(data.profile));
             navigate(`/`, {replace: true});
         },
-        onError: (error) => toast.error(error.message || "An Error occurred. Please try again later ")
+        onError: (error) => {
+            if (error.message === "Session expired. Please log in again.") {
+                handleSessionExpired();
+            }
+            toast.error(error.message || "An Error occurred. Please try again later ")}
     });
     const goToCreateProfilesPage = () => {
         navigate("/create-profile");
@@ -45,12 +51,12 @@ function Profiles() {
                     <div className="mb-10 text-center">
                         <h1 className="text-3xl mb-2 font-instrumentBold"><b>Choose your profile</b></h1>
                     </div>
-                    {profiles.map((profile, index) => (
+                    {profiles?.map((profile, index) => (
                         <div onClick={() => choseProfile(profile.username)} key={index} className="group p-4 border rounded-md mb-2 border-lightPurple2 bg-lightPurple2 hover:bg-primaryPurple hover:border-primaryPurple transition-colors duration-300 cursor-pointer">
                             <p className="text-lg text-center font-bold text-black group-hover:text-white transition-colors duration-300">{profile.username}</p>
                         </div>
                     ))}
-                    {profiles.length < 3 && <Button type={"main"} onclick={goToCreateProfilesPage}>New Profile</Button>}
+                    {profiles?.length < 3 && <Button type={"main"} onclick={goToCreateProfilesPage}>New Profile</Button>}
                 </section>
             </div>
         </main>

@@ -9,13 +9,13 @@ import MiniSpinner from "../UI/MiniSpinner.jsx";
 import {AuthContext} from "../CustomLogic/AuthProvider.jsx";
 
 function Login() {
-    const {setAuthStatus} = useContext(AuthContext);
+    const {setAuthStatus, authStatus} = useContext(AuthContext);
     const {register, handleSubmit, formState: {errors} } = useForm();
     const location = useLocation();
     const navigate = useNavigate();
     useEffect(() => {
         if(location.state?.message) {
-        toast.success(location.state?.message)
+        toast.success(location.state?.message);
         }
     }, []);
     const {mutate:Login, isLoading} = useMutation({
@@ -23,9 +23,8 @@ function Login() {
         onSuccess: (data) => {
             setAuthStatus({
                 authenticated: true,
-                userCredentials: data.user_data
             });
-            navigate("/profiles", {replace: true});
+            navigate('/profiles', { replace: true, state: { userCredentials: data.user } });
         },
         onError: (error) => toast.error(error.message || "An Error occurred. Please try again later ")
     })

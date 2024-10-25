@@ -4,18 +4,21 @@ import Spinner from "../UI/Spinner.jsx";
 import {useMutation} from "@tanstack/react-query";
 import saveLink from "../SaveLogic/SaveMutation.js";
 import ServerError from "../UI/Errors/ServerError.jsx";
+import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
 function Layout() {
     const location = useLocation();
     const dynamicMatch = useMatch("/:username/:id");
     const navigate = useNavigate();
-    const profile_data = localStorage.getItem("current-profile");
-    const parsedProfileData = profile_data ? JSON.parse(profile_data) : null;
+    const handleSessionExpired = useHandleSessionExpired();
     const mutation = useMutation({
         mutationFn: saveLink,
         onSuccess: () => {
             navigate(`/`, {replace: true});
         },
-        onError: () => {
+        onError: (error) => {
+            if (error.message === "Session expired. Please log in again.") {
+                handleSessionExpired();
+            }
             return <ServerError />
         }
     });

@@ -7,10 +7,12 @@ import toast from "react-hot-toast";
 import {useNavigate} from "react-router-dom";
 import {useContext} from "react";
 import {AuthContext} from "../CustomLogic/AuthProvider.jsx";
+import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
 
 
 function ManageProfile({onProfileNameChange}) {
     const profile_data = localStorage.getItem("current-profile");
+    const handleSessionExpired = useHandleSessionExpired();
     const { refreshAuthStatus } = useContext(AuthContext)
     const navigate = useNavigate();
     const parsedProfileData = profile_data ? JSON.parse(profile_data) : null;
@@ -23,6 +25,9 @@ function ManageProfile({onProfileNameChange}) {
             toast.success(data.message || "Finally");
         },
         onError: (error) => {
+            if (error.message === "Session expired. Please log in again.") {
+                handleSessionExpired();
+            }
             toast.error(error.message || "An Error occurred");
         }
     });

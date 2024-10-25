@@ -9,10 +9,12 @@ import Pagination from "../../UI/Pagination.jsx";
 import {DEFAULT_PAGE, PER_PAGE} from "../../UI/GlobalVariables.js";
 import Delete from "../../UI/Delete.jsx";
 import toast, {Toaster} from "react-hot-toast";
+import useHandleSessionExpired from "../../CustomLogic/UseHandleSessionExpired.js";
 
 
 function AllLinks() {
     const [hoveredCardIndex, setHoveredCardIndex] = useState(null);
+    const handleSessionExpired = useHandleSessionExpired();
     const [visible, setVisible] = useState(false);
     let [searchParams, setSearchParams] = useSearchParams();
     const page = parseInt(searchParams.get("page")) || DEFAULT_PAGE;
@@ -30,6 +32,11 @@ function AllLinks() {
             });
             toast.success(data.message || "LinksGroup deleted successfully ");
         },
+        onError: (error) => {
+            if (error.message === "Session expired. Please log in again.") {
+                handleSessionExpired();
+            }
+        },
     });
     const {data, isError: AllLinksError, isLoading} = useQuery({
         queryKey: ["userLinks", parseInt(page), search],
@@ -45,6 +52,11 @@ function AllLinks() {
              const currentPage = parseInt(searchParams.get("page")) || 1;
             if (currentPage > totalPages && currentPage !== 1) {
                 setSearchParams({ page: (currentPage - 1).toString() });
+            }
+        },
+        onError: (error) => {
+            if (error.message === "Session expired. Please log in again.") {
+                handleSessionExpired();
             }
         },
         enabled: true,

@@ -7,9 +7,11 @@ import {useMutation} from "@tanstack/react-query";
 import {createProfile} from "../API/Profiles.js";
 import {useContext} from "react";
 import {AuthContext} from "../CustomLogic/AuthProvider.jsx";
+import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
 
 function CreateProfile() {
     const navigate = useNavigate();
+    const handleSessionExpired = useHandleSessionExpired();
     const {setAuthStatus} = useContext(AuthContext);
     const {register, handleSubmit, setError, control, formState: {errors} } = useForm();
     const {mutate: createNewProfile, isLoading} = useMutation({
@@ -24,7 +26,12 @@ function CreateProfile() {
             }));
             navigate("/profiles")
         },
-        onError: (error) => toast.error(error.message || "An Error occurred. Please try again later ")
+        onError: (error) => {
+            if (error.message === "Session expired. Please log in again.") {
+                handleSessionExpired();
+            }
+            toast.error(error.message || "An Error occurred. Please try again later ")
+        }
     });
     const onSubmit = (data) => {
         createNewProfile(data.username);
