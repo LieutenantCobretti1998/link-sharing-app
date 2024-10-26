@@ -18,6 +18,8 @@ import CreateProfile from "./CommonComponents/CreateProfile.jsx";
 import {ProfileProvider} from "./CustomLogic/ProfileProvider.jsx";
 import NotFoundError from "./UI/Errors/NotFoundError.jsx";
 import Settings from "./CommonComponents/Settings.jsx";
+import ResetPassword from "./CommonComponents/ResetPassword.jsx";
+import ForgetPassword from "./CommonComponents/ForgetPassword.jsx";
 
 const router = createBrowserRouter([
   {
@@ -44,6 +46,14 @@ const router = createBrowserRouter([
     {
         path: "/login",
         element: <Login />
+    },
+    {
+        path: "/reset-password/:token",
+        element: <ResetPassword />
+    },
+    {
+        path: "/forget-password",
+        element:<ForgetPassword />
     },
     {
         path: "/create-user",

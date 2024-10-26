@@ -31,6 +31,29 @@ export const createProfile = async(profileName) => {
     return responseData;
 };
 
+export const allProfiles = async(profileName) => {
+    const response = await fetch(`/api/related-profiles`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+
+        },
+        credentials: "include"
+    });
+    const responseData = await response.json();
+        if (!response.ok) {
+            if (response.status === 401) {
+            const refreshed = await refreshAccessToken();
+            if (refreshed) {
+            } else {
+                throw new Error('Session expired. Please log in again.');
+            }
+        }
+             throw new Error(responseData.message);
+        }
+    return responseData;
+}
+
 export const chosenProfile = async (profileName) => {
     const response = await fetch(`/api/choose_profile/${profileName}`, {
         method: "GET",
@@ -39,7 +62,7 @@ export const chosenProfile = async (profileName) => {
 
         },
         credentials: "include"
-    })
+    });
     const responseData = await response.json();
         if (!response.ok) {
             if (response.status === 401) {

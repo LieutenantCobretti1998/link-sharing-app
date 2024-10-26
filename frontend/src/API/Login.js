@@ -21,6 +21,23 @@ export const createUser = async (username, password, email) => {
     return responseData;
 };
 
+export const updatePassword = async(token, new_password) => {
+    const response  = await fetch(`/api/reset-password/${token}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            updated_password: new_password,
+        })
+    })
+    const responseData = await response.json();
+    if (!response.ok) {
+         throw new Error(responseData.message);
+    }
+    return responseData;
+}
+
 export const loginUser = async (email, password) => {
         const response = await fetch("/api/login", {
             method: "POST",
@@ -39,6 +56,38 @@ export const loginUser = async (email, password) => {
         }
         return responseData;
 };
+
+export const logoutUser = async () => {
+    const response = await fetch("/api/logout", {
+            method: "POST",
+            headers: {
+                 "X-CSRF-TOKEN": getRefreshCSRFToken()
+            },
+            credentials: "include",
+        });
+        const responseData = await response.json();
+        if (!response.ok) {
+             throw new Error(responseData.message);
+        }
+        return responseData;
+};
+
+export const forgotPassword = async (email) => {
+    const response = await fetch("/api/forgot-password", {
+        method: "POST",
+        headers: {
+                 "Content-Type": "application/json"
+            },
+        body: JSON.stringify({
+            email: email,
+        })
+    })
+    const responseData = await response.json();
+        if (!response.ok) {
+             throw new Error(responseData.message);
+        }
+        return responseData;
+}
 
 export async function refreshAccessToken() {
     const response = await fetch("/api/token/refresh", {

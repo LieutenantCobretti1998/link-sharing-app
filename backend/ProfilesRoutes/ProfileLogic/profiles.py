@@ -7,6 +7,18 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 profiles_bp = Blueprint('profiles', __name__)
 
 
+@profiles_bp.route('/related-profiles', methods=['GET'])
+@jwt_required()
+def get_related_profiles():
+    user_id = get_jwt_identity()
+    if user_id:
+        user_instance = UserLogic(db.session)
+        message, code = user_instance.find_related_profiles(user_id)
+        return message, code
+    else:
+        return jsonify({'message': 'User does not authenticated'}), 401
+
+
 @profiles_bp.route('/create_profile', methods=['POST'])
 @jwt_required()
 def create_profile():

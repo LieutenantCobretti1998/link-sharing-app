@@ -259,9 +259,33 @@ class UserLogic(AbstractDataValidator):
         if chosen_profile and current_user:
             return {"profile_name": chosen_profile.username, "profile_id": chosen_profile.id, "current_user": current_user.email}, {"message": "Profile is loaded successfully"},  200
         else:
-            return None, {"message": "Profile is not existed"}, 500
+            return None, {"message": "Profile or User is not existed"}, 404
 
-    def find_email(self, email: str) -> bool | list:
+    def find_related_profiles(self, user_id: int) -> tuple:
+        """
+        :param user_id: int
+        :return: tuple
+        """
+        try:
+            from .models import User
+            user = self.db_session.query(User).filter_by(id=user_id).first()
+            if user:
+                profiles = []
+                for profile in user.profiles:
+                    profiles.append({
+                        "username": profile.username,
+                    })
+                user_data = {
+                    "email": user.email,
+                    "profiles": profiles,
+                }
+                return {"user": user_data}, 200
+            else:
+                return None, {"message": "User is not existed"}, 404
+        except OperationalError:
+            return None, {"error": "Database Fatal Error"}, 500
+
+    def find_email(self, email: str) -> bool:
         """
                 email: str
                 return: bool
@@ -306,6 +330,29 @@ class UserLogic(AbstractDataValidator):
         except OperationalError:
             self.db_session.rollback()
             return {"message": "Database Fatal Error"}, 500
+
+    def update_password(self, user_id: int, new_password: str) -> tuple:
+        """
+        :param user_id: int
+        :param new_password: str
+        :return: tuple
+        The method for updating the password
+        """
+        try:
+            from .models import User
+            user = self.db_session.query(User).filter_by(id=user_id).first()
+            if user:
+                user.password = new_password
+                self.db_session.commit()
+                return {"message": "Password updated successfully"}, 200
+            else:
+                return {"message": "User is not existed"}, 404
+        except OperationalError:
+            self.db_session.rollback()
+            return {"message": "Database Fatal Error"}, 500
+
+
+
 
     def create_profile(self, user_id: int, **kwargs) -> tuple:
         """

@@ -1,40 +1,26 @@
-import {useForm} from "react-hook-form";
 import Button from "../UI/Button.jsx";
-import {Link, useLocation, useNavigate} from "react-router-dom";
-import toast, {Toaster} from "react-hot-toast";
-import {useContext, useEffect} from "react";
-import {useMutation} from "@tanstack/react-query";
-import {loginUser} from "../API/Login.js";
 import MiniSpinner from "../UI/MiniSpinner.jsx";
-import {AuthContext} from "../CustomLogic/AuthProvider.jsx";
+import {Link} from "react-router-dom";
+import toast, {Toaster} from "react-hot-toast";
+import {useForm} from "react-hook-form";
+import {useMutation, useQuery} from "@tanstack/react-query";
+import {forgotPassword} from "../API/Login.js";
 
-function Login() {
-    const {setAuthStatus} = useContext(AuthContext);
+function ForgetPassword() {
     const {register, handleSubmit, formState: {errors} } = useForm();
-    const location = useLocation();
-    const navigate = useNavigate();
-    useEffect(() => {
-        if(location.state?.message) {
-        toast.success(location.state?.message);
-        }
-    }, []);
-    const {mutate:Login, isLoading} = useMutation({
-        mutationFn: (data) => loginUser(data.email, data.password),
-        onSuccess: (data) => {
-            setAuthStatus({
-                authenticated: true,
-            });
-            navigate('/profiles', { replace: true, state: { userCredentials: data.user } });
-        },
-        onError: (error) => toast.error(error.message || "An Error occurred. Please try again later ")
-    })
+    const {mutate: submitEmail, isLoading} = useMutation({
+        mutationFn: (data) => forgotPassword(data.email),
+        onSuccess: (data) => toast.success(data.message),
+        onError: (error) => toast.error(error.message || "An Error occurred. Please try again later "),
+    });
     const onSubmit = (data) => {
-        Login(data)
+        submitEmail(data)
     }
     return (
         <main className="flex justify-center items-center h-screen">
             <div className="flex flex-col gap-5">
-                <svg className="self-center" xmlns="http://www.w3.org/2000/svg" width="183" height="40" fill="none" viewBox="0 0 183 40">
+                <svg className="self-center" xmlns="http://www.w3.org/2000/svg" width="183" height="40" fill="none"
+                     viewBox="0 0 183 40">
                     <path fill="#633CFF" fillRule="evenodd"
                           d="M5.774 34.225c2.443 2.442 6.37 2.442 14.226 2.442 7.857 0 11.785 0 14.225-2.442 2.442-2.438 2.442-6.368 2.442-14.225 0-7.857 0-11.785-2.442-14.226-2.438-2.44-6.368-2.44-14.225-2.44-7.857 0-11.785 0-14.226 2.44-2.44 2.443-2.44 6.37-2.44 14.226 0 7.857 0 11.785 2.44 14.225Zm10.06-19.642A5.416 5.416 0 1 0 21.25 20a1.25 1.25 0 1 1 2.5 0 7.917 7.917 0 1 1-7.916-7.916 1.25 1.25 0 0 1 0 2.5ZM29.584 20a5.417 5.417 0 0 1-5.417 5.417 1.25 1.25 0 0 0 0 2.5A7.917 7.917 0 1 0 16.25 20a1.25 1.25 0 0 0 2.5 0 5.416 5.416 0 1 1 10.834 0Z"
                           clipRule="evenodd"/>
@@ -45,10 +31,9 @@ function Login() {
                 </svg>
                 <section className=" bg-white p-[10%] w-[700px] rounded-xl">
                     <div className="mb-10">
-                        <h1 className="text-3xl mb-2 font-instrumentBold"><b>Login</b></h1>
-                        <p className="font-instrumentNormal">Add your details below to get back into the app</p>
+                        <h1 className="text-3xl mb-2 font-instrumentBold"><b>Enter your email</b></h1>
                     </div>
-                    <form className="flex flex-col gap-4"  onSubmit={handleSubmit(onSubmit)}>
+                    <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
                         <div>
                             <label htmlFor="email" className="block font-instrumentNormal mb-1">Email</label>
                             <input placeholder="e.g jamil@gmail.com"
@@ -66,37 +51,13 @@ function Login() {
                                       d="M14 3H2a.5.5 0 0 0-.5.5V12a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V3.5A.5.5 0 0 0 14 3Zm-.5 9h-11V4.637l5.162 4.732a.5.5 0 0 0 .676 0L13.5 4.637V12Z"/>
                             </svg>
                         </div>
-                        <div>
-                            <label htmlFor="password" className="block font-instrumentNormal mb-1">Password</label>
-                            <input placeholder="Enter your password"
-                                   type="password"
-                                   id="password"
-                                   minLength="8"
-                                   maxLength="12"
-                                   {...register("password", {
-                                       required: "Password is required",
-                                       minLength: {value: 8, message: "Password must be at least 8 characters"},
-                                       maxLength: {value: 12, message: "Password must be no more than 12 characters"},
-                                       validate: (value) => value.trim() !== "" || "Pure whitespaces are not allowed"
-                                   })}
-                                   className="relative w-full pl-10 bg-white p-3 border-[.5px] rounded-md focus:outline-none focus:border-primaryPurple focus:shadow-sm focus:shadow-primaryPurple"/>
-                            <svg className="absolute translate-x-4 translate-y-[-2rem]"
-                                 xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
-                                 viewBox="0 0 16 16">
-                                <path fill="#737373"
-                                      d="M13 5h-2V3.5a3 3 0 0 0-6 0V5H3a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1ZM8.5 9.914V11.5a.5.5 0 0 1-1 0V9.914a1.5 1.5 0 1 1 1 0ZM10 5H6V3.5a2 2 0 1 1 4 0V5Z"/>
-                            </svg>
-                        </div>
                         <Button type={"login"} typeForm={true}>{isLoading ? <MiniSpinner />: "Login"}</Button>
-                        <p className="font-instrumentNormal">Don't have an account ? <Link to="/create-user" className="text-primaryPurple font-instrumentNormal">Create account</Link></p>
-                        <p className="font-instrumentNormal">Forget a password ? <Link to="/forget-password" className="text-primaryPurple font-instrumentNormal">Reset password</Link></p>
                     </form>
                 </section>
             </div>
-            <Toaster />
+            <Toaster/>
         </main>
     );
 }
 
-
-export default Login;
+export default ForgetPassword;

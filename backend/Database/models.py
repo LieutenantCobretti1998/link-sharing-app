@@ -1,8 +1,10 @@
 import random
 import string
+from flask_jwt_extended import create_access_token, decode_token
+from datetime import timedelta
+from flask import current_app
 from sqlalchemy import Column, Integer, String, DateTime, JSON, VARCHAR, ForeignKey
 from sqlalchemy.orm import relationship
-
 from backend.Database import Base, db
 import os
 
@@ -46,6 +48,22 @@ class LinksGroup(Base):
     blended_color = Column(String(20), nullable=True)
 
 
+class BlackListToken(Base):
+    __tablename__ = 'blacklist'
+    id = Column(Integer, primary_key=True)
+    jti = Column(String(36), nullable=False)
+    user_id = Column(Integer, nullable=True)
+    expires_at = Column(DateTime, nullable=False)
+
+    def __init__(self, jti, expires_at, user_id=None):
+        self.jti = jti
+        self.expires_at = expires_at
+        self.user_id = user_id
+
+    def __repr__(self):
+        return f'<BlacklistToken {self.jti}>'
+
+
 def generate_short_url(user_profile: str, length=6, domain=None) -> str:
     """
     The simple generator of unique 6 lettered identifier for the shorten url
@@ -71,3 +89,28 @@ def generate_short_unique_url(database, user_profile: str) -> str:
     while database.query(LinksGroup).filter(LinksGroup.shorten_url == short_url).first() is not None:
         short_url = generate_short_url(user_profile=user_profile)
     return short_url
+
+
+def generate_reset_token(user_id: int) -> str:
+    """
+    :param user_id: int
+    :return: str
+    Generate reset token for forget password logic
+    """
+    return create_access_token(identity=user_id,
+                               expires_delta=current_app.config['JWT_RESET_TOKEN_EXPIRES']
+                               )
+
+
+def verify_reset_token(token: str):
+    """
+    :param token: str
+    :return:
+    The function for checking the validation of reset token
+    """
+    try:
+        data = decode_token(token)
+        return data['sub']
+    except Exception:
+        return None
+

@@ -36,12 +36,15 @@ function ManageProfile({onProfileNameChange}) {
     };
 
     const {mutate: deleteCurrentProfile, isLoading: isDeleting} = useMutation({
-        mutationFn: (new_profile_name) => deleteProfile(),
+        mutationFn: () => deleteProfile(),
         onSuccess: () => {
             refreshAuthStatus();
             navigate("/profiles", {replace: true});
         },
         onError: (error) => {
+            if (error.message === "Session expired. Please log in again.") {
+                handleSessionExpired();
+            }
             toast.error(error.message || "An Error occurred");
         }
     })

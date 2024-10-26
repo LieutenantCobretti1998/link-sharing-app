@@ -1,10 +1,5 @@
 "use strict";
 
-import {AuthContext} from "../CustomLogic/AuthProvider.jsx";
-import {useContext} from "react";
-import {useNavigate} from "react-router-dom";
-import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
-
 export function getCSRFToken() {
     const name = "csrf_access_token=";
     const decodeCookie = decodeURIComponent(document.cookie);
