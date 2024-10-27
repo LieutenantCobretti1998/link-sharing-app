@@ -531,22 +531,22 @@ body {
         transform: translateY(20px);
       }
     }
-    @media (max-width: 450px) {
-      svg {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        margin-top: -250px;
-        margin-left: -190px;
-      }
-      .message-box {
-        top: 50%;
-        left: 50%;
-        margin-top: -100px;
-        margin-left: -190px;
-        text-align: center;
-      }
-    }
+    /*@media (max-width: 450px) {*/
+    /*  svg {*/
+    /*    position: absolute;*/
+    /*    top: 50%;*/
+    /*    left: 50%;*/
+    /*    margin-top: -250px;*/
+    /*    margin-left: -190px;*/
+    /*  }*/
+    /*  .message-box {*/
+    /*    top: 50%;*/
+    /*    left: 50%;*/
+    /*    margin-top: -100px;*/
+    /*    margin-left: -190px;*/
+    /*    text-align: center;*/
+    /*  }*/
+    /*}*/
     .mini-spinner {
         border: 2px solid rgba(0, 0, 0, 0.1);
         border-left-color: #FFFFFF;

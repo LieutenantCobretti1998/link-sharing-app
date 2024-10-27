@@ -86,17 +86,19 @@ def logout():
             blacklist_token_refresh = BlackListToken(jti=jti_refresh, expires_at=expires_at_refresh, user_id=user_id)
             db.session.add(blacklist_token_refresh)
         except Exception:
-            return jsonify({"message": "Invalid access token"}), 401
+            return jsonify({"message": "Invalid refresh token"}), 401
         try:
             access_token = request.cookies.get("access_token_cookie")
             if access_token:
                 access_token_data = decode_token(access_token)
+                print(access_token_data)
                 jti_access = access_token_data["jti"]
                 expires_at_access = datetime.fromtimestamp(access_token_data["exp"])
                 access_blacklist = BlackListToken(jti=jti_access, expires_at=expires_at_access, user_id=user_id)
                 db.session.add(access_blacklist)
         except Exception:
-            return jsonify({"message": "Invalid access token"}), 401
+            # return jsonify({"message": "Invalid access token"}), 401
+            pass
         response = jsonify({"message": "Successfully logged out"})
         unset_jwt_cookies(response)
         db.session.commit()
@@ -106,7 +108,7 @@ def logout():
 
 
 @login_bp.route('/auth_status', methods=['GET'])
-@jwt_required(refresh=True)
+@jwt_required()
 def auth_status():
     user_id = get_jwt_identity()
     user = db.session.query(User).filter_by(id=user_id).first()

@@ -22,7 +22,6 @@ function ManageProfile({onProfileNameChange}) {
         mutationFn: (new_profile_name) => updateProfileName(new_profile_name),
         onSuccess: (data) => {
             onProfileNameChange(data.new_name);
-            toast.success(data.message || "Finally");
         },
         onError: (error) => {
             if (error.message === "Session expired. Please log in again.") {
@@ -39,6 +38,7 @@ function ManageProfile({onProfileNameChange}) {
         mutationFn: () => deleteProfile(),
         onSuccess: () => {
             refreshAuthStatus();
+            localStorage.removeItem("current-profile");
             navigate("/profiles", {replace: true});
         },
         onError: (error) => {

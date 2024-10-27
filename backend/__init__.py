@@ -28,7 +28,7 @@ def check_if_token_in_blacklist(jwt_header, jwt_payload):
 
 
 def clean_blackList_tokens():
-    threshold_date = datetime.now(timezone.utc) - timedelta(minutes=1)
+    threshold_date = datetime.now(timezone.utc) - timedelta(days=7)
     expired_tokens = db.session.query(BlackListToken).filter(BlackListToken.expires_at < threshold_date).all()
     for token in expired_tokens:
         db.session.delete(token)
@@ -72,5 +72,5 @@ def create_app(config_class=None):
 
     if not scheduler.running:
         scheduler.start()
-    scheduler.add_job(func=scheduler_job, trigger='interval', seconds=10)
+    scheduler.add_job(func=scheduler_job, trigger='interval', days=2)
     return app

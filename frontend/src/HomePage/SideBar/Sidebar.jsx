@@ -66,21 +66,22 @@ function Sidebar() {
                 <input onChange={handleSearchChange} className=" border-2  placeholder-gray-400 p-2 rounded-md focus:border-lightPurple1 outline-none" type="text" id="search" placeholder="Search...🔍" />
             </div>
             <h1 className="font-bold text-primaryPurple text-2xl">Filter Searching by:</h1>
-            <ul className="flex flex-col gap-5">
-                <li className="flex flex-col gap-3">
-                    <label htmlFor="clicks">Clicks</label>
-                    <Select
-                        options={optionsClicks}
-                        getOptionLabel={(e) => (
-                        <div className="flex items-center gap-1.5">
-                            {e.label}
-                            <span className="mr-2">{e.icon}</span>
-                        </div>
-                        )}
-                        styles={customStyles}
-                    />
-                </li>
-            </ul>
+            {/*<ul className="flex flex-col gap-5">*/}
+            {/*    <li className="flex flex-col gap-3">*/}
+            {/*        <label htmlFor="clicks">Clicks</label>*/}
+            {/*        <Select*/}
+            {/*            options={optionsClicks}*/}
+            {/*            getOptionLabel={(e) => (*/}
+            {/*            <div className="flex items-center gap-1.5">*/}
+            {/*                {e.label}*/}
+            {/*                <span className="mr-2">{e.icon}</span>*/}
+            {/*            </div>*/}
+            {/*            )}*/}
+            {/*            styles={customStyles}*/}
+            {/*        />*/}
+            {/*    </li>*/}
+            {/*</ul>*/}
+            <h1 className="text-center">Coming Soon🥲❤️</h1>
 
         </aside>
     );

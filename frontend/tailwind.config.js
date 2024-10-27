@@ -49,6 +49,17 @@ export default {
       "spin": "spin 1s infinite linear"
     },
     extend: {},
+    screens: {
+        "xs": "320px",
+        "sm": "640px",
+        "md": "768px",
+        "lg": "1024px",
+        "xl": "1366px",
+        "2xl": "1920px",
+        "3xl": "2560px",
+        "max-xs": {"max": "640px"},
+        "max-sm": {"max": "1280px"},
+    },
   },
   plugins: [],
 }

@@ -1,6 +1,6 @@
 import Button from "../UI/Button.jsx";
 import MiniSpinner from "../UI/MiniSpinner.jsx";
-import {Link} from "react-router-dom";
+import {Link, NavLink} from "react-router-dom";
 import toast, {Toaster} from "react-hot-toast";
 import {useForm} from "react-hook-form";
 import {useMutation, useQuery} from "@tanstack/react-query";
@@ -29,9 +29,17 @@ function ForgetPassword() {
                     <path fill="#333"
                           d="M174.743 32.5c-2.585 0-4.64-.525-6.163-1.575-1.524-1.05-2.355-2.497-2.494-4.34h4.641c.115.793.507 1.4 1.177 1.82.692.397 1.639.595 2.839.595 1.085 0 1.87-.152 2.355-.455.508-.327.762-.782.762-1.365 0-.443-.15-.782-.45-1.015-.277-.257-.797-.467-1.558-.63l-2.84-.595c-2.101-.443-3.647-1.108-4.64-1.995-.993-.91-1.489-2.077-1.489-3.5 0-1.727.658-3.068 1.974-4.025 1.316-.98 3.151-1.47 5.506-1.47 2.331 0 4.189.478 5.575 1.435 1.385.933 2.146 2.24 2.285 3.92h-4.64c-.092-.607-.416-1.062-.97-1.365-.554-.327-1.339-.49-2.354-.49-.924 0-1.616.14-2.078.42-.439.257-.658.63-.658 1.12 0 .42.185.758.554 1.015.369.233.981.443 1.835.63l3.186.665c1.778.373 3.117 1.073 4.017 2.1.923 1.003 1.385 2.193 1.385 3.57 0 1.75-.681 3.115-2.043 4.095-1.339.957-3.243 1.435-5.714 1.435Z"/>
                 </svg>
-                <section className=" bg-white p-[10%] w-[700px] rounded-xl">
+                <section className="xs:w-[350px] sm:w-[500px] xl:w-[700px] bg-white p-[10%] rounded-xl">
+                    <NavLink to="/login" className="inline-block">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="ionicon w-7 group hover:cursor-pointer" viewBox="0 0 512 512">
+                            <path className="" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
+                                  strokeWidth="32" d="M249.38 336L170 256l79.38-80M181.03 256H342"/>
+                            <path className="group-hover:stroke-primaryPurple3 transition-colors duration-300" d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z" fill="none"
+                                  stroke="currentColor" strokeMiterlimit="10" strokeWidth="32"/>
+                        </svg>
+                    </NavLink>
                     <div className="mb-10">
-                        <h1 className="text-3xl mb-2 font-instrumentBold"><b>Enter your email</b></h1>
+                        <h1 className="max-xs:text-[1.7rem] text-3xl mb-2 font-instrumentBold"><b>Enter your email</b></h1>
                     </div>
                     <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
                         <div>
@@ -51,7 +59,7 @@ function ForgetPassword() {
                                       d="M14 3H2a.5.5 0 0 0-.5.5V12a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V3.5A.5.5 0 0 0 14 3Zm-.5 9h-11V4.637l5.162 4.732a.5.5 0 0 0 .676 0L13.5 4.637V12Z"/>
                             </svg>
                         </div>
-                        <Button type={"login"} typeForm={true}>{isLoading ? <MiniSpinner />: "Login"}</Button>
+                        <Button type={"login"} typeForm={true}>{isLoading ? <MiniSpinner />: "Send"}</Button>
                     </form>
                 </section>
             </div>

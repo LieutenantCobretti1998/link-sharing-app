@@ -110,7 +110,12 @@ def verify_reset_token(token: str):
     """
     try:
         data = decode_token(token)
-        return data['sub']
-    except Exception:
+        jti = data["jti"]
+        user_id = data["sub"]
+        if db.session.query(BlackListToken).filter(BlackListToken.jti == jti).first():
+            return False
+        return user_id
+    except Exception as e:
+        print(e)
         return None
 

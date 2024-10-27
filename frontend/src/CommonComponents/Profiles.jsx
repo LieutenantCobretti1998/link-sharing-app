@@ -7,6 +7,8 @@ import toast from "react-hot-toast";
 import Button from "../UI/Button.jsx";
 import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
 import Spinner from "../UI/Spinner.jsx";
+import MiniSpinner from "../UI/MiniSpinner.jsx";
+import {logoutUser} from "../API/Login.js";
 
 
 function Profiles() {
@@ -26,6 +28,17 @@ function Profiles() {
                 handleSessionExpired();
             }
             toast.error(error.message || "An Error occurred. Please try again later ")},
+    });
+
+    const {mutate: logOut, isLoading: isLoggingOut} = useMutation({
+        mutationFn: () => logoutUser(),
+        onSuccess: () => navigate("/login", {replace: true}),
+        onError: (error) => {
+            if (error.message === "Session expired. Please log in again.") {
+                handleSessionExpired();
+            }
+            toast.error(error.message || "An Error occurred");
+        }
     })
 
     const {mutate: choseProfile, isLoading: choosingProfile} = useMutation({
@@ -63,11 +76,16 @@ function Profiles() {
                             <h1 className="text-3xl mb-2 font-instrumentBold"><b>Choose your profile</b></h1>
                         </div>
                         {userCredentials?.user?.profiles.map((profile, index) => (
-                            <div onClick={() => choseProfile(profile.username)} key={index} className="group p-4 border rounded-md mb-2 border-lightPurple2 bg-lightPurple2 hover:bg-primaryPurple hover:border-primaryPurple transition-colors duration-300 cursor-pointer">
+                            <div onClick={() => choseProfile(profile.username)} key={index}
+                                 className="group p-4 border rounded-md mb-2 border-lightPurple2 bg-lightPurple2 hover:bg-primaryPurple hover:border-primaryPurple transition-colors duration-300 cursor-pointer">
                                 <p className="text-lg text-center font-bold text-black group-hover:text-white transition-colors duration-300">{profile.username}</p>
                             </div>
                         ))}
-                        {userCredentials?.user?.profiles?.length < 3 && <Button type={"main"} onclick={goToCreateProfilesPage}>New Profile</Button>}
+                        {userCredentials?.user?.profiles?.length < 3 &&
+                            <Button type={"main"} onclick={goToCreateProfilesPage}>New Profile</Button>}
+                        <div className=" text-center top-[88%] left-[90%]">
+                            <Button onclick={logOut} type={"update"} typeForm={true}>{isLoggingOut ? <MiniSpinner/> : "LogOut"}</Button>
+                        </div>
                     </section>
                 </div>
             )}
