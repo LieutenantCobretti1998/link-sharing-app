@@ -1,11 +1,10 @@
-import MobileOverview from "../UI/MobileOverview.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import {platforms} from "../Platforms/PreDefaultPlatForms.jsx";
 import {backgrounds} from "../BackgroundImages/BackgroundImages.jsx";
 import Select from "react-select";
 import {fetchProfileData, removeLinksGroupImage, updateProfile} from "./ProfileSlice.js";
 import Button from "../UI/Button.jsx";
-import {useEffect, useReducer, useRef, useState} from "react";
+import {lazy, Suspense, useEffect, useReducer, useRef, useState} from "react";
 import Modal from "../UI/Modal.jsx";
 import {saveChooses, saveData} from "../SaveLogic/SaveSlice.js";
 import {HexColorPicker} from "react-colorful";
@@ -14,6 +13,9 @@ import {fetchLinks} from "../LinksAddition/LinkSlice.js";
 import {useMutation} from "@tanstack/react-query";
 import {updateLinksProfile} from "../API/DataFetchingApi.js";
 import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
+import useWindowSize from "../CommonComponents/UseWindowSize.jsx";
+import Spinner from "../UI/Spinner.jsx";
+const MobileOverview =  lazy(() => import("../UI/MobileOverview.jsx"));
 
 
 const customStyles = {
@@ -67,6 +69,7 @@ const errorReducer = (state, action) => {
 
 function ProfileDetails() {
     const dispatch_redux = useDispatch();
+    const {width} = useWindowSize();
     const handleSessionExpired = useHandleSessionExpired();
     const navigate = useNavigate();
     const profileDetailsFromQuery = useLoaderData();
@@ -298,15 +301,19 @@ function ProfileDetails() {
 
     return (
         <>
-            <MobileOverview profile={profile} getBackgroundImage={getBackgroundImage} links={links} getPlatformIcon={getPlatformIcon} getPlatformColor={getPlatformColor} />
+            {width > 1280 &&
+                        <Suspense fallback={<Spinner />}>
+                            <MobileOverview profile={profile} getBackgroundImage={getBackgroundImage} links={links} getPlatformColor={getPlatformColor} getPlatformIcon={getPlatformIcon} />
+                        </Suspense>
+            }
             <section className="w-full bg-white p-10 relative rounded-md border-light-grey">
                 <div className="pb-12">
-                    <h2 className="font-bold text-lightBlack-1 text-3xl">Links Group Details</h2>
+                    <h2 className="max-xs:text-[1.2rem] font-bold text-lightBlack-1 text-3xl">Links Group Details</h2>
                     <p className="font-normal text-lightBlack-2 text-base">Add your details to create a personal touch
                         to your Links Group.</p>
                 </div>
                 <div
-                    className="relative p-[1rem] mb-4  flex items-center justify-between bg-light-grey rounded-md border-light-grey">
+                    className="max-xs:flex-col max-xs:items-start max-xs:gap-5 relative p-[1rem] mb-4  flex items-center justify-between bg-light-grey rounded-md border-light-grey">
                     <h2 className="font-bold text-lightBlack-2 text-base">Links Group picture</h2>
                     <button
                         type="button"
@@ -341,7 +348,7 @@ function ProfileDetails() {
                         )}
                     </button>
 
-                    <p className="w-[215px] font-normal text-lightBlack-2 text-base">
+                    <p className="max-xs:text-[.9rem] w-[250px] font-normal text-lightBlack-2 text-base">
                         Image must be below
                         1024x1024px. Use PNG or JPG format.
                     </p>
@@ -364,7 +371,7 @@ function ProfileDetails() {
                     )}
                 </div>
                 <div className="p-[1rem]  flex flex-col gap-10 bg-light-grey rounded-md border-light-grey">
-                    <div className="relative flex justify-between items-center w-full">
+                    <div className="max-xs:flex-col max-xs:items-start max-xs:gap-5 relative flex justify-between items-center w-full">
                         <label className="font-bold text-lightBlack-2 text-base" htmlFor="firstName">
                             Links Group Name*
                         </label>
@@ -373,13 +380,13 @@ function ProfileDetails() {
                                 <input maxLength={maxLinkNameLength} value={linkName} name="linksGroupName"
                                        onChange={handleInputChange} id="firstName"
                                        type="text"
-                                       placeholder={savedData.linksGroupName ? savedData.linksGroupName : "Enter the link name for your group of links/link"}
-                                       className=" w-[50%] pl-10 bg-white p-3 border-[.5px] rounded-md border-red focus:outline-primaryPurple"
+                                       placeholder={savedData.linksGroupName ? savedData.linksGroupName : "Enter a link name"}
+                                       className="max-xs:w-full w-[50%] pl-10 bg-white p-3 border-[.5px] rounded-md border-red focus:outline-primaryPurple"
                                 />
                                 <p className="text-sm text-red absolute right-[10px] bottom-[15px]">
                                     {linkNameError}
                                 </p>
-                                <p className="text-sm text-lightBlack-2 absolute right-0 bottom-[-20px]">
+                                <p className="max-xs:inset-x-0 max-xs:bottom-[-25px] text-sm text-lightBlack-2 absolute right-0 bottom-[-20px]">
                                     {maxLinkNameLength - linkName.length} characters left
                                 </p>
                             </>
@@ -388,41 +395,41 @@ function ProfileDetails() {
                                 <input maxLength={maxLinkNameLength} value={linkName} name="linksGroupName"
                                        onChange={handleInputChange} id="firstName"
                                        type="text"
-                                       placeholder={savedData.linksGroupName ? savedData.linksGroupName : "Enter the link name for your group of links/link"}
-                                       className=" w-[50%] pl-10 bg-white p-3 border-[.5px] rounded-md border-lightBlack-2 focus:outline-primaryPurple"
+                                       placeholder={savedData.linksGroupName ? savedData.linksGroupName : "Enter a group name for link/links"}
+                                       className="max-xs:w-full max-sm:placeholder:text-[.7rem] max-sm:pl-2 w-[50%] pl-10 bg-white p-3 border-[.5px] rounded-md border-lightBlack-2 focus:outline-primaryPurple"
                                 />
-                                <p className="text-sm text-lightBlack-2 absolute right-0 bottom-[-20px]">
+                                <p className="max-xs:inset-x-0 max-xs:bottom-[-25px] text-sm text-lightBlack-2 absolute right-0 bottom-[-20px]">
                                     {maxLinkNameLength - linkName.length} characters left
                                 </p>
                             </>
                         )}
                     </div>
-                    <div className="relative flex justify-between items-center w-full">
+                    <div className="max-xs:flex-col max-xs:items-start max-xs:gap-5 relative flex justify-between items-center w-full">
                         <label className="font-bold text-lightBlack-2 text-base" htmlFor="shortDescription">Links
                             Description</label>
                         <textarea value={description} maxLength={maxDescriptionLength} name="shortDescription"
                                   onChange={handleInputChange} id="shortDescription"
                                   placeholder={savedData.shortDescription ? savedData.shortDescription : "Enter the short description for your links' group"}
-                                  className="w-[50%] pl-10 bg-white p-3 border-[.5px] rounded-md border-lightBlack-2 focus:outline-primaryPurple"
+                                  className="max-xs:w-full max-sm:placeholder:text-[.7rem] max-sm:pl-2 w-[50%] pl-10 bg-white p-3 border-[.5px] rounded-md border-lightBlack-2 focus:outline-primaryPurple"
                                   rows="3"
                         />
-                        <p className="text-sm text-lightBlack-2 absolute right-0 bottom-[-20px]">
+                        <p className="max-xs:inset-x-0 max-xs:bottom-[-25px] text-sm text-lightBlack-2 absolute right-0 bottom-[-20px]">
                             {maxDescriptionLength - description.length} characters left
                         </p>
                     </div>
-                    <div className="relative flex justify-between items-center w-full">
+                    <div className="max-xs:flex-col max-xs:items-start max-xs:gap-5 relative flex justify-between items-center w-full">
                         <label className="font-bold text-lightBlack-2 text-base" htmlFor="category">Category*</label>
                         {categoryError ? (
                             <>
                                 <input value={category} maxLength={maxCategoryLength} name="category"
                                        onChange={handleInputChange} id="category" type="text"
                                         placeholder={savedData.category ? savedData.category : "Enter category"}
-                                       className=" w-[50%] pl-10 bg-white p-3 border-[.5px] rounded-md border-red focus:outline-primaryPurple"
+                                       className="max-xs:w-full w-[50%] max-sm:placeholder:text-[.7rem] max-sm:pl-2 pl-10 bg-white p-3 border-[.5px] rounded-md border-red focus:outline-primaryPurple"
                                 />
                                 <p className="text-sm text-red absolute right-[10px] bottom-[15px]">
                                     {categoryError}
                                 </p>
-                                <p className="text-sm text-lightBlack-2 absolute right-0 bottom-[-20px]">
+                                <p className="max-xs:inset-x-0 max-xs:bottom-[-25px] text-sm text-lightBlack-2 absolute right-0 bottom-[-20px]">
                                     {maxCategoryLength - category.length} characters left
                                 </p>
                             </>
@@ -431,18 +438,18 @@ function ProfileDetails() {
                                 <input value={category} maxLength={maxCategoryLength} name="category"
                                        onChange={handleInputChange} id="category" type="text"
                                        placeholder={savedData.category ? savedData.category : "Enter category"}
-                                       className=" w-[50%] pl-10 bg-white p-3 border-[.5px] rounded-md border-lightBlack-2 focus:outline-primaryPurple"
+                                       className="max-xs:w-full  max-sm:placeholder:text-[.7rem] max-sm:pl-2 w-[50%] pl-10 bg-white p-3 border-[.5px] rounded-md border-lightBlack-2 focus:outline-primaryPurple"
                                 />
-                                <p className="text-sm text-lightBlack-2 absolute right-0 bottom-[-20px]">
+                                <p className="max-xs:inset-x-0 max-xs:bottom-[-25px] text-sm text-lightBlack-2 absolute right-0 bottom-[-20px]">
                                     {maxCategoryLength - category.length} characters left
                                 </p>
                             </>
                         )}
                     </div>
-                    <div className="flex justify-between items-center w-full">
+                    <div className="max-xs:flex-col max-xs:items-start max-xs:gap-5 flex justify-between items-center w-full">
                         <label className="font-bold text-lightBlack-2 text-base" htmlFor="backgroundImage">Background
                             Image</label>
-                        <div className="w-[50%]">
+                        <div className="max-xs:w-full w-[50%]">
                             <Select
                                 name="backgroundImage"
                                 onChange={(selectedOption) => {
@@ -472,7 +479,7 @@ function ProfileDetails() {
                             />
                         </div>
                     </div>
-                    <div className="flex">
+                    <div className="max-sm:flex-col max-sm:gap-5 flex">
                         <div className="flex gap-2 flex-col  items-center w-full">
                             <label className="font-bold text-lightBlack-2 text-base" htmlFor="textColor">
                                 Text Color

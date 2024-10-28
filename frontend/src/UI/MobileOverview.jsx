@@ -1,5 +1,6 @@
 import {useSelector} from "react-redux";
 
+
 function MobileOverview({links, profile, getPlatformColor, getPlatformIcon, getBackgroundImage}) {
      const {linksGroupName, shortDescription, linksGroupImage, textColor, commonColor, backgroundColor, backgroundImage} = useSelector((state) => state.profile);
     return (

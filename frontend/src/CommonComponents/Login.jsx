@@ -45,7 +45,7 @@ function Login() {
                 </svg>
                 <section className="xs:w-[350px] sm:w-[500px] xl:w-[700px]  bg-white p-[10%] rounded-xl">
                     <div className="mb-10">
-                        <h1 className="text-3xl mb-2 font-instrumentBold"><b>Login</b></h1>
+                        <h1 className="max-xs:text-[1.5rem] text-3xl mb-2 font-instrumentBold"><b>Login</b></h1>
                         <p className="font-instrumentNormal">Add your details below to get back into the app</p>
                     </div>
                     <form className="flex flex-col gap-4"  onSubmit={handleSubmit(onSubmit)}>

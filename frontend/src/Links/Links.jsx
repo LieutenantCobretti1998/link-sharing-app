@@ -3,9 +3,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {addLink, fetchLinks, removeLink, showForm, updateLink} from "../LinksAddition/LinkSlice.js";
 import NewLinkForm from "../LinksAddition/NewLink.jsx";
 import {platforms} from "../Platforms/PreDefaultPlatForms.jsx";
-import {useEffect, useMemo, useState} from "react";
+import {lazy, Suspense, useEffect, useMemo, useState} from "react";
 import Modal from "../UI/Modal.jsx";
-import MobileOverview from "../UI/MobileOverview.jsx";
 import {backgrounds} from "../BackgroundImages/BackgroundImages.jsx";
 import {removeSavedLink, saveChooses, saveData, toggleModal} from "../SaveLogic/SaveSlice.js";
 import {useLoaderData, useNavigate, useParams} from "react-router-dom";
@@ -13,10 +12,13 @@ import {fetchProfileData} from "../ProfileDetails/ProfileSlice.js";
 import {useMutation} from "@tanstack/react-query";
 import {updateLinksGroup} from "../API/DataFetchingApi.js";
 import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
-
+import useWindowSize from "../CommonComponents/UseWindowSize.jsx";
+import Spinner from "../UI/Spinner.jsx";
+const MobileOverview =  lazy(() => import("../UI/MobileOverview.jsx"));
 
 function Links() {
     const {id} = useParams();
+    const {width} = useWindowSize();
     const navigate = useNavigate();
     const handleSessionExpired = useHandleSessionExpired();
     const linksFromQuery = useLoaderData();
@@ -171,10 +173,14 @@ function Links() {
     };
     return (
                 <>
-                    <MobileOverview profile={profile} getBackgroundImage={getBackgroundImage} links={links} getPlatformColor={getPlatformColor} getPlatformIcon={getPlatformIcon} />
+                    {width > 1280 &&
+                        <Suspense fallback={<Spinner />}>
+                            <MobileOverview profile={profile} getBackgroundImage={getBackgroundImage} links={links} getPlatformColor={getPlatformColor} getPlatformIcon={getPlatformIcon} />
+                        </Suspense>
+                        }
                     <section className="w-full bg-white p-10 relative rounded-md border-light-grey">
                         <div className="pb-12">
-                        <h2 className="font-bold text-lightBlack-1 text-3xl">Customize your links</h2>
+                        <h2 className="max-xs:text-[1.2rem] font-bold text-lightBlack-1 text-3xl">Customize your links</h2>
                             <p className="font-normal text-lightBlack-2 text-base">Add/edit/remove links below and then share
                                 all your profiles with the world!</p>
                         </div>
@@ -195,7 +201,7 @@ function Links() {
                             />
                             ))
                         ): (
-                        <div className="flex bg-light-grey items-center flex-col p-10 gap-4 pb-12 rounded-md border-light-grey">
+                        <div className="max-xs:h-1/2 flex bg-light-grey items-center flex-col p-10 gap-4 pb-12 rounded-md border-light-grey">
                             <svg xmlns="http://www.w3.org/2000/svg" width="250" height="161" fill="none" viewBox="0 0 250 161">
                                 <path fill="#fff"
                                       d="M48.694 15.421C23.379 25.224 4.594 50.068.858 80.128c-3.12 25.331 4.335 53.318 48.23 61.291 85.406 15.52 173.446 17.335 193.864-24.525 20.417-41.86-7.525-108.891-50.873-113.53C157.683-.326 98.146-3.721 48.694 15.42Z"
@@ -238,8 +244,8 @@ function Links() {
                                       opacity=".1"/>
                             </svg>
 
-                            <h2 className="font-bold text-lightBlack-1 text-3xl">Lets get you started</h2>
-                            <p className="text-center w-70%">Use the “Add new link” button to get started. Once you have more
+                            <h2 className="max-xs:text-[1.2rem] font-bold text-lightBlack-1 text-3xl">Lets get you started</h2>
+                            <p className="max-xs:text-[.9rem] text-center">Use the “Add new link” button to get started. Once you have more
                                 than one link,
                                 you can reorder and edit them. We’re here to help you share your profiles with everyone!
                             </p>
