@@ -323,7 +323,7 @@ function ProfileDetails() {
                         <input
                             ref={fileInputRef}
                             type="file"
-                            accept="image/png, image/jpg"
+                            accept="image/png, image/jpg image/jpeg"
                             onChange={handleImageUpload}
                             className="hidden"
                         />
@@ -381,7 +381,7 @@ function ProfileDetails() {
                                        onChange={handleInputChange} id="firstName"
                                        type="text"
                                        placeholder={savedData.linksGroupName ? savedData.linksGroupName : "Enter a link name"}
-                                       className="max-xs:w-full w-[50%] pl-10 bg-white p-3 border-[.5px] rounded-md border-red focus:outline-primaryPurple"
+                                       className="max-xs:w-full w-[50%] max-sm:placeholder:text-[.7rem] max-sm:pl-2 pl-10 bg-white p-3 border-[.5px] rounded-md border-red focus:outline-primaryPurple"
                                 />
                                 <p className="text-sm text-red absolute right-[10px] bottom-[15px]">
                                     {linkNameError}
@@ -514,7 +514,7 @@ function ProfileDetails() {
                         <Button onclick={handleSave} type="save">Save</Button>
                     )}
                 </div>
-                <Modal isVisible={isVisible} text={"Profile settings saved successfully"}/>
+                <Modal isVisible={isVisible} text={"Profile saved successfully"}/>
             </section>
         </>
     );

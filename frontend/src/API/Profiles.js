@@ -22,7 +22,6 @@ export const createProfile = async(profileName) => {
             const refreshed = await refreshAccessToken();
             if (refreshed) {
             } else {
-                handleSessionExpired();
                 throw new Error('Session expired. Please log in again.');
             }
         }
@@ -31,7 +30,7 @@ export const createProfile = async(profileName) => {
     return responseData;
 };
 
-export const allProfiles = async(profileName) => {
+export const allProfiles = async() => {
     const response = await fetch(`/api/related-profiles`, {
         method: "GET",
         headers: {

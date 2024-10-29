@@ -121,16 +121,15 @@ function Header({saveLinks}) {
     // }
 
     return (location.pathname.includes("new-group-preview") || location.pathname.includes("/edit-preview") ? (
-            <div className=" w-full h-64 rounded-b-3xl"
-                 style={{
-                     backgroundColor: blendedColor ? blendedColor : "#4015f8"
-                 }}
+            <div className={`w-full h-64 rounded-b-3xl 
+                ${blendedColor ? 'bg-[${blendedColor}]' : 'bg-[#4015f8]'}
+                max-xs:bg-opacity-0`}
             >
                 <header
-                    className="w-70 flex flex-row flex-md-row align-items-center bg-white p-5 relative top-2 ml-2 mr-2 rounded-md mb-4 justify-between font-instrumentBold">
+                    className="w-70 flex flex-row flex-md-row align-items-center sm:bg-white p-5 relative top-2 ml-2 mr-2 rounded-md mb-4 justify-between font-instrumentBold">
                     <div>
-                        <Button type="header">
-                        <NavLink className="w-full, h-full block pt-1"
+                        <Button type="backToEditor">
+                        <NavLink className="w-full, h-full block"
                                      to={location.pathname.includes("edit") ? `${profileName}/edit-links/${id}` : `${profileName}/create-links`}>
                                 Back to Editor
                             </NavLink>
@@ -206,7 +205,7 @@ function Header({saveLinks}) {
                                           fill="#737373"
                                           d="M10.5 1.563A8.437 8.437 0 1 0 18.938 10 8.447 8.447 0 0 0 10.5 1.562ZM6.716 15.357a4.688 4.688 0 0 1 7.568 0 6.54 6.54 0 0 1-7.568 0Zm1.596-5.982a2.188 2.188 0 1 1 4.376 0 2.188 2.188 0 0 1-4.376 0Zm7.344 4.683a6.523 6.523 0 0 0-2.265-1.83 4.062 4.062 0 1 0-5.782 0 6.522 6.522 0 0 0-2.265 1.83 6.562 6.562 0 1 1 10.304 0h.008Z"/>
                                 </svg>
-                                <h3 className="hidden sm:inline-block group-hover:text-primaryPurple font-bold transition duration-300 ease-in-out">Profile Details</h3>
+                                <h3 className="hidden max-sm:text-[.9rem] sm:inline-block group-hover:text-primaryPurple font-bold transition duration-300 ease-in-out">Profile Details</h3>
                             </NavLink>
                         </Button>
                     </div>

@@ -16,7 +16,7 @@ function Modal({text, isVisible}) {
                     </clipPath>
                 </defs>
             </svg>
-            <p className="text-white">{text}</p>
+            <p className="max-xs:text-[.6rem] text-white">{text}</p>
         </div>
     );
 }

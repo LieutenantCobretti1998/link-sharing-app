@@ -25,6 +25,7 @@ def save_base64_image(base64_string: str) -> str:
     :return:
     """
     file_extension = get_file_extension(base64_string)
+    print(file_extension)
     random_filename = f"{uuid.uuid4()}.{file_extension}"
     image_data = base64.b64decode(base64_string.split(',')[1])
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(random_filename))
