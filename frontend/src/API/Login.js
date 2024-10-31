@@ -112,6 +112,13 @@ export const checkAuthStatus = async () => {
         if (response.status === 401) {
             const refreshed = await refreshAccessToken();
             if (refreshed) {
+                const retryResponse = await fetch("/api/auth_status", {
+                method: "GET",
+                credentials: "include",
+            });
+                if (retryResponse.ok) {
+                    return await retryResponse.json();
+                }
             } else {
                 throw new Error('Session expired. Please log in again.');
             }

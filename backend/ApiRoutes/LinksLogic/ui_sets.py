@@ -1,1 +1,1 @@
-perPage = 5
+perPage = 3

@@ -10,10 +10,13 @@ import {DEFAULT_PAGE, PER_PAGE} from "../../UI/GlobalVariables.js";
 import Delete from "../../UI/Delete.jsx";
 import toast, {Toaster} from "react-hot-toast";
 import useHandleSessionExpired from "../../CustomLogic/UseHandleSessionExpired.js";
+import useWindowSize from "../../CommonComponents/UseWindowSize.jsx";
 
 
 function AllLinks() {
     const [hoveredCardIndex, setHoveredCardIndex] = useState(null);
+    const [activeCardIndex, setActiveCardIndex] = useState(null);
+    const {width} = useWindowSize();
     const handleSessionExpired = useHandleSessionExpired();
     const [visible, setVisible] = useState(false);
     let [searchParams, setSearchParams] = useSearchParams();
@@ -41,10 +44,6 @@ function AllLinks() {
     const {data, isError: AllLinksError, isLoading} = useQuery({
         queryKey: ["userLinks", parseInt(page), search],
         queryFn: () => {
-            const cachedData = queryClient.getQueryData(["userLinks", parseInt(page), search]);
-            if (cachedData) {
-                return cachedData;
-            }
             return getLinks(page.toString(), search);
         },
         onSuccess: (fetchedData) => {
@@ -169,25 +168,38 @@ function AllLinks() {
         return (
             <div className="flex flex-col w-full">
                 <section
-                        className="w-full  h-full flex hover:cursor-pointer flex-wrap gap-10 bg-white p-10 rounded-md border-light-grey ">
+                        className="max-sm:justify-center w-full h-full flex flex-wrap gap-10 bg-white p-10 rounded-md border-light-grey ">
                         {links.map((link, index) => (
                             <div
                                 key={link.id}
-                                className="w-[270px] card-container relative drop-shadow-md rounded-xl h-auto flex flex-col items-center justify-center"
+                                className="max-xs:w-[250px] max-sm:w-[200px] w-[270px] card-container relative drop-shadow-md rounded-xl h-auto flex flex-col items-center justify-center"
                                 style={{
                                     backgroundColor: link.backgroundImage ? "white" : link.backgroundColor,
                                     backgroundImage: `url(${getBackgroundImage(link.backgroundImage)})`,
                                     backgroundSize: "cover",
                                     backgroundPosition: "center"
                                 }}
-                                onClick={() => navigate(`/${profileName}/preview-linksGroup/${link.id}`)}
+                                onClick={(e) => {
+                                    if(width <= 1280) {
+                                        e.stopPropagation();
+                                        if(activeCardIndex === index) {
+                                            navigate(`/${profileName}/preview-linksGroup/${link.id}`);
+                                            setActiveCardIndex(null);
+                                        } else {
+                                            setActiveCardIndex(index);
+                                        }
+                                    } else {
+                                        navigate(`/${profileName}/preview-linksGroup/${link.id}`)
+                                    }
+                                }}
                                 onMouseEnter={() => setHoveredCardIndex(index)}
                                 onMouseLeave={() => {
                                     setHoveredCardIndex(null);
+                                    setActiveCardIndex(null);
                                     setVisible(false);
                                 }}
                             >
-                                {hoveredCardIndex === index && (
+                                {(hoveredCardIndex === index || activeCardIndex === index) && (
                                     <>
                                         <div
                                             className="delete-icon transition duration-300 hover:bg-primaryPurple flex items-center justify-center"

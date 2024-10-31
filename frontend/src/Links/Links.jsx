@@ -186,7 +186,7 @@ function Links() {
                         </div>
 
                         <div className="w-full pb-12">
-                            <Button disabled={links.length === 5}  onclick={handleAddNewLink} type="main">+ Add new Link</Button>
+                            <Button disabled={links.length === 5}  onclick={handleAddNewLink} type="addLink">+ Add new Link</Button>
                         </div>
                         {shouldShowComponent  ? (
                             links.map((link, index) => (

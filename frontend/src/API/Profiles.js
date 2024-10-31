@@ -42,11 +42,11 @@ export const allProfiles = async() => {
     const responseData = await response.json();
         if (!response.ok) {
             if (response.status === 401) {
-            const refreshed = await refreshAccessToken();
-            if (refreshed) {
-            } else {
-                throw new Error('Session expired. Please log in again.');
-            }
+                const refreshed = await refreshAccessToken();
+                if (refreshed) {
+                } else {
+                    throw new Error('Session expired. Please log in again.');
+                }
         }
              throw new Error(responseData.message);
         }

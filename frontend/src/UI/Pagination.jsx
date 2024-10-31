@@ -20,7 +20,7 @@ function Pagination({handlePrev, handleNext, currentPage, totalPages}) {
             <button
                 className="ml-2 px-4 py-2 bg-gray-200 rounded-md flex items-center gap-3 group"
                 onClick={handleNext}
-                disabled={currentPage === totalPages}
+                disabled={currentPage >= totalPages}
             >
                 <svg xmlns="http://www.w3.org/2000/svg" className="ionicon transition" viewBox="0 0 512 512" width="20">
                     <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
