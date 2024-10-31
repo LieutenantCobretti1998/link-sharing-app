@@ -87,7 +87,7 @@ function Login() {
                                       d="M13 5h-2V3.5a3 3 0 0 0-6 0V5H3a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1ZM8.5 9.914V11.5a.5.5 0 0 1-1 0V9.914a1.5 1.5 0 1 1 1 0ZM10 5H6V3.5a2 2 0 1 1 4 0V5Z"/>
                             </svg>
                         </div>
-                        <Button type={"login"} typeForm={true}>{isLoading ? <MiniSpinner />: "Login"}</Button>
+                        <Button type={"login"} disabled={isLoading} typeForm={true}>{isLoading ? <MiniSpinner />: "Login"}</Button>
                         <div className="xs:flex-col xs:items-center sm:flex-row flex gap-2">
                             <p className="font-instrumentNormal">Don't have an account ?</p>
                             <Link to="/create-user" className="text-primaryPurple font-instrumentNormal">Create account</Link>

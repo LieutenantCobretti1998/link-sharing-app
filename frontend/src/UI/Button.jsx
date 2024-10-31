@@ -16,7 +16,9 @@ function Button({type, children, isActive, onclick, disabled, typeForm}) {
             : "w-full h-9 p-0 border-[.5px] border-primaryPurple rounded-md text-primaryPurple font-bold hover:bg-lightPurple2 transition duration-300 ease-in-out";
             break;
         case "login":
-            buttonClasses = "mt-6 p-2 w-full h-auto hover:bg-primaryPurple rounded-md text-white bg-lightPurple1 font-regular transition duration-300 ease-in-out"
+            buttonClasses = disabled ?
+                "mt-6 p-2 w-full h-auto hover:bg-primaryPurple cursor-not-allowed rounded-md text-white bg-lightPurple1 font-regular transition duration-300 ease-in-out":
+                "mt-6 p-2 w-full h-auto hover:bg-primaryPurple rounded-md text-white bg-lightPurple1 font-regular transition duration-300 ease-in-out"
             break;
         case "save":
             buttonClasses = disabled
@@ -42,7 +44,7 @@ function Button({type, children, isActive, onclick, disabled, typeForm}) {
             break;
     }
     return (
-        <button type={typeForm ? "submit": "button"} disabled={type==="main" && disabled} onClick={onclick} className={buttonClasses}>{children}</button>
+        <button type={typeForm ? "submit": "button"} disabled={type==="main" || disabled} onClick={onclick} className={buttonClasses}>{children}</button>
     );
 }
 
