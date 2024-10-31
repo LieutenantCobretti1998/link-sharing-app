@@ -1,13 +1,16 @@
 function Button({type, children, isActive, onclick, disabled, typeForm}) {
     let buttonClasses;
     switch (type) {
+        case "backToEditor":
+            buttonClasses = "max-xs:p-1 sm:w-40 border-[.5px] border-primaryPurple h-9 p-1 rounded-md text-primaryPurple font-bold hover:bg-lightPurple2 transition duration-300 ease-in-out"
+            break;
         case "home":
             buttonClasses = disabled
                 ? "cursor-default"
                 : "cursor-pointer"
             break;
         case "header":
-            buttonClasses = "w-40 h-9 p-0 border-[.5px] border-primaryPurple " +
+            buttonClasses = "max-xs:w-[1.8rem] max-sm:w-15 w-40 h-9 p-0 border-[.5px] border-primaryPurple " +
                 "rounded-md text-primaryPurple font-bold hover:bg-lightPurple2 transition duration-300 ease-in-out";
             break;
         case "main":
@@ -22,8 +25,8 @@ function Button({type, children, isActive, onclick, disabled, typeForm}) {
             break;
         case "save":
             buttonClasses = disabled
-            ? "w-24 h-9 p-0 border-[.5px] border-gray-300 rounded-md text-gray-300 font-bold pointer-events-none cursor-default transition duration-300 ease-in-out"
-            : "w-24 h-9 p-0 hover:bg-primaryPurple rounded-md text-white bg-lightPurple1 font-regular transition duration-300 ease-in-out";
+            ? "max-sm:w-full w-24 h-9 p-0 border-[.5px] border-gray-300 rounded-md text-gray-300 font-bold pointer-events-none cursor-default transition duration-300 ease-in-out"
+            : "max-sm:w-full w-24 h-9 p-0 hover:bg-primaryPurple rounded-md text-white bg-lightPurple1 font-regular transition duration-300 ease-in-out";
             break;
 
         case "links":
@@ -33,7 +36,7 @@ function Button({type, children, isActive, onclick, disabled, typeForm}) {
            break;
 
         case "shareLink":
-            buttonClasses = "w-40 h-9 p-0 border-[.5px] border-primaryPurple " +
+            buttonClasses = "max-xs:p-1 sm:w-40 h-9 p-0 border-[.5px] border-primaryPurple " +
                 "rounded-md text-white font-bold bg-primaryPurple hover:bg-primaryPurple3 transition duration-300 ease-in-out";
             break;
         case "update":

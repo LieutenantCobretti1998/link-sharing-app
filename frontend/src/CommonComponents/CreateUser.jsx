@@ -50,7 +50,7 @@ function CreateUser() {
                         </svg>
                     </NavLink>
                     <div className="mb-10 text-center">
-                        <h1 className="text-3xl mb-2 font-instrumentBold"><b>Create account</b></h1>
+                        <h1 className="max-xs:text-[1.5rem] text-3xl mb-2 font-instrumentBold"><b>Create account</b></h1>
                         <p className="font-instrumentNormal">Let's get started sharing your links</p>
                     </div>
                     <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>

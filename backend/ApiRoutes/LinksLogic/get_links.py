@@ -11,7 +11,7 @@ links_bp = Blueprint('get_all_links', __name__)
 @links_bp.route('/all_links/<int:profile_id>/<string:profile_name>', methods=['GET'])
 @jwt_required()
 def get_all_links(profile_id, profile_name):
-    flask_server_url = "http://localhost:5000"
+    flask_server_url = "http://10.100.176.25:5000"
     page = int(request.args.get('page'))
     search = request.args.get('search', "").strip()
     per_page = perPage

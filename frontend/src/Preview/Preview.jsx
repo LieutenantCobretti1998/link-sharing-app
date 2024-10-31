@@ -11,9 +11,11 @@ import {getLink} from "../API/DataFetchingApi.js";
 import Spinner from "../UI/Spinner.jsx";
 import {setShortenUrl} from "../ShortenUrl/ShortenUrlSlice.js";
 import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
+import useWindowSize from "../CommonComponents/UseWindowSize.jsx";
 
 function Preview() {
     const dispatch = useDispatch();
+    const {width} = useWindowSize();
     const handleSessionExpired = useHandleSessionExpired();
     const { id} = useParams();
     const {data: LinksGroupData, isError: FailedRequest, isLoading} = useQuery({
@@ -85,7 +87,7 @@ function Preview() {
     }
     return (
         <>
-            <section className="drop-shadow-md relative top-[-120px] rounded-xl h-auto flex flex-col align-center justify-center"
+            <section className="max-xs:top-[-140px] max-xs:h-1/2 drop-shadow-md relative top-[-120px] rounded-xl h-auto flex flex-col align-center justify-center"
                  style={{
                      backgroundColor: backgroundImage ? "white" : backgroundColor,
                      backgroundImage: `url(${getBackgroundImage(backgroundImage)})`,

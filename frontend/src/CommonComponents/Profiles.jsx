@@ -61,7 +61,7 @@ function Profiles() {
         <main className="flex justify-center items-center h-screen">
             {fetchingProfiles ? <Spinner /> : (
                 <div className="flex flex-col gap-5">
-                    <svg className="self-center" xmlns="http://www.w3.org/2000/svg" width="183" height="40" fill="none"
+                    <svg className="xs:self-start xs:ml-[2rem] sm:self-center sm:ml-[0]" xmlns="http://www.w3.org/2000/svg" width="183" height="40" fill="none"
                          viewBox="0 0 183 40">
                         <path fill="#633CFF" fillRule="evenodd"
                               d="M5.774 34.225c2.443 2.442 6.37 2.442 14.226 2.442 7.857 0 11.785 0 14.225-2.442 2.442-2.438 2.442-6.368 2.442-14.225 0-7.857 0-11.785-2.442-14.226-2.438-2.44-6.368-2.44-14.225-2.44-7.857 0-11.785 0-14.226 2.44-2.44 2.443-2.44 6.37-2.44 14.226 0 7.857 0 11.785 2.44 14.225Zm10.06-19.642A5.416 5.416 0 1 0 21.25 20a1.25 1.25 0 1 1 2.5 0 7.917 7.917 0 1 1-7.916-7.916 1.25 1.25 0 0 1 0 2.5ZM29.584 20a5.417 5.417 0 0 1-5.417 5.417 1.25 1.25 0 0 0 0 2.5A7.917 7.917 0 1 0 16.25 20a1.25 1.25 0 0 0 2.5 0 5.416 5.416 0 1 1 10.834 0Z"
@@ -71,9 +71,9 @@ function Profiles() {
                         <path fill="#333"
                               d="M174.743 32.5c-2.585 0-4.64-.525-6.163-1.575-1.524-1.05-2.355-2.497-2.494-4.34h4.641c.115.793.507 1.4 1.177 1.82.692.397 1.639.595 2.839.595 1.085 0 1.87-.152 2.355-.455.508-.327.762-.782.762-1.365 0-.443-.15-.782-.45-1.015-.277-.257-.797-.467-1.558-.63l-2.84-.595c-2.101-.443-3.647-1.108-4.64-1.995-.993-.91-1.489-2.077-1.489-3.5 0-1.727.658-3.068 1.974-4.025 1.316-.98 3.151-1.47 5.506-1.47 2.331 0 4.189.478 5.575 1.435 1.385.933 2.146 2.24 2.285 3.92h-4.64c-.092-.607-.416-1.062-.97-1.365-.554-.327-1.339-.49-2.354-.49-.924 0-1.616.14-2.078.42-.439.257-.658.63-.658 1.12 0 .42.185.758.554 1.015.369.233.981.443 1.835.63l3.186.665c1.778.373 3.117 1.073 4.017 2.1.923 1.003 1.385 2.193 1.385 3.57 0 1.75-.681 3.115-2.043 4.095-1.339.957-3.243 1.435-5.714 1.435Z"/>
                     </svg>
-                    <section className=" bg-white p-[10%] w-[700px] rounded-xl">
+                    <section className="xs:w-[350px] sm:w-[500px] xl:w-[700px]  bg-white p-[10%] rounded-xl">
                         <div className="mb-10 text-center">
-                            <h1 className="text-3xl mb-2 font-instrumentBold"><b>Choose your profile</b></h1>
+                            <h1 className="max-xs:text-[1.5rem] text-3xl mb-2 font-instrumentBold"><b>Choose your profile</b></h1>
                         </div>
                         {userCredentials?.user?.profiles.map((profile, index) => (
                             <div onClick={() => choseProfile(profile.username)} key={index}

@@ -36,6 +36,6 @@ def save_link(profile_id):
         else:
             return jsonify({"error": "Something happened"}), 500
     else:
-        return jsonify({"message": "User is not authorized"}), 400
+        return jsonify({"message": "User is not authorized"}), 401
 
 
