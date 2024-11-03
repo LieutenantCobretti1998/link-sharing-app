@@ -4,6 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {resetSaveState, toggleModal} from "../SaveLogic/SaveSlice.js";
 import {resetLinksState} from "../LinksAddition/LinkSlice.js";
 import {resetProfileState} from "../ProfileDetails/ProfileSlice.js";
+import toast, {Toaster} from "react-hot-toast";
 
 
 // eslint-disable-next-line react/prop-types
@@ -23,10 +24,10 @@ function Header({saveLinks}) {
         if(shortenUrl) {
             navigator.clipboard.writeText(shortenUrl)
                 .then(() => {
-                    alert("Shortened Url copied to clipBoard");
+                    toast.success("Shortened URL copied to clipboard");
                 })
                 .catch(err => {
-                    console.error("Failed to Copy", err);
+                     toast.error("Failed to copy the URL");
                 })
         }
     }
@@ -43,26 +44,25 @@ function Header({saveLinks}) {
     };
     if( location.pathname.includes("/preview-linksGroup")) {
         return (
-            <div className=" w-full h-64 rounded-b-3xl"
-                 style={{
-                     backgroundColor: blendedColor ? blendedColor : "#4015f8"
-                 }}
+            <div className={`w-full h-64 rounded-b-3xl 
+                ${blendedColor ? 'bg-[${blendedColor}]' : 'bg-[#4015f8]'}
+                max-xs:bg-opacity-0`}
             >
                 <header
-                    className="w-70 flex flex-row flex-md-row align-items-center bg-white p-5 relative top-2 ml-2 mr-2 rounded-md mb-4 justify-between font-instrumentBold">
+                    className="w-70 flex flex-row flex-md-row align-items-center sm:bg-white p-5 relative top-2 ml-2 mr-2 rounded-md mb-4 justify-between font-instrumentBold">
                     <div>
-                        <Button type="header">
+                        <Button type="home-preview">
                             <NavLink className="w-full, h-full block pt-1"
                                      to={`/`}>Homepage</NavLink>
                         </Button>
                     </div>
 
                     <div>
-                        <Button type="header" onclick={copyToClipBoard}>
+                        <Button type="shareLink" onclick={copyToClipBoard}>
                             Copy Link
                         </Button>
                     </div>
-
+                 <Toaster />
                 </header>
             </div>
         )
@@ -113,7 +113,7 @@ function Header({saveLinks}) {
                     </NavLink>
                     <Button type="header">
                         <NavLink className="w-full, h-full block pt-1" to={`${profileName}/create-links`}>
-                            <span className="max-xs:hidden">Create a new Group</span>
+                            <span className="max-xs:hidden">Create new group</span>
                             <svg xmlns="http://www.w3.org/2000/svg" className="sm:hidden ionicon" viewBox="0 0 512 512">
                                 <path d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z"
                                       fill="none" stroke="currentColor" strokeMiterlimit="10" strokeWidth="32"

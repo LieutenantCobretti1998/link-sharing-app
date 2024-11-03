@@ -60,12 +60,12 @@ function Sidebar() {
      }
     return (
         <aside className="max-sm:w-full max-xs:self-center w-[45%] h-full gap-10  flex flex-col  bg-white pl-10 pt-10 pb-10 rounded-md border-light-grey">
-            <h1 className="font-bold text-primaryPurple text-2xl">Search</h1>
-            <div>
+            <h1 className="max-sm:self-center font-bold text-primaryPurple text-2xl">Search</h1>
+            <div className="max-sm:self-center">
                 <label htmlFor="search"></label>
                 <input onChange={handleSearchChange} className=" border-2  placeholder-gray-400 p-2 rounded-md focus:border-lightPurple1 outline-none" type="text" id="search" placeholder="Search...🔍" />
             </div>
-            <h1 className="font-bold text-primaryPurple text-2xl">Filter Searching by:</h1>
+            <h1 className="max-sm:self-center font-bold text-primaryPurple text-2xl">Filter Searching by:</h1>
             {/*<ul className="flex flex-col gap-5">*/}
             {/*    <li className="flex flex-col gap-3">*/}
             {/*        <label htmlFor="clicks">Clicks</label>*/}
@@ -81,7 +81,7 @@ function Sidebar() {
             {/*        />*/}
             {/*    </li>*/}
             {/*</ul>*/}
-            <h1 className="text-center">Coming Soon🥲❤️</h1>
+            <h1 className="max-sm:text-center">Coming Soon🥲❤️</h1>
 
         </aside>
     );

@@ -247,7 +247,7 @@ function AllLinks() {
                                 )}
                                 <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 200 300">
                                     {!link.linksGroupImage ? (
-                                        <circle cx="100" cy="45" r="40" fill={link.commonColor}/>
+                                        <circle cx="100" cy="45" r="30" fill={link.commonColor}/>
                                     ) : (
                                         <foreignObject
                                             x="70"
@@ -258,7 +258,7 @@ function AllLinks() {
                                             className="rounded-full border-4"
                                             style={{borderColor: link.commonColor}}
                                         >
-                                            <div className="w-full h-full">
+                                            <div className="w-full h-full bg-white">
                                                 <img
                                                     src={link.linksGroupImage}
                                                     alt="Links Group"

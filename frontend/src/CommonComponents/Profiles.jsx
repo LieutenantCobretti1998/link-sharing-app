@@ -54,6 +54,7 @@ function Profiles() {
             toast.error(error.message || "An Error occurred. Please try again later ")}
     });
     const goToCreateProfilesPage = () => {
+        console.log("hello")
         navigate("/create-profile");
     }
 

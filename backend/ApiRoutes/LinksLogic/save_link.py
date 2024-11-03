@@ -12,9 +12,11 @@ def save_link(profile_id):
     data = request.get_json()
     user_id = get_jwt_identity()
     profile_name = data["profileName"]
+    print(user_id, profile_id, profile_name)
     user_instance = UserLogic(db.session)
     if user_id:
         user_allowed_profile = user_instance.check_user_profile_match(user_id, profile_id, profile_name)
+        print(user_allowed_profile)
         if user_allowed_profile:
             base64_image = data.get("linksGroupImage")
             if base64_image != "":

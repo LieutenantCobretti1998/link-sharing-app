@@ -226,7 +226,6 @@ class UserLogic(AbstractDataValidator):
         Check if the user could use profile id
         """
         from .models import Profile
-        print(user_id, profile_id, profile_name)
         is_allowed = self.db_session.query(Profile).filter(Profile.id == profile_id, Profile.user_id == user_id, Profile.username == profile_name).first()
         if is_allowed:
             return True

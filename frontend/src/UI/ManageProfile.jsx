@@ -22,6 +22,7 @@ function ManageProfile({onProfileNameChange}) {
         mutationFn: (new_profile_name) => updateProfileName(new_profile_name),
         onSuccess: (data) => {
             onProfileNameChange(data.new_name);
+            toast.success(data.message || "Profile name updated");
         },
         onError: (error) => {
             if (error.message === "Session expired. Please log in again.") {
@@ -54,37 +55,44 @@ function ManageProfile({onProfileNameChange}) {
     };
     return (
         <form className="flex flex-col gap-5 mt-10" onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex gap-10 items-center">
-                <label htmlFor="change-user" className="block font-instrumentSemiBold text-lightBlack-1 text-[1.2rem]">
+            <div className="flex flex-col md:flex-row gap-4 md:gap-10 items-start md:items-center">
+                <label
+                    htmlFor="change_user"
+                    className="block font-instrumentSemiBold text-lightBlack-1 text-lg md:text-[1.2rem]"
+                >
                     Change Profile Name
                 </label>
                 <input
                     placeholder={profileName}
                     type="text"
-                    className="pl-5 border-lightBlack-2  p-1 border-[.5px] rounded-md focus:outline-none focus:border-primaryPurple focus:shadow-sm focus:shadow-primaryPurple"
+                    className="pl-5 border-lightBlack-2 p-1 border-[0.5px] rounded-md focus:outline-none focus:border-primaryPurple focus:shadow-sm focus:shadow-primaryPurple w-full md:w-auto"
                     id="change_user"
                     maxLength="25"
                     {...register("change_user", {
                         maxLength: "Max 25 char is allowed",
-                        validate: (value) => value.trim() !== "" || "Whitespaces are not allowed"
+                        validate: (value) => value.trim() !== "" || "Whitespaces are not allowed",
                     })}
                 />
-                {errors.change_user &&
-                    <p className="text-red text-end font-instrumentBold ">{errors.change_user.message}</p>}
             </div>
-            <div className="absolute w-full inset-x-0 top-[85%]">
-                <hr className="my-3 border-t-[3px] border-light-grey-2  w-full"/>
-            </div>
-            <div className="top-[88%] left-[2%]">
-                <Button type={"delete"} typeForm={false} onclick={deleteCurrentProfile}>{isDeleting ? <MiniSpinner/> : "Delete"}</Button>
-            </div>
-            <div className="absolute top-[88%] left-[2%]">
-                <Button type={"login"} typeForm={false} onclick={goToProfilesPage}>Change profile</Button>
-            </div>
-            <div className="absolute top-[88%] left-[90%]">
-                <Button type={"update"} typeForm={true}>{isLoading ? <MiniSpinner/> : "Update"}</Button>
+            {errors.change_user && (
+                <p className="text-red font-instrumentBold mt-2">{errors.change_user.message}</p>
+            )}
+            <hr className="my-5 border-t-[3px] border-light-grey-2 w-full"/>
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div className="flex gap-2">
+                    <Button disabled={isLoading || isDeleting} type={"delete"} typeForm={false} onclick={deleteCurrentProfile}>
+                        {isDeleting ? <MiniSpinner/> : "Delete"}
+                    </Button>
+                    <Button type={"login"} typeForm={false} onclick={goToProfilesPage}>
+                        Change Profile
+                    </Button>
+                </div>
+                <Button type={"update"} typeForm={true}>
+                    {isLoading ? <MiniSpinner/> : "Update"}
+                </Button>
             </div>
         </form>
+
     );
 }
 
