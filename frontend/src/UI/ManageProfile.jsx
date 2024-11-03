@@ -83,13 +83,13 @@ function ManageProfile({onProfileNameChange}) {
                     <Button disabled={isLoading || isDeleting} type={"delete"} typeForm={false} onclick={deleteCurrentProfile}>
                         {isDeleting ? <MiniSpinner/> : "Delete"}
                     </Button>
-                    <Button type={"login"} typeForm={false} onclick={goToProfilesPage}>
-                        Change Profile
+                    <Button type={"update"} typeForm={true}>
+                        {isLoading ? <MiniSpinner/> : "Update"}
                     </Button>
                 </div>
-                <Button type={"update"} typeForm={true}>
-                    {isLoading ? <MiniSpinner/> : "Update"}
-                </Button>
+                    <Button type={"change-profile"} typeForm={false} onclick={goToProfilesPage}>
+                        Change Profile
+                    </Button>
             </div>
         </form>
 

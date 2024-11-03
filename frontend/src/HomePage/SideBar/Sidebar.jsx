@@ -59,7 +59,7 @@ function Sidebar() {
          setSearchParams(updatedParams);
      }
     return (
-        <aside className="max-sm:w-full max-xs:self-center w-[45%] h-full gap-10  flex flex-col  bg-white pl-10 pt-10 pb-10 rounded-md border-light-grey">
+        <aside className="max-xs:self-center max-sm:w-full max-sm:pl-0 w-[45%] h-full gap-10  flex flex-col  bg-white pl-10 pt-10 pb-10 rounded-md border-light-grey">
             <h1 className="max-sm:self-center font-bold text-primaryPurple text-2xl">Search</h1>
             <div className="max-sm:self-center">
                 <label htmlFor="search"></label>
