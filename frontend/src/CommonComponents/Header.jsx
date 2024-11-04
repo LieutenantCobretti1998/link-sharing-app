@@ -1,16 +1,17 @@
 import Button from "../UI/Button.jsx";
-import {NavLink, useLocation, useMatch, useParams} from "react-router-dom";
+import {NavLink, useLocation, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {resetSaveState, toggleModal} from "../SaveLogic/SaveSlice.js";
 import {resetLinksState} from "../LinksAddition/LinkSlice.js";
 import {resetProfileState} from "../ProfileDetails/ProfileSlice.js";
 import toast, {Toaster} from "react-hot-toast";
+import useWindowSize from "./UseWindowSize.jsx";
 
 
 // eslint-disable-next-line react/prop-types
 function Header({saveLinks}) {
     const location = useLocation();
-    const {id, username} = useParams();
+    const {id} = useParams();
     const dispatch = useDispatch();
     const {linksGroupName, category, blendedColor} = useSelector(state => state.saveChooses);
     const savedParameters = useSelector(state => state.saveChooses);
@@ -18,6 +19,7 @@ function Header({saveLinks}) {
     const profile_data = localStorage.getItem("current-profile");
     const parsedProfileData = profile_data ? JSON.parse(profile_data) : null;
     const profileName = parsedProfileData.profile_name;
+    const {width} = useWindowSize();
 
     const copyToClipBoard = () => {
         window.focus();
@@ -26,7 +28,7 @@ function Header({saveLinks}) {
                 .then(() => {
                     toast.success("Shortened URL copied to clipboard");
                 })
-                .catch(err => {
+                .catch(() => {
                      toast.error("Failed to copy the URL");
                 })
         }
@@ -44,9 +46,13 @@ function Header({saveLinks}) {
     };
     if( location.pathname.includes("/preview-linksGroup")) {
         return (
-            <div className={`w-full h-64 rounded-b-3xl 
-                ${blendedColor ? 'bg-[${blendedColor}]' : 'bg-[#4015f8]'}
-                max-xs:bg-opacity-0`}
+            <div
+                className="w-full h-64 rounded-b-3xl"
+                style=
+                    {{
+                        backgroundColor: width > 640 ? (blendedColor ? blendedColor : '#4015f8') : "",
+
+                    }}
             >
                 <header
                     className="w-70 flex flex-row flex-md-row align-items-center sm:bg-white p-5 relative top-2 ml-2 mr-2 rounded-md mb-4 justify-between font-instrumentBold">
@@ -62,7 +68,7 @@ function Header({saveLinks}) {
                             Copy Link
                         </Button>
                     </div>
-                 <Toaster />
+                    <Toaster/>
                 </header>
             </div>
         )
@@ -127,22 +133,15 @@ function Header({saveLinks}) {
             </header>
         )
     }
-    // else if(dynamicMatch?.pattern?.path === "/:username/:id" && username) {
-    //     console.log(dynamicMatch)
-    //     return (
-    //         <div className=" w-full h-64 rounded-b-3xl"
-    //              style={{
-    //                  backgroundColor: blendedColor ? blendedColor : "#4015f8"
-    //              }}
-    //         >
-    //         </div>
-    //     )
-    // }
 
     return (location.pathname.includes("new-group-preview") || location.pathname.includes("/edit-preview") ? (
-            <div className={`w-full h-64 rounded-b-3xl 
-                ${blendedColor ? 'bg-[${blendedColor}]' : 'bg-[#4015f8]'}
-                max-xs:bg-opacity-0`}
+            <div
+                className="w-full h-64 rounded-b-3xl"
+                style=
+                    {{
+                        backgroundColor: width > 640 ? (blendedColor ? blendedColor : '#4015f8'): "",
+
+                    }}
             >
                 <header
                     className="w-70 flex flex-row flex-md-row align-items-center sm:bg-white p-5 relative top-2 ml-2 mr-2 rounded-md mb-4 justify-between font-instrumentBold">

@@ -1,6 +1,7 @@
+// eslint-disable-next-line react/prop-types
 function Pagination({handlePrev, handleNext, currentPage, totalPages}) {
     return (
-        <div className="flex self-end justify-center mt-4">
+        <div className="max-sm:self-center flex self-end justify-center mt-4">
             <button
                 className="mr-2 px-4 py-2 bg-gray-200 rounded-md flex items-center gap-3 group"
                 onClick={handlePrev}

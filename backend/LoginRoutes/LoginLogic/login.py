@@ -91,7 +91,7 @@ def logout():
             access_token = request.cookies.get("access_token_cookie")
             if access_token:
                 access_token_data = decode_token(access_token)
-                print(access_token_data)
+
                 jti_access = access_token_data["jti"]
                 expires_at_access = datetime.fromtimestamp(access_token_data["exp"])
                 access_blacklist = BlackListToken(jti=jti_access, expires_at=expires_at_access, user_id=user_id)

@@ -1,8 +1,8 @@
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {backgrounds} from "../BackgroundImages/BackgroundImages.jsx";
 import {platforms} from "../Platforms/PreDefaultPlatForms.jsx";
 import {useEffect} from "react";
-import {setBlendedColor, toggleModal} from "../SaveLogic/SaveSlice.js";
+import {setBlendedColor} from "../SaveLogic/SaveSlice.js";
 import {averageColors, hexToRgb, rgbToHex} from "../Helpers/ColorsConversion.js";
 import {useParams} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";

@@ -141,6 +141,7 @@ def delete_link_group(links_group_id, profile_name, profile_id):
 @links_bp.route('/<string:username>/<string:links_group_id>', methods=['GET'])
 def get_shorten_url(username, links_group_id):
     try:
+        print(username, links_group_id)
         chosen_link = GetAllLinksData(db.session).link_via_shorten_url(username, links_group_id)
         flask_server_url = "http://localhost:5000"
         chosen_link_data = {
@@ -160,23 +161,23 @@ def get_shorten_url(username, links_group_id):
         return jsonify({"error": "Not Found😒"}), 404
 
 
-@links_bp.route('/link-overview/<int:links_group_id>', methods=['GET'])
-def link_overview(links_group_id):
-    try:
-        chosen_link = GetAllLinksData(db.session).get_links_group_data(links_group_id)
-        flask_server_url = "http://localhost:5000"
-        chosen_link_data = {
-            "linksGroupImage": f"{flask_server_url}/{chosen_link.links_group_image}" if chosen_link.links_group_image else "",
-            "linksGroupName": chosen_link.links_group_name,
-            "textColor": chosen_link.text_color,
-            "commonColor": chosen_link.common_color,
-            "backgroundColor": chosen_link.background_color,
-            "backgroundImage": chosen_link.background_image,
-            "category": chosen_link.category,
-            "links": chosen_link.links
-        }
-        return jsonify(chosen_link_data), 200
-    except OperationalError:
-        return jsonify({"error": "Database Fatal Error"}), 500
-    except NoResultFound:
-        return jsonify({"error": "Not Found😒"}), 404
+# @links_bp.route('/link-overview/<int:links_group_id>', methods=['GET'])
+# def link_overview(links_group_id):
+#     try:
+#         chosen_link = GetAllLinksData(db.session).get_links_group_data(links_group_id)
+#         flask_server_url = "http://localhost:5000"
+#         chosen_link_data = {
+#             "linksGroupImage": f"{flask_server_url}/{chosen_link.links_group_image}" if chosen_link.links_group_image else "",
+#             "linksGroupName": chosen_link.links_group_name,
+#             "textColor": chosen_link.text_color,
+#             "commonColor": chosen_link.common_color,
+#             "backgroundColor": chosen_link.background_color,
+#             "backgroundImage": chosen_link.background_image,
+#             "category": chosen_link.category,
+#             "links": chosen_link.links
+#         }
+#         return jsonify(chosen_link_data), 200
+#     except OperationalError:
+#         return jsonify({"error": "Database Fatal Error"}), 500
+#     except NoResultFound:
+#         return jsonify({"error": "Not Found😒"}), 404
