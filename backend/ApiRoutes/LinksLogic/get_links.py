@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app as app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy.exc import OperationalError, NoResultFound
 from ...Database import GetAllLinksData, db, map_frontend_to_backend, UserLogic
@@ -11,7 +11,6 @@ links_bp = Blueprint('get_all_links', __name__)
 @links_bp.route('/all_links/<int:profile_id>/<string:profile_name>', methods=['GET'])
 @jwt_required()
 def get_all_links(profile_id, profile_name):
-    flask_server_url = "http://localhost:5000"
     page = int(request.args.get('page'))
     search = request.args.get('search', "").strip()
     per_page = perPage
@@ -28,7 +27,7 @@ def get_all_links(profile_id, profile_name):
                 else:
                     all_links = get_links_instance.get_all_links(page, per_page, profile_id)
                     total_links = get_links_instance.all_links_count(profile_id)
-                links_data = [format_links_data(link, flask_server_url) for link in all_links]
+                links_data = [format_links_data(link) for link in all_links]
                 return jsonify({
                     "links": links_data,
                     "current_page": page,
@@ -53,9 +52,8 @@ def get_link(links_group_id, profile_name, profile_id):
         if user_allowed_profile:
             try:
                 chosen_link = GetAllLinksData(db.session).get_links_group_data(links_group_id)
-                flask_server_url = "http://localhost:5000"
                 chosen_link_data = {
-                    "linksGroupImage": f"{flask_server_url}/{chosen_link.links_group_image}" if chosen_link.links_group_image else "",
+                    "linksGroupImage": chosen_link.links_group_image if chosen_link.links_group_image else "",
                     "shorten_url": chosen_link.shorten_url,
                     "linksGroupName": chosen_link.links_group_name,
                     "textColor": chosen_link.text_color,
@@ -112,8 +110,6 @@ def update_links_profile(links_group_id, profile_id, profile_name):
                     message = "Invalid image extension. Please provide a valid image extension."
                     return jsonify(message), 400
             backend_data = map_frontend_to_backend(profile_data)
-            if backend_data.get("links_group_image") and (backend_data["links_group_image"].startswith("http") or backend_data["links_group_image"].startswith("https")):
-                backend_data["links_group_image"] = "/static" + backend_data["links_group_image"].split("/static")[1]
             message, code = GetAllLinksData(db.session).update_profile_data(backend_data, links_group_id)
             return jsonify(message), code
         else:
@@ -141,11 +137,9 @@ def delete_link_group(links_group_id, profile_name, profile_id):
 @links_bp.route('/<string:username>/<string:links_group_id>', methods=['GET'])
 def get_shorten_url(username, links_group_id):
     try:
-        print(username, links_group_id)
         chosen_link = GetAllLinksData(db.session).link_via_shorten_url(username, links_group_id)
-        flask_server_url = "http://localhost:5000"
         chosen_link_data = {
-            "linksGroupImage": f"{flask_server_url}/{chosen_link.links_group_image}" if chosen_link.links_group_image else "",
+            "linksGroupImage": chosen_link.links_group_image if chosen_link.links_group_image else "",
             "linksGroupName": chosen_link.links_group_name,
             "textColor": chosen_link.text_color,
             "commonColor": chosen_link.common_color,

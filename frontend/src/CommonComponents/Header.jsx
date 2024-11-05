@@ -39,6 +39,7 @@ function Header({saveLinks}) {
             dispatch(toggleModal(true));
             return;
         }
+        console.log(savedParameters)
         saveLinks(savedParameters);
         dispatch(resetLinksState());
         dispatch(resetProfileState());

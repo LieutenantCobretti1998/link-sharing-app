@@ -63,7 +63,7 @@ class GetAllLinksData(AbstractDataValidator):
         try:
             from .models import LinksGroup
             link_group = self.db_session.query(LinksGroup).filter_by(
-                shorten_url=f"http://localhost:5173/{username}/{links_group_id}").first()
+                shorten_url=f"http://localhost:3000/{username}/{links_group_id}").first()
             if not link_group:
                 raise NoResultFound(f"LinksGroup with id {links_group_id} was not found")
             return link_group

@@ -6,9 +6,12 @@ import {useMutation} from "@tanstack/react-query";
 import {logoutUser} from "../API/Login.js";
 import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
 import Spinner from "../UI/Spinner.jsx";
+import {updateProfileName} from "../SaveLogic/SaveSlice.js";
+import {useDispatch} from "react-redux";
 
 function Settings() {
     const [selectedMenu, setSelectedMenu] = useState("Manage Profile");
+    const dispatch = useDispatch();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const navigate = useNavigate();
     const handleSessionExpired = useHandleSessionExpired();
@@ -23,6 +26,7 @@ function Settings() {
         const updatedProfileData = {...parsedProfileData, profile_name: newProfileName};
         setParsedProfileData(updatedProfileData);
         localStorage.setItem("current-profile", JSON.stringify(updatedProfileData));
+        dispatch(updateProfileName(newProfileName));
     }
 
     const {mutate: logOut, isLoading: isLoggingOut} = useMutation({

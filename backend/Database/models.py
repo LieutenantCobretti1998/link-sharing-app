@@ -1,8 +1,7 @@
 import random
 import string
 from flask_jwt_extended import create_access_token, decode_token
-from datetime import timedelta
-from flask import current_app
+from flask import current_app as app
 from sqlalchemy import Column, Integer, String, DateTime, JSON, VARCHAR, ForeignKey
 from sqlalchemy.orm import relationship
 from backend.Database import Base, db
@@ -76,7 +75,7 @@ def generate_short_url(user_profile: str, length=6, domain=None) -> str:
     random_str = ''.join(random.choice(characters) for _ in range(length))
     if domain is None:
         if os.getenv("FLASK_ENV") == "development":
-            domain = f"http://localhost:5173/{user_profile}/"
+            domain = f"{app.config['FRONTEND_URL']}{user_profile}/"
     return f'{domain}{random_str}'
 
 
@@ -98,7 +97,7 @@ def generate_reset_token(user_id: int) -> str:
     Generate reset token for forget password logic
     """
     return create_access_token(identity=user_id,
-                               expires_delta=current_app.config['JWT_RESET_TOKEN_EXPIRES']
+                               expires_delta=app.config['JWT_RESET_TOKEN_EXPIRES']
                                )
 
 

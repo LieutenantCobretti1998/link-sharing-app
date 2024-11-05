@@ -25,27 +25,27 @@ def save_base64_image(base64_string: str) -> str:
     :return:
     """
     file_extension = get_file_extension(base64_string)
-    print(file_extension)
+    print(app.config['BASE_URL'])
     random_filename = f"{uuid.uuid4()}.{file_extension}"
     image_data = base64.b64decode(base64_string.split(',')[1])
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(random_filename))
     normed_path = os.path.normpath(file_path).replace("\\", "/")
+    full_url = f"{app.config['BASE_URL']}/{normed_path}"
     with open(normed_path, 'wb') as f:
         f.write(image_data)
-    return normed_path
+    return full_url
 
 
-def format_links_data(link: any, flask_server_url: str) -> dict:
+def format_links_data(link: any) -> dict:
     """
     :param link: any
-    :param flask_server_url: str
     :return: dict
     Just reduce the amount of code in the main get all links router
     """
     return {
         "id": link.id,
         ""
-        "linksGroupImage": f"{flask_server_url}/{link.links_group_image}" if link.links_group_image else "",
+        "linksGroupImage": link.links_group_image if link.links_group_image else "",
         "linksGroupName": link.links_group_name,
         "textColor": link.text_color,
         "commonColor": link.common_color,

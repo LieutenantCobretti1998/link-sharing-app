@@ -25,6 +25,8 @@ class DevelopmentConfig(Config):
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=2)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=3)
     JWT_COOKIE_SECURE = False
+    FRONTEND_URL = os.getenv('FRONTEND_DEV_URL')
+    BASE_URL = os.getenv("BASE_API_DEV_URL")
     MAIL_USERNAME = os.environ.get('TEST_MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('TEST_MAIL_PASSWORD')
     MAIL_DEFAULT_SENDER = ("Link Sharing App", "djamil5099@gmail.com")

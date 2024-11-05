@@ -1,7 +1,9 @@
 import {createSlice} from "@reduxjs/toolkit";
+
 const profile_data = localStorage.getItem("current-profile");
 const parsedProfileData = profile_data ? JSON.parse(profile_data) : null;
 const profileName = parsedProfileData ? parsedProfileData.profile_name : null;
+
 
 const initialState = {
     profileName: profileName,
@@ -42,8 +44,12 @@ const saveReducer = createSlice({
         saveData: (state, action) => {
             return {...state, ...action.payload};
         },
+        updateProfileName: (state, action) => {
+            state.profileName = action.payload;
+            console.log(state.profileName)
+        }
     }
 });
 
-export const {saveChooses, saveData, resetSaveState, removeSavedLink, toggleModal, setBlendedColor} = saveReducer.actions;
+export const {saveChooses, updateProfileName, saveData, resetSaveState, removeSavedLink, toggleModal, setBlendedColor} = saveReducer.actions;
 export default saveReducer.reducer;

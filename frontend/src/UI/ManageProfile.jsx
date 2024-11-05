@@ -10,6 +10,7 @@ import {AuthContext} from "../CustomLogic/AuthProvider.jsx";
 import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
 
 
+// eslint-disable-next-line react/prop-types
 function ManageProfile({onProfileNameChange}) {
     const profile_data = localStorage.getItem("current-profile");
     const handleSessionExpired = useHandleSessionExpired();
@@ -87,7 +88,7 @@ function ManageProfile({onProfileNameChange}) {
                         {isLoading ? <MiniSpinner/> : "Update"}
                     </Button>
                 </div>
-                    <Button type={"change-profile"} typeForm={false} onclick={goToProfilesPage}>
+                    <Button type={"change-profile"} typeForm={false} onclick={goToProfilesPage} disabled={isLoading || isDeleting}>
                         Change Profile
                     </Button>
             </div>
