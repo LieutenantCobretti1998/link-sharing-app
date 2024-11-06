@@ -2,7 +2,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {backgrounds} from "../BackgroundImages/BackgroundImages.jsx";
 import {platforms} from "../Platforms/PreDefaultPlatForms.jsx";
 import Modal from "../UI/Modal.jsx";
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {setBlendedColor, toggleModal} from "../SaveLogic/SaveSlice.js";
 import {averageColors, hexToRgb, rgbToHex} from "../Helpers/ColorsConversion.js";
 import {useParams} from "react-router-dom";
@@ -11,11 +11,9 @@ import {getLink} from "../API/DataFetchingApi.js";
 import Spinner from "../UI/Spinner.jsx";
 import {setShortenUrl} from "../ShortenUrl/ShortenUrlSlice.js";
 import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
-import useWindowSize from "../CommonComponents/UseWindowSize.jsx";
 
 function Preview() {
     const dispatch = useDispatch();
-    const {width} = useWindowSize();
     const handleSessionExpired = useHandleSessionExpired();
     const { id} = useParams();
     const {data: LinksGroupData, isError: FailedRequest, isLoading} = useQuery({

@@ -20,6 +20,7 @@ import NotFoundError from "./UI/Errors/NotFoundError.jsx";
 import Settings from "./CommonComponents/Settings.jsx";
 import ResetPassword from "./CommonComponents/ResetPassword.jsx";
 import ForgetPassword from "./CommonComponents/ForgetPassword.jsx";
+import {Toaster} from "react-hot-toast";
 
 const router = createBrowserRouter([
   {
@@ -83,6 +84,7 @@ function App() {
                 <RouterProvider router={router}></RouterProvider>
               </ProfileProvider>
           </AuthProvider>
+          <Toaster />
           <ReactQueryDevtools />
       </QueryClientProvider>
   )

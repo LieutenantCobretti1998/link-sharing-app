@@ -8,6 +8,7 @@ import toast, {Toaster} from "react-hot-toast";
 import useWindowSize from "./UseWindowSize.jsx";
 
 
+
 // eslint-disable-next-line react/prop-types
 function Header({saveLinks}) {
     const location = useLocation();
@@ -39,7 +40,6 @@ function Header({saveLinks}) {
             dispatch(toggleModal(true));
             return;
         }
-        console.log(savedParameters)
         saveLinks(savedParameters);
         dispatch(resetLinksState());
         dispatch(resetProfileState());

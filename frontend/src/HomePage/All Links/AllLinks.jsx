@@ -8,9 +8,9 @@ import ServerError from "../../UI/Errors/ServerError.jsx";
 import Pagination from "../../UI/Pagination.jsx";
 import {DEFAULT_PAGE, PER_PAGE} from "../../UI/GlobalVariables.js";
 import Delete from "../../UI/Delete.jsx";
-import toast, {Toaster} from "react-hot-toast";
 import useHandleSessionExpired from "../../CustomLogic/UseHandleSessionExpired.js";
 import useWindowSize from "../../CommonComponents/UseWindowSize.jsx";
+import toast from "react-hot-toast";
 
 
 function AllLinks() {
@@ -33,12 +33,16 @@ function AllLinks() {
             queryClient.resetQueries({
                 queryKey: ["userLinks", parseInt(page), search],
             });
-            toast.success(data.message || "LinksGroup deleted successfully ");
+            toast.success(data.message || "LinksGroup deleted successfully", {
+                duration: 3000,
+                id: "DeleteLinkHomePage"
+            });
         },
         onError: (error) => {
             if (error.message === "Session expired. Please log in again.") {
                 handleSessionExpired();
             }
+
         },
     });
     const {data, isError: AllLinksError, isLoading} = useQuery({
@@ -161,7 +165,6 @@ function AllLinks() {
                     We're here to help you showcase and share your profiles with ease!
                 </p>
             </div>
-                <Toaster />
             </>
         )
     } else {
@@ -309,7 +312,6 @@ function AllLinks() {
                         ))}
                 </section>
                 <Pagination handleNext={handleNext} handlePrev={handlePrevious} currentPage={currentPage} totalPages={totalPages} />
-                <Toaster />
             </div>
 
         )

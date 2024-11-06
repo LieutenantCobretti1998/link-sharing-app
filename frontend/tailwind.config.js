@@ -6,6 +6,8 @@ export default {
   theme: {
     colors: {
         "primaryPurple": "#633CFF",
+        "successGreen": "#B1D690",
+        "successGreenDark": "#4C4B16",
         "lightPurple1": "#BEADFF",
         "lightPurple2": "#EFEBFF",
         "primaryPurple3": "#4015f8",

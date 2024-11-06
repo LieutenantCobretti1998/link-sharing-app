@@ -1,6 +1,7 @@
 import {useSelector} from "react-redux";
 
 
+// eslint-disable-next-line react/prop-types
 function MobileOverview({links, profile, getPlatformColor, getPlatformIcon, getBackgroundImage}) {
      const {linksGroupName, shortDescription, linksGroupImage, textColor, commonColor, backgroundColor, backgroundImage} = useSelector((state) => state.profile);
     return (

@@ -1,7 +1,7 @@
 import {useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import ManageProfile from "../UI/ManageProfile.jsx";
-import toast, {Toaster} from "react-hot-toast";
+import toast from "react-hot-toast";
 import {useMutation} from "@tanstack/react-query";
 import {logoutUser} from "../API/Login.js";
 import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
@@ -309,7 +309,6 @@ function Settings() {
                     </div>
                 </section>
             )}
-            <Toaster/>
         </main>
     );
 }

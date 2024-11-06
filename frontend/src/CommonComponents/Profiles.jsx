@@ -1,6 +1,4 @@
-import {useContext, useEffect} from "react";
-import {AuthContext} from "../CustomLogic/AuthProvider.jsx";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {useMutation, useQuery} from "@tanstack/react-query";
 import {allProfiles, chosenProfile} from "../API/Profiles.js";
 import toast from "react-hot-toast";

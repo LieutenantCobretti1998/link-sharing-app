@@ -1,7 +1,7 @@
 import {useForm} from "react-hook-form";
 import Button from "../UI/Button.jsx";
 import {Link, useLocation, useNavigate} from "react-router-dom";
-import toast, {Toaster} from "react-hot-toast";
+import toast from "react-hot-toast";
 import {useContext, useEffect} from "react";
 import {useMutation} from "@tanstack/react-query";
 import {loginUser} from "../API/Login.js";
@@ -99,7 +99,6 @@ function Login() {
                     </form>
                 </section>
             </div>
-            <Toaster />
         </main>
     );
 }

@@ -29,6 +29,7 @@ const customStyles = {
     }),
 }
 
+// eslint-disable-next-line react/prop-types
 function NewLinkForm({id, index, onUpdate, onDelete, errors, findLinkById}) {
     const handlePlatformChange = (selectedOption) => {
         onUpdate(id, {label: selectedOption.label});

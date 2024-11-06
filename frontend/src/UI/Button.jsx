@@ -60,8 +60,8 @@ function Button({type, children, isActive, onclick, disabled, typeForm}) {
             break;
         case "update":
             buttonClasses = disabled ?
-                "mt-6 p-2 w-[75px] h-auto hover:bg-dark-red rounded-md text-white bg-red font-regular transition duration-300 ease-in-out pointer-events-none cursor-not-allowed":
-                "mt-6 p-2 w-[75px] h-auto hover:bg-dark-red rounded-md text-white bg-red font-regular transition duration-300 ease-in-out"
+                "mt-6 p-2 w-[75px] h-auto hover:bg-successGreenDark rounded-md text-white bg-successGreen font-regular transition duration-300 ease-in-out pointer-events-none cursor-not-allowed":
+                "mt-6 p-2 w-[75px] h-auto hover:bg-successGreenDark rounded-md text-white bg-successGreen font-regular transition duration-300 ease-in-out"
             break;
         case "delete":
             buttonClasses = disabled ?

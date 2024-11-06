@@ -2,8 +2,8 @@ import {useForm, useWatch} from "react-hook-form";
 import {useMutation} from "@tanstack/react-query";
 import Button from "../UI/Button.jsx";
 import MiniSpinner from "../UI/MiniSpinner.jsx";
-import {useNavigate, useParams} from "react-router-dom";
-import toast, {Toaster} from "react-hot-toast";
+import {useParams} from "react-router-dom";
+import toast from "react-hot-toast";
 import {updatePassword} from "../API/Login.js";
 
 function ResetPassword() {
@@ -102,7 +102,6 @@ function ResetPassword() {
                         </form>
                     </section>
                 </div>
-                <Toaster/>
                 </>
                 )}
         </main>

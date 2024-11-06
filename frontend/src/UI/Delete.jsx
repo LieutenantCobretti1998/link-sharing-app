@@ -1,6 +1,6 @@
-import {useState} from "react";
 import Button from "./Button.jsx";
 
+// eslint-disable-next-line react/prop-types
 function Delete({deleteLogic, setVisibility}) {
     const handleConfirmDelete = () => {
         deleteLogic();
