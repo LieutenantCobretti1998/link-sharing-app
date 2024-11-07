@@ -31,15 +31,20 @@ function ForgetPassword() {
                 </svg>
                 <section className="xs:w-[350px] sm:w-[500px] xl:w-[700px] bg-white p-[10%] rounded-xl">
                     <NavLink to="/login" className="inline-block">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="ionicon w-7 group hover:cursor-pointer" viewBox="0 0 512 512">
-                            <path className="" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
+                        <svg xmlns="http://www.w3.org/2000/svg" className="ionicon w-7 group hover:cursor-pointer"
+                             viewBox="0 0 512 512">
+                            <path className="group-hover:stroke-primaryPurple3 transition-colors duration-300"
+                                  fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
                                   strokeWidth="32" d="M249.38 336L170 256l79.38-80M181.03 256H342"/>
-                            <path className="group-hover:stroke-primaryPurple3 transition-colors duration-300" d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z" fill="none"
+                            <path className="group-hover:stroke-primaryPurple3 transition-colors duration-300"
+                                  d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z"
+                                  fill="none"
                                   stroke="currentColor" strokeMiterlimit="10" strokeWidth="32"/>
                         </svg>
                     </NavLink>
                     <div className="mb-10">
-                        <h1 className="max-xs:text-[1.7rem] text-3xl mb-2 font-instrumentBold"><b>Enter your email</b></h1>
+                        <h1 className="max-xs:text-[1.7rem] text-3xl mb-2 font-instrumentBold"><b>Enter your email</b>
+                        </h1>
                     </div>
                     <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
                         <div>

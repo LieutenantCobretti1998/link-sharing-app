@@ -5,8 +5,6 @@ import {useMutation} from "@tanstack/react-query";
 import {deleteProfile, updateProfileName} from "../API/Profiles.js";
 import toast from "react-hot-toast";
 import {useNavigate} from "react-router-dom";
-import {useContext} from "react";
-import {AuthContext} from "../CustomLogic/AuthProvider.jsx";
 import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
 
 
@@ -14,7 +12,6 @@ import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
 function ManageProfile({onProfileNameChange}) {
     const profile_data = localStorage.getItem("current-profile");
     const handleSessionExpired = useHandleSessionExpired();
-    const { refreshAuthStatus } = useContext(AuthContext)
     const navigate = useNavigate();
     const parsedProfileData = profile_data ? JSON.parse(profile_data) : null;
     const profileName = parsedProfileData.profile_name;
@@ -39,7 +36,6 @@ function ManageProfile({onProfileNameChange}) {
     const {mutate: deleteCurrentProfile, isLoading: isDeleting} = useMutation({
         mutationFn: () => deleteProfile(),
         onSuccess: () => {
-            refreshAuthStatus();
             localStorage.removeItem("current-profile");
             navigate("/profiles", {replace: true});
         },

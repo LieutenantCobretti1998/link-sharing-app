@@ -108,7 +108,7 @@ function Preview() {
                             </div>
                         </foreignObject>
                     )}
-                    <rect width="270" height="20" x="20" y="185" fill={commonColor} rx="8"/>
+                    <rect width="270" height="20" x="18" y="185" fill={commonColor} rx="8"/>
                     <text
                         x="155"
                         y="195"
@@ -119,7 +119,7 @@ function Preview() {
                     >
                         {linksGroupName}
                     </text>
-                    <rect width="278" height="30" x="15" y="214" fill={commonColor} rx="4"/>
+                    <rect width="278" height="30" x="12" y="214" fill={commonColor} rx="4"/>
                     <text
                         x="155"
                         y="230"

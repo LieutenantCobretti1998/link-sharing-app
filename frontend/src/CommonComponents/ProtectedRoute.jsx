@@ -1,8 +1,9 @@
 import {AuthContext} from "../CustomLogic/AuthProvider.jsx";
-import {Navigate, useLocation} from "react-router-dom";
+import {Navigate} from "react-router-dom";
 import {useContext} from "react";
-import {ProfileContext} from "../CustomLogic/ProfileProvider.jsx";
 
+
+// eslint-disable-next-line react/prop-types
 function ProtectedRoute({children}) {
     const {authStatus} = useContext(AuthContext);
     switch (authStatus.authenticated ) {

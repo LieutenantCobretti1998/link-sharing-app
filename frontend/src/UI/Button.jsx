@@ -33,6 +33,11 @@ function Button({type, children, isActive, onclick, disabled, typeForm}) {
                 "mt-6 p-2 w-full h-auto hover:bg-primaryPurple cursor-not-allowed rounded-md text-white bg-lightPurple1 font-regular transition duration-300 ease-in-out":
                 "mt-6 p-2 w-full h-auto hover:bg-primaryPurple rounded-md text-white bg-lightPurple1 font-regular transition duration-300 ease-in-out"
             break;
+        case "logout":
+            buttonClasses = disabled ?
+                "mt-6 p-2 w-[75px] h-auto hover:bg-dark-red rounded-md text-white bg-red font-regular transition duration-300 ease-in-out pointer-events-none cursor-not-allowed":
+                "mt-6 p-2 w-[75px] h-auto hover:bg-dark-red rounded-md text-white bg-red font-regular transition duration-300 ease-in-out"
+            break;
         case "save":
             buttonClasses = disabled
             ? "max-sm:w-full w-24 h-9 p-0 border-[.5px] border-gray-300 rounded-md text-gray-300 font-bold pointer-events-none cursor-not-allowed transition duration-300 ease-in-out"

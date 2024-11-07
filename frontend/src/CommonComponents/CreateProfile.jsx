@@ -5,15 +5,12 @@ import toast, {Toaster} from "react-hot-toast";
 import {useForm} from "react-hook-form";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {createProfile} from "../API/Profiles.js";
-import {useContext} from "react";
-import {AuthContext} from "../CustomLogic/AuthProvider.jsx";
 import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
 
 function CreateProfile() {
     const navigate = useNavigate();
     const client = useQueryClient();
     const handleSessionExpired = useHandleSessionExpired();
-    const {setAuthStatus} = useContext(AuthContext);
     const {register, handleSubmit, setError, control, formState: {errors} } = useForm();
     const {mutate: createNewProfile, isLoading} = useMutation({
         mutationFn: (profileName) => createProfile(profileName),
@@ -50,7 +47,7 @@ function CreateProfile() {
                 <section className="xs:w-[350px] sm:w-[500px] xl:w-[700px]  bg-white p-[10%] rounded-xl">
                     <NavLink to="/profiles" className="inline-block">
                         <svg xmlns="http://www.w3.org/2000/svg" className="ionicon w-7 group hover:cursor-pointer" viewBox="0 0 512 512">
-                            <path className="" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
+                            <path className="group-hover:stroke-primaryPurple3 transition-colors duration-300" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
                                   strokeWidth="32" d="M249.38 336L170 256l79.38-80M181.03 256H342"/>
                             <path className="group-hover:stroke-primaryPurple3 transition-colors duration-300" d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z" fill="none"
                                   stroke="currentColor" strokeMiterlimit="10" strokeWidth="32"/>

@@ -39,7 +39,7 @@ function Profiles() {
         }
     })
 
-    const {mutate: choseProfile, isLoading: choosingProfile} = useMutation({
+    const {mutate: choseProfile} = useMutation({
         mutationFn: (profileName) => chosenProfile(profileName),
         onSuccess: (data) => {
             localStorage.setItem("current-profile", JSON.stringify(data.profile));
@@ -52,7 +52,6 @@ function Profiles() {
             toast.error(error.message || "An Error occurred. Please try again later ")}
     });
     const goToCreateProfilesPage = () => {
-        console.log("hello")
         navigate("/create-profile");
     }
 
@@ -83,7 +82,7 @@ function Profiles() {
                         {userCredentials?.user?.profiles?.length < 3 &&
                             <Button type={"main"} onclick={goToCreateProfilesPage}>New Profile</Button>}
                         <div className=" text-center top-[88%] left-[90%]">
-                            <Button onclick={logOut} type={"update"} typeForm={true}>{isLoggingOut ? <MiniSpinner/> : "LogOut"}</Button>
+                            <Button onclick={logOut} type={"logout"} typeForm={true}>{isLoggingOut ? <MiniSpinner/> : "LogOut"}</Button>
                         </div>
                     </section>
                 </div>

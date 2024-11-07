@@ -11,7 +11,6 @@ export function AuthProvider({children}) {
     const refreshAuthStatus = () => {
             checkAuthStatus()
                 .then(data => {
-                    console.log(data)
                     setAuthStatus({
                         authenticated: data.authenticated,
                     });
