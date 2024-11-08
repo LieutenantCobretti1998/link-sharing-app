@@ -1,93 +1,197 @@
-import {createBrowserRouter, RouterProvider} from "react-router-dom";
-import Layout from "./CommonComponents/Layout.jsx";
-import Links from "./Links/Links.jsx";
-import ProfileDetails from "./ProfileDetails/ProfileDetails.jsx";
-import Preview from "./Preview/Preview.jsx";
-import {QueryClientProvider, QueryClient} from "@tanstack/react-query";
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import HomePage from "./HomePage/HomePage.jsx";
-import {editLinkLoader} from "./Links/EditLinksPreLoader.js";
-import DynamicError from "./UI/Errors/DynamicError.jsx";
-import CopyLinkPreview from "./Preview/CopyLinkPreview.jsx";
-import Login from "./CommonComponents/Login.jsx";
-import CreateUser from "./CommonComponents/CreateUser.jsx";
-import ProtectedRoute from "./CommonComponents/ProtectedRoute.jsx";
-import {AuthProvider} from "./CustomLogic/AuthProvider.jsx";
-import Profiles from "./CommonComponents/Profiles.jsx";
-import CreateProfile from "./CommonComponents/CreateProfile.jsx";
-import {ProfileProvider} from "./CustomLogic/ProfileProvider.jsx";
-import NotFoundError from "./UI/Errors/NotFoundError.jsx";
-import Settings from "./CommonComponents/Settings.jsx";
-import ResetPassword from "./CommonComponents/ResetPassword.jsx";
-import ForgetPassword from "./CommonComponents/ForgetPassword.jsx";
-import {Toaster} from "react-hot-toast";
+import { lazy, Suspense } from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { Toaster } from "react-hot-toast";
+import Spinner from "./UI/Spinner.jsx";
+import { editLinkLoader } from "./Links/EditLinksPreLoader.js";
+import { AuthProvider } from "./CustomLogic/AuthProvider.jsx";
+import { ProfileProvider } from "./CustomLogic/ProfileProvider.jsx";
+
+// Lazy load all components
+const Layout = lazy(() => import('./CommonComponents/Layout.jsx'));
+const Links = lazy(() => import('./Links/Links.jsx'));
+const ProfileDetails = lazy(() => import('./ProfileDetails/ProfileDetails.jsx'));
+const Preview = lazy(() => import('./Preview/Preview.jsx'));
+const HomePage = lazy(() => import('./HomePage/HomePage.jsx'));
+const CopyLinkPreview = lazy(() => import('./Preview/CopyLinkPreview.jsx'));
+const Login = lazy(() => import('./CommonComponents/Login.jsx'));
+const CreateUser = lazy(() => import('./CommonComponents/CreateUser.jsx'));
+const ProtectedRoute = lazy(() => import('./CommonComponents/ProtectedRoute.jsx'));
+const Profiles = lazy(() => import('./CommonComponents/Profiles.jsx'));
+const CreateProfile = lazy(() => import('./CommonComponents/CreateProfile.jsx'));
+const Settings = lazy(() => import('./CommonComponents/Settings.jsx'));
+const ResetPassword = lazy(() => import('./CommonComponents/ResetPassword.jsx'));
+const ForgetPassword = lazy(() => import('./CommonComponents/ForgetPassword.jsx'));
+const NotFoundError = lazy(() => import('./UI/Errors/NotFoundError.jsx'));
+const DynamicError = lazy(() => import('./UI/Errors/DynamicError.jsx'));
 
 const router = createBrowserRouter([
   {
-      path: "/",
-      element: <ProtectedRoute><Layout /></ProtectedRoute>,
-      errorElement: <NotFoundError />,
-        children: [
-            {path: "/", element: <ProtectedRoute><HomePage /></ProtectedRoute>, errorElement: <NotFoundError />},
-            {path: "/:username/create-links", element: <ProtectedRoute><Links /></ProtectedRoute>, errorElement: <NotFoundError />},
-            {path: "/:username/create-profile", element: <ProtectedRoute><ProfileDetails /></ProtectedRoute>, errorElement: <NotFoundError />},
-            {path: "/:username/new-group-preview", element: <ProtectedRoute><Preview /></ProtectedRoute>, errorElement: <NotFoundError />},
-            {path: "/:username/preview-linksGroup/:id", element: <ProtectedRoute><Preview /></ProtectedRoute>, errorElement: <NotFoundError />},
-            {path: "/:username/edit-links/:id", element: <ProtectedRoute><Links /></ProtectedRoute>, loader: editLinkLoader, errorElement: <DynamicError />},
-            {path: "/:username/edit-profile/:id", element: <ProtectedRoute><ProfileDetails /></ProtectedRoute>, loader: editLinkLoader, errorElement: <DynamicError />},
-            {path: "/:username/edit-preview/:id", element: <ProtectedRoute><Preview /></ProtectedRoute>},
-        ]
-    },
-    {
-        path: "/:username/:id",
-        element: <CopyLinkPreview />,
-        errorElement: <NotFoundError />
-
-    },
-    {
-        path: "/login",
-        element: <Login />
-    },
-    {
-        path: "/reset-password/:token",
-        element: <ResetPassword />
-    },
-    {
-        path: "/forget-password",
-        element:<ForgetPassword />
-    },
-    {
-        path: "/create-user",
-        element: <CreateUser />
-    },
-    {
-        "path": "/create-profile",
-        element: <CreateProfile />
-    },
-    {
-        path: "/profiles",
-        element: <ProtectedRoute><Profiles /></ProtectedRoute>
-    },
-    {
-        path: "/:username/settings",
-        element : <ProtectedRoute><Settings/></ProtectedRoute>
-    }
+    path: "/",
+    element: (
+      <Suspense fallback={<Spinner />}>
+        <ProtectedRoute><Layout /></ProtectedRoute>
+      </Suspense>
+    ),
+    errorElement: <Suspense fallback={<Spinner />}><NotFoundError /></Suspense>,
+    children: [
+      {
+        path: "/",
+        element: (
+          <Suspense fallback={<Spinner />}>
+            <ProtectedRoute><HomePage /></ProtectedRoute>
+          </Suspense>
+        ),
+        errorElement: <Suspense fallback={<Spinner />}><NotFoundError /></Suspense>
+      },
+      {
+        path: "/:username/create-links",
+        element: (
+          <Suspense fallback={<Spinner />}>
+            <ProtectedRoute><Links /></ProtectedRoute>
+          </Suspense>
+        ),
+        errorElement: <Suspense fallback={<Spinner />}><NotFoundError /></Suspense>
+      },
+      {
+        path: "/:username/create-profile",
+        element: (
+          <Suspense fallback={<Spinner />}>
+            <ProtectedRoute><ProfileDetails /></ProtectedRoute>
+          </Suspense>
+        ),
+        errorElement: <Suspense fallback={<Spinner />}><NotFoundError /></Suspense>
+      },
+      {
+        path: "/:username/new-group-preview",
+        element: (
+          <Suspense fallback={<Spinner />}>
+            <ProtectedRoute><Preview /></ProtectedRoute>
+          </Suspense>
+        ),
+        errorElement: <Suspense fallback={<Spinner />}><NotFoundError /></Suspense>
+      },
+      {
+        path: "/:username/preview-linksGroup/:id",
+        element: (
+          <Suspense fallback={<Spinner />}>
+            <ProtectedRoute><Preview /></ProtectedRoute>
+          </Suspense>
+        ),
+        errorElement: <Suspense fallback={<Spinner />}><NotFoundError /></Suspense>
+      },
+      {
+        path: "/:username/edit-links/:id",
+        element: (
+          <Suspense fallback={<Spinner />}>
+            <ProtectedRoute><Links /></ProtectedRoute>
+          </Suspense>
+        ),
+        loader: editLinkLoader,
+        errorElement: <Suspense fallback={<Spinner />}><DynamicError /></Suspense>
+      },
+      {
+        path: "/:username/edit-profile/:id",
+        element: (
+          <Suspense fallback={<Spinner />}>
+            <ProtectedRoute><ProfileDetails /></ProtectedRoute>
+          </Suspense>
+        ),
+        loader: editLinkLoader,
+        errorElement: <Suspense fallback={<Spinner />}><DynamicError /></Suspense>
+      },
+      {
+        path: "/:username/edit-preview/:id",
+        element: (
+          <Suspense fallback={<Spinner />}>
+            <ProtectedRoute><Preview /></ProtectedRoute>
+          </Suspense>
+        )
+      },
+    ]
+  },
+  {
+    path: "/:username/:id",
+    element: (
+      <Suspense fallback={<Spinner />}>
+        <CopyLinkPreview />
+      </Suspense>
+    ),
+    errorElement: <Suspense fallback={<Spinner />}><NotFoundError /></Suspense>
+  },
+  {
+    path: "/login",
+    element: (
+      <Suspense fallback={<Spinner />}>
+        <Login />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/reset-password/:token",
+    element: (
+      <Suspense fallback={<Spinner />}>
+        <ResetPassword />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/forget-password",
+    element: (
+      <Suspense fallback={<Spinner />}>
+        <ForgetPassword />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/create-user",
+    element: (
+      <Suspense fallback={<Spinner />}>
+        <CreateUser />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/create-profile",
+    element: (
+      <Suspense fallback={<Spinner />}>
+        <CreateProfile />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/profiles",
+    element: (
+      <Suspense fallback={<Spinner />}>
+        <ProtectedRoute><Profiles /></ProtectedRoute>
+      </Suspense>
+    ),
+  },
+  {
+    path: "/:username/settings",
+    element: (
+      <Suspense fallback={<Spinner />}>
+        <ProtectedRoute><Settings /></ProtectedRoute>
+      </Suspense>
+    ),
+  },
 ]);
 
 const queryClient = new QueryClient();
 
 function App() {
   return (
-      <QueryClientProvider client={queryClient}>
-          <AuthProvider>
-              <ProfileProvider>
-                <RouterProvider router={router}></RouterProvider>
-              </ProfileProvider>
-          </AuthProvider>
-          <Toaster />
-          <ReactQueryDevtools />
-      </QueryClientProvider>
-  )
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <ProfileProvider>
+          <RouterProvider router={router}></RouterProvider>
+        </ProfileProvider>
+      </AuthProvider>
+      <Toaster />
+      <ReactQueryDevtools />
+    </QueryClientProvider>
+  );
 }
 
-export default App
+export default App;

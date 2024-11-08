@@ -46,7 +46,6 @@ const saveReducer = createSlice({
         },
         updateProfileName: (state, action) => {
             state.profileName = action.payload;
-            console.log(state.profileName)
         }
     }
 });

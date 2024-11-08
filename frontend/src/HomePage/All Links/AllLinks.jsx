@@ -26,7 +26,7 @@ function AllLinks() {
     const navigate = useNavigate();
     const profile_data = localStorage.getItem("current-profile");
     const parsedProfileData = profile_data ? JSON.parse(profile_data) : null;
-    const profileName = parsedProfileData.profile_name;
+    const profileName = parsedProfileData?.profile_name;
     const {mutate:deleteLinkGroup, isError: DeleteLinkError, isLoading: isDeleting} = useMutation({
         mutationFn: deleteLink,
         onSuccess: (data) => {

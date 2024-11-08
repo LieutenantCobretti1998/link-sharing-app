@@ -1,7 +1,7 @@
 import {useDispatch} from "react-redux";
 import {backgrounds} from "../BackgroundImages/BackgroundImages.jsx";
 import {platforms} from "../Platforms/PreDefaultPlatForms.jsx";
-import {useEffect} from "react";
+import {useCallback, useEffect} from "react";
 import {setBlendedColor} from "../SaveLogic/SaveSlice.js";
 import {averageColors, hexToRgb, rgbToHex} from "../Helpers/ColorsConversion.js";
 import {useParams} from "react-router-dom";
@@ -43,7 +43,7 @@ function CopyLinkPreview() {
         return platform ? platform.icon : null;
     };
 
-    const handleCalculateAverageColor = () => {
+    const handleCalculateAverageColor = useCallback(() => {
         const textColorRgb = hexToRgb(textColor);
         const commonColorRgb = hexToRgb(commonColor);
         const backgroundColorRgb = hexToRgb(backgroundColor);
@@ -52,7 +52,7 @@ function CopyLinkPreview() {
         const blendedColor = rgbToHex(avgRgb.r, avgRgb.g, avgRgb.b);
         // document.body.style.backgroundColor = blendedColor;
         dispatch(setBlendedColor(blendedColor));
-    }
+    },[textColor, commonColor, backgroundColor, dispatch]);
     useEffect(() => {
        if (textColor && commonColor && backgroundColor) {
             if (

@@ -9,6 +9,7 @@ models_map = {
     "blendedColor": "blended_color",
 }
 
+
 def map_frontend_to_backend(frontend_data: dict) -> dict:
     """
     :param frontend_data:

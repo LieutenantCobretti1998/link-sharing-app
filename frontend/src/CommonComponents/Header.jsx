@@ -19,7 +19,7 @@ function Header({saveLinks}) {
     const {shortenUrl} = useSelector(state => state.shortenUrl);
     const profile_data = localStorage.getItem("current-profile");
     const parsedProfileData = profile_data ? JSON.parse(profile_data) : null;
-    const profileName = parsedProfileData.profile_name;
+    const profileName = parsedProfileData?.profile_name;
     const {width} = useWindowSize();
 
     const copyToClipBoard = () => {
