@@ -7,11 +7,14 @@ import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
 import Spinner from "../UI/Spinner.jsx";
 import MiniSpinner from "../UI/MiniSpinner.jsx";
 import {logoutUser} from "../API/Login.js";
+import {useContext} from "react";
+import {ProfileContext} from "../CustomLogic/ProfileProvider.jsx";
 
 
 function Profiles() {
     const handleSessionExpired = useHandleSessionExpired();
     const navigate = useNavigate();
+    const { setChosenProfile } = useContext(ProfileContext);
     const {data: userCredentials, isLoading: fetchingProfiles} = useQuery({
         queryKey: ["allRelatedProfiles"],
         refetchOnMount: true,
@@ -42,6 +45,7 @@ function Profiles() {
     const {mutate: choseProfile} = useMutation({
         mutationFn: (profileName) => chosenProfile(profileName),
         onSuccess: (data) => {
+            setChosenProfile(JSON.stringify(data.profile));
             localStorage.setItem("current-profile", JSON.stringify(data.profile));
             navigate(`/`, {replace: true});
         },

@@ -2,7 +2,7 @@ import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {deleteLink, getLinks} from "../../API/DataFetchingApi.js";
 import Spinner from "../../UI/Spinner.jsx";
 import {getBackgroundImage, getPlatformColor, getPlatformIcon} from "../../Helpers/SliceFunctions.js";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useNavigate, useSearchParams} from "react-router-dom";
 import ServerError from "../../UI/Errors/ServerError.jsx";
 import Pagination from "../../UI/Pagination.jsx";

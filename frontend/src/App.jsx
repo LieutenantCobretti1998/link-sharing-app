@@ -7,6 +7,7 @@ import Spinner from "./UI/Spinner.jsx";
 import { editLinkLoader } from "./Links/EditLinksPreLoader.js";
 import { AuthProvider } from "./CustomLogic/AuthProvider.jsx";
 import { ProfileProvider } from "./CustomLogic/ProfileProvider.jsx";
+import ErrorBoundary from "./UI/Errors/GlobalErrorBoundary.jsx";
 
 // Lazy load all components
 const Layout = lazy(() => import('./CommonComponents/Layout.jsx'));
@@ -26,105 +27,196 @@ const ForgetPassword = lazy(() => import('./CommonComponents/ForgetPassword.jsx'
 const NotFoundError = lazy(() => import('./UI/Errors/NotFoundError.jsx'));
 const DynamicError = lazy(() => import('./UI/Errors/DynamicError.jsx'));
 
+
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
       <Suspense fallback={<Spinner />}>
-        <ProtectedRoute><Layout /></ProtectedRoute>
+        <ErrorBoundary>
+          <ProtectedRoute><Layout /></ProtectedRoute>
+        </ErrorBoundary>
       </Suspense>
     ),
-    errorElement: <Suspense fallback={<Spinner />}><NotFoundError /></Suspense>,
+    errorElement: (
+      <Suspense fallback={<Spinner />}>
+        <ErrorBoundary>
+          <NotFoundError />
+        </ErrorBoundary>
+      </Suspense>
+    ),
     children: [
       {
         path: "/",
         element: (
           <Suspense fallback={<Spinner />}>
-            <ProtectedRoute><HomePage /></ProtectedRoute>
+            <ErrorBoundary>
+              <ProtectedRoute><HomePage /></ProtectedRoute>
+            </ErrorBoundary>
           </Suspense>
         ),
-        errorElement: <Suspense fallback={<Spinner />}><NotFoundError /></Suspense>
+        errorElement: (
+          <Suspense fallback={<Spinner />}>
+            <ErrorBoundary>
+              <NotFoundError />
+            </ErrorBoundary>
+          </Suspense>
+        ),
       },
       {
         path: "/:username/create-links",
         element: (
           <Suspense fallback={<Spinner />}>
-            <ProtectedRoute><Links /></ProtectedRoute>
+            <ErrorBoundary>
+              <ProtectedRoute><Links /></ProtectedRoute>
+            </ErrorBoundary>
           </Suspense>
         ),
-        errorElement: <Suspense fallback={<Spinner />}><NotFoundError /></Suspense>
+        errorElement: (
+          <Suspense fallback={<Spinner />}>
+            <ErrorBoundary>
+              <NotFoundError />
+            </ErrorBoundary>
+          </Suspense>
+        ),
       },
       {
         path: "/:username/create-profile",
         element: (
           <Suspense fallback={<Spinner />}>
-            <ProtectedRoute><ProfileDetails /></ProtectedRoute>
+            <ErrorBoundary>
+              <ProtectedRoute><ProfileDetails /></ProtectedRoute>
+            </ErrorBoundary>
           </Suspense>
         ),
-        errorElement: <Suspense fallback={<Spinner />}><NotFoundError /></Suspense>
+        errorElement: (
+          <Suspense fallback={<Spinner />}>
+            <ErrorBoundary>
+              <NotFoundError />
+            </ErrorBoundary>
+          </Suspense>
+        ),
       },
       {
         path: "/:username/new-group-preview",
         element: (
           <Suspense fallback={<Spinner />}>
-            <ProtectedRoute><Preview /></ProtectedRoute>
+            <ErrorBoundary>
+              <ProtectedRoute><Preview /></ProtectedRoute>
+            </ErrorBoundary>
           </Suspense>
         ),
-        errorElement: <Suspense fallback={<Spinner />}><NotFoundError /></Suspense>
+        errorElement: (
+          <Suspense fallback={<Spinner />}>
+            <ErrorBoundary>
+              <NotFoundError />
+            </ErrorBoundary>
+          </Suspense>
+        ),
       },
       {
         path: "/:username/preview-linksGroup/:id",
         element: (
           <Suspense fallback={<Spinner />}>
-            <ProtectedRoute><Preview /></ProtectedRoute>
+            <ErrorBoundary>
+              <ProtectedRoute><Preview /></ProtectedRoute>
+            </ErrorBoundary>
           </Suspense>
         ),
-        errorElement: <Suspense fallback={<Spinner />}><NotFoundError /></Suspense>
+        errorElement: (
+          <Suspense fallback={<Spinner />}>
+            <ErrorBoundary>
+              <NotFoundError />
+            </ErrorBoundary>
+          </Suspense>
+        ),
       },
       {
         path: "/:username/edit-links/:id",
         element: (
           <Suspense fallback={<Spinner />}>
-            <ProtectedRoute><Links /></ProtectedRoute>
+            <ErrorBoundary>
+              <ProtectedRoute><Links /></ProtectedRoute>
+            </ErrorBoundary>
           </Suspense>
         ),
         loader: editLinkLoader,
-        errorElement: <Suspense fallback={<Spinner />}><DynamicError /></Suspense>
+        errorElement: (
+          <Suspense fallback={<Spinner />}>
+            <ErrorBoundary>
+              <DynamicError />
+            </ErrorBoundary>
+          </Suspense>
+        ),
       },
       {
         path: "/:username/edit-profile/:id",
         element: (
           <Suspense fallback={<Spinner />}>
-            <ProtectedRoute><ProfileDetails /></ProtectedRoute>
+            <ErrorBoundary>
+              <ProtectedRoute><ProfileDetails /></ProtectedRoute>
+            </ErrorBoundary>
           </Suspense>
         ),
         loader: editLinkLoader,
-        errorElement: <Suspense fallback={<Spinner />}><DynamicError /></Suspense>
+        errorElement: (
+          <Suspense fallback={<Spinner />}>
+            <ErrorBoundary>
+              <DynamicError />
+            </ErrorBoundary>
+          </Suspense>
+        ),
       },
       {
         path: "/:username/edit-preview/:id",
         element: (
           <Suspense fallback={<Spinner />}>
-            <ProtectedRoute><Preview /></ProtectedRoute>
+            <ErrorBoundary>
+              <ProtectedRoute><Preview /></ProtectedRoute>
+            </ErrorBoundary>
           </Suspense>
-        )
+        ),
+        errorElement: (
+          <Suspense fallback={<Spinner />}>
+            <ErrorBoundary>
+              <NotFoundError />
+            </ErrorBoundary>
+          </Suspense>
+        ),
       },
-    ]
+    ],
   },
   {
     path: "/:username/:id",
     element: (
       <Suspense fallback={<Spinner />}>
-        <CopyLinkPreview />
+        <ErrorBoundary>
+          <CopyLinkPreview />
+        </ErrorBoundary>
       </Suspense>
     ),
-    errorElement: <Suspense fallback={<Spinner />}><NotFoundError /></Suspense>
+    errorElement: (
+      <Suspense fallback={<Spinner />}>
+        <ErrorBoundary>
+          <NotFoundError />
+        </ErrorBoundary>
+      </Suspense>
+    ),
   },
   {
     path: "/login",
     element: (
       <Suspense fallback={<Spinner />}>
-        <Login />
+        <ErrorBoundary>
+          <Login />
+        </ErrorBoundary>
+      </Suspense>
+    ),
+    errorElement: (
+      <Suspense fallback={<Spinner />}>
+        <ErrorBoundary>
+          <NotFoundError />
+        </ErrorBoundary>
       </Suspense>
     ),
   },
@@ -132,7 +224,16 @@ const router = createBrowserRouter([
     path: "/reset-password/:token",
     element: (
       <Suspense fallback={<Spinner />}>
-        <ResetPassword />
+        <ErrorBoundary>
+          <ResetPassword />
+        </ErrorBoundary>
+      </Suspense>
+    ),
+    errorElement: (
+      <Suspense fallback={<Spinner />}>
+        <ErrorBoundary>
+          <NotFoundError />
+        </ErrorBoundary>
       </Suspense>
     ),
   },
@@ -140,7 +241,16 @@ const router = createBrowserRouter([
     path: "/forget-password",
     element: (
       <Suspense fallback={<Spinner />}>
-        <ForgetPassword />
+        <ErrorBoundary>
+          <ForgetPassword />
+        </ErrorBoundary>
+      </Suspense>
+    ),
+    errorElement: (
+      <Suspense fallback={<Spinner />}>
+        <ErrorBoundary>
+          <NotFoundError />
+        </ErrorBoundary>
       </Suspense>
     ),
   },
@@ -148,7 +258,16 @@ const router = createBrowserRouter([
     path: "/create-user",
     element: (
       <Suspense fallback={<Spinner />}>
-        <CreateUser />
+        <ErrorBoundary>
+          <CreateUser />
+        </ErrorBoundary>
+      </Suspense>
+    ),
+    errorElement: (
+      <Suspense fallback={<Spinner />}>
+        <ErrorBoundary>
+          <NotFoundError />
+        </ErrorBoundary>
       </Suspense>
     ),
   },
@@ -156,7 +275,16 @@ const router = createBrowserRouter([
     path: "/create-profile",
     element: (
       <Suspense fallback={<Spinner />}>
-        <CreateProfile />
+        <ErrorBoundary>
+          <CreateProfile />
+        </ErrorBoundary>
+      </Suspense>
+    ),
+    errorElement: (
+      <Suspense fallback={<Spinner />}>
+        <ErrorBoundary>
+          <NotFoundError />
+        </ErrorBoundary>
       </Suspense>
     ),
   },
@@ -164,7 +292,16 @@ const router = createBrowserRouter([
     path: "/profiles",
     element: (
       <Suspense fallback={<Spinner />}>
-        <ProtectedRoute><Profiles /></ProtectedRoute>
+        <ErrorBoundary>
+          <ProtectedRoute><Profiles /></ProtectedRoute>
+        </ErrorBoundary>
+      </Suspense>
+    ),
+    errorElement: (
+      <Suspense fallback={<Spinner />}>
+        <ErrorBoundary>
+          <NotFoundError />
+        </ErrorBoundary>
       </Suspense>
     ),
   },
@@ -172,7 +309,16 @@ const router = createBrowserRouter([
     path: "/:username/settings",
     element: (
       <Suspense fallback={<Spinner />}>
-        <ProtectedRoute><Settings /></ProtectedRoute>
+        <ErrorBoundary>
+          <ProtectedRoute><Settings /></ProtectedRoute>
+        </ErrorBoundary>
+      </Suspense>
+    ),
+    errorElement: (
+      <Suspense fallback={<Spinner />}>
+        <ErrorBoundary>
+          <NotFoundError />
+        </ErrorBoundary>
       </Suspense>
     ),
   },

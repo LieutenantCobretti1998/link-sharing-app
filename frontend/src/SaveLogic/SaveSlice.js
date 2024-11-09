@@ -38,15 +38,19 @@ const saveReducer = createSlice({
         setBlendedColor: (state, action) => {
             state.blendedColor = action.payload;
         },
-        resetSaveState: () => {
-            return initialState;
+        resetSaveState: (state) => {
+            return {
+                ...initialState,
+                profileName: state.profileName
+
+            };
         },
         saveData: (state, action) => {
             return {...state, ...action.payload};
         },
         updateProfileName: (state, action) => {
             state.profileName = action.payload;
-        }
+        },
     }
 });
 

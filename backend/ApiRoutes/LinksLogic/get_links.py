@@ -17,6 +17,7 @@ def get_all_links(profile_id, profile_name):
     get_links_instance = GetAllLinksData(db.session)
     user_instance = UserLogic(db.session)
     user_id = get_jwt_identity()
+    print(user_id, profile_id, profile_name)
     if user_id:
         user_allowed_profile = user_instance.check_user_profile_match(user_id, profile_id, profile_name)
         if user_allowed_profile:
@@ -55,6 +56,7 @@ def get_link(links_group_id, profile_name, profile_id):
                 chosen_link_data = {
                     "linksGroupImage": chosen_link.links_group_image if chosen_link.links_group_image else "",
                     "shorten_url": chosen_link.shorten_url,
+                    "shortDescription": chosen_link.short_description,
                     "linksGroupName": chosen_link.links_group_name,
                     "textColor": chosen_link.text_color,
                     "commonColor": chosen_link.common_color,
@@ -141,6 +143,7 @@ def get_shorten_url(username, links_group_id):
         chosen_link_data = {
             "linksGroupImage": chosen_link.links_group_image if chosen_link.links_group_image else "",
             "linksGroupName": chosen_link.links_group_name,
+            "shortDescription": chosen_link.short_description,
             "textColor": chosen_link.text_color,
             "commonColor": chosen_link.common_color,
             "backgroundColor": chosen_link.background_color,
