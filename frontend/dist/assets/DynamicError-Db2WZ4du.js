@@ -1,0 +1,1 @@
+import{af as o,j as r,ag as s}from"./index-DjIB6WbY.js";import{S as t}from"./ServerError-36aya8Ys.js";function n(){switch(o().status){case 404:return r.jsx(s,{});case 500:return r.jsx(t,{})}}export{n as default};
