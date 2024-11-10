@@ -147,7 +147,7 @@ function ProfileDetails() {
         dispatch({
           type: SET_ERROR,
           errorType: 'invalidFormat',
-          errorMessage: 'Invalid file format. Please upload PNG or JPG.',
+          errorMessage: 'Invalid file format. Please upload PNG or JPG/JPEG.',
         });
         return;
       }
@@ -348,9 +348,9 @@ function ProfileDetails() {
                         )}
                     </button>
 
-                    <p className="max-xs:text-[.9rem] w-[250px] font-normal text-lightBlack-2 text-base">
-                        Image must be below
-                        1024x1024px. Use PNG or JPG format.
+                    <p className="max-xs:text-[.7rem] w-[250px] font-normal text-lightBlack-2 text-base">
+                        Image should be below
+                        1024x1024px or it will be resized. Use PNG or JPG/JPEG format.
                     </p>
                     {linksGroupImage && (
                         <button
@@ -358,16 +358,15 @@ function ProfileDetails() {
                                 dispatch_redux(removeLinksGroupImage());
                                 setImagePreview("");
                             }}
-                            className="absolute top-2 right-5 text-lightBlack-2 font-instrumentNormal hover:text-red-500 focus:outline-none">Remove
+                            className="max-xs:text-[.7rem] absolute top-2 right-5 text-lightBlack-2 font-instrumentNormal hover:text-red transition-colors focus:outline-none">
+                            Remove
                         </button>
                     )}
                     {state.errorType === 'invalidFormat' && (
-                        <p className="absolute right-0 bottom-0 text-red mt-2 text-sm">Invalid file format. Please
-                            upload PNG or JPG.</p>
+                        <p className="max-xs:text-[.7rem] absolute bottom-0 text-red mt-2 text-sm">Invalid file format.</p>
                     )}
                     {state.errorType === 'invalidDimensions' && (
-                        <p className="absolute right-0 bottom-0 text-red mt-2 text-sm">Image dimensions must be less
-                            than 1024x1024.</p>
+                        <p className="max-xs:text-[.7rem] absolute bottom-0 text-red mt-2 text-sm">Invalid size.</p>
                     )}
                 </div>
                 <div className="p-[1rem]  flex flex-col gap-10 bg-light-grey rounded-md border-light-grey">
