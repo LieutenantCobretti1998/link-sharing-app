@@ -47,7 +47,8 @@ class GetAllLinksData(AbstractDataValidator):
         try:
             from .models import LinksGroup
             offset_value = (page - 1) * per_page
-            all_links = self.db_session.query(LinksGroup).filter(LinksGroup.profile_id == profile_id).offset(offset_value).limit(per_page).all()
+            all_links = self.db_session.query(LinksGroup).filter(LinksGroup.profile_id == profile_id).offset(
+                offset_value).limit(per_page).all()
             if not all_links:
                 return []
             return all_links
@@ -226,7 +227,8 @@ class UserLogic(AbstractDataValidator):
         Check if the user could use profile id
         """
         from .models import Profile
-        is_allowed = self.db_session.query(Profile).filter(Profile.id == profile_id, Profile.user_id == user_id, Profile.username == profile_name).first()
+        is_allowed = self.db_session.query(Profile).filter(Profile.id == profile_id, Profile.user_id == user_id,
+                                                           Profile.username == profile_name).first()
         if is_allowed:
             return True
         else:
@@ -256,7 +258,8 @@ class UserLogic(AbstractDataValidator):
         current_user = self.db_session.query(User).filter(User.id == user_id).first()
         chosen_profile = self.db_session.query(Profile).filter(Profile.username == profile_name).first()
         if chosen_profile and current_user:
-            return {"profile_name": chosen_profile.username, "profile_id": chosen_profile.id, "current_user": current_user.email}, {"message": "Profile is loaded successfully"},  200
+            return {"profile_name": chosen_profile.username, "profile_id": chosen_profile.id,
+                    "current_user": current_user.email}, {"message": "Profile is loaded successfully"}, 200
         else:
             return None, {"message": "Profile or User is not existed"}, 404
 
@@ -291,15 +294,26 @@ class UserLogic(AbstractDataValidator):
                 Checking user existence
                 """
         from .models import User
-        user_exist = self.db_session.query(User).filter(User.email == email).first()
+        user_exist = self.db_session.query(User).filter(User.email == email, User.is_active == True).first()
         if user_exist:
             return user_exist
         else:
             return False
 
-    def create_user(self, username: str, **kwargs) -> tuple:
+    def find_inactive_email(self, email: str) -> bool:
         """
-        username: str
+        :param email:
+        :return: bool
+        Check inactive users and if the email is the same just update their passwords
+        """
+        from .models import User
+        inactive_user_exist = self.db_session.query(User).filter(User.email == email).first()
+        if inactive_user_exist:
+            return inactive_user_exist
+        return False
+
+    def create_user(self, **kwargs) -> tuple:
+        """
         **kwargs
         return: tuple
         Create a user method
@@ -308,24 +322,22 @@ class UserLogic(AbstractDataValidator):
             from .models import User, Profile
             existed_user = self.find_email(kwargs["email"])
             if not existed_user:
+                inactive_user = self.find_inactive_email(kwargs["email"])
+                if inactive_user:
+                    for key, value in kwargs.items():
+                        if hasattr(inactive_user, key):
+                            setattr(inactive_user, key, value)
+                    self.db_session.commit()
+                    return {"message": "User created successfully", "email": kwargs["email"]}, 200
                 new_user = User()
                 for key, value in kwargs.items():
                     if hasattr(new_user, key):
                         setattr(new_user, key, value)
-                # self.db_session.flush()
-                # new_profile = Profile(username=username, user_id=new_user.id)
                 self.db_session.add(new_user)
                 self.db_session.commit()
-                return {"message": "User created successfully"}, 200
+                return {"message": "User created successfully", "email": kwargs["email"]}, 200
             else:
                 return {"message": "User Already exists"}, 409
-                # if existed_user.can_create_profile():
-                #     new_profile = Profile(username=username, user_id=existed_user.id)
-                #     self.db_session.add(new_profile)
-                #     self.db_session.commit()
-                #     return {"message": "User created successfully"}, 200
-                # else:
-                #     return {"message": "Maximum capacity of users reached"}, 409
         except OperationalError:
             self.db_session.rollback()
             return {"message": "Database Fatal Error"}, 500
@@ -349,9 +361,6 @@ class UserLogic(AbstractDataValidator):
         except OperationalError:
             self.db_session.rollback()
             return {"message": "Database Fatal Error"}, 500
-
-
-
 
     def create_profile(self, user_id: int, **kwargs) -> tuple:
         """
@@ -386,7 +395,8 @@ class UserLogic(AbstractDataValidator):
         """
         try:
             from .models import Profile
-            user = self.db_session.query(Profile).filter(Profile.id == profile_id, Profile.username == profile_name).first()
+            user = self.db_session.query(Profile).filter(Profile.id == profile_id,
+                                                         Profile.username == profile_name).first()
             if user:
                 profile_exist = self.db_session.query(Profile).filter(Profile.username == updated_name).first()
                 if profile_exist:
@@ -409,7 +419,8 @@ class UserLogic(AbstractDataValidator):
         """
         try:
             from .models import Profile
-            user = self.db_session.query(Profile).filter(Profile.id == profile_id, Profile.username == profile_name).first()
+            user = self.db_session.query(Profile).filter(Profile.id == profile_id,
+                                                         Profile.username == profile_name).first()
             if user:
                 self.db_session.delete(user)
                 self.db_session.commit()

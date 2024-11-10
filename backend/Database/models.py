@@ -2,7 +2,7 @@ import random
 import string
 from flask_jwt_extended import create_access_token, decode_token
 from flask import current_app as app
-from sqlalchemy import Column, Integer, String, DateTime, JSON, VARCHAR, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, JSON, VARCHAR, ForeignKey, BOOLEAN
 from sqlalchemy.orm import relationship
 from backend.Database import Base, db
 import os
@@ -13,6 +13,7 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     email = Column(VARCHAR, unique=True, nullable=False)
     password = db.Column(VARCHAR(), nullable=False, unique=False)
+    is_active = Column(BOOLEAN, default=False, nullable=False)
     role = Column(VARCHAR(20), nullable=False, default='user')
     profiles = relationship("Profile", backref="user", cascade="all, delete", lazy=True)
 
@@ -101,6 +102,15 @@ def generate_reset_token(user_id: int) -> str:
                                )
 
 
+def generate_email_confirm_token(email: str) -> str:
+    """
+    :param email: str
+    :return:
+    Generate email validation token for new users
+    """
+    return create_access_token(identity=email, expires_delta=app.config['JWT_EMAIL_CONFIRM_TOKEN_EXPIRES'])
+
+
 def verify_reset_token(token: str):
     """
     :param token: str
@@ -115,6 +125,4 @@ def verify_reset_token(token: str):
             return False
         return user_id
     except Exception as e:
-        print(e)
         return None
-

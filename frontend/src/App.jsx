@@ -8,6 +8,8 @@ import { editLinkLoader } from "./Links/EditLinksPreLoader.js";
 import { AuthProvider } from "./CustomLogic/AuthProvider.jsx";
 import { ProfileProvider } from "./CustomLogic/ProfileProvider.jsx";
 import ErrorBoundary from "./UI/Errors/GlobalErrorBoundary.jsx";
+import SubmitUser from "./CommonComponents/SubmitUser.jsx";
+import {confirmEmailLoader} from "./Helpers/EmailAutoSending.js";
 
 // Lazy load all components
 const Layout = lazy(() => import('./CommonComponents/Layout.jsx'));
@@ -229,6 +231,24 @@ const router = createBrowserRouter([
         </ErrorBoundary>
       </Suspense>
     ),
+    errorElement: (
+      <Suspense fallback={<Spinner />}>
+        <ErrorBoundary>
+          <NotFoundError />
+        </ErrorBoundary>
+      </Suspense>
+    ),
+  },
+  {
+    path: "/confirm-email/:email",
+    element: (
+      <Suspense fallback={<Spinner />}>
+        <ErrorBoundary>
+          <SubmitUser />
+        </ErrorBoundary>
+      </Suspense>
+    ),
+    loader: confirmEmailLoader,
     errorElement: (
       <Suspense fallback={<Spinner />}>
         <ErrorBoundary>

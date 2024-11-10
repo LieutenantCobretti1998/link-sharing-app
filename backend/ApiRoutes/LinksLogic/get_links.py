@@ -17,7 +17,6 @@ def get_all_links(profile_id, profile_name):
     get_links_instance = GetAllLinksData(db.session)
     user_instance = UserLogic(db.session)
     user_id = get_jwt_identity()
-    print(user_id, profile_id, profile_name)
     if user_id:
         user_allowed_profile = user_instance.check_user_profile_match(user_id, profile_id, profile_name)
         if user_allowed_profile:

@@ -13,6 +13,7 @@ class Config:
     JWT_BLACKLIST_ENABLED = True
     JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
     JWT_RESET_TOKEN_EXPIRES = timedelta(minutes=5)
+    JWT_EMAIL_CONFIRM_TOKEN_EXPIRES = timedelta(minutes=2)
     JWT_REFRESH_TOKEN_LOCATION = "api/token/refresh"
     JWT_COOKIE_SAMESITE = 'Lax'
     JWT_COOKIES_CSRF_PROTECT = True
@@ -39,6 +40,8 @@ class DevelopmentConfig(Config):
 class ProductionConfig(Config):
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'sqlite:///production.db')
+    JWT_COOKIE_SECURE = True
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=30)
 
 
 class TestingConfig(Config):

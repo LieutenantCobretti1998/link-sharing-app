@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Blueprint, request, jsonify, url_for
+from flask import Blueprint, request, jsonify, current_app as app
 from werkzeug.security import generate_password_hash
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, create_refresh_token, \
     set_access_cookies, set_refresh_cookies, unset_jwt_cookies, get_jwt, decode_token
@@ -46,7 +46,7 @@ def forgot_password():
     if not user:
         return jsonify({"message": "No user found with that email"}), 404
     token = generate_reset_token(user.id)
-    reset_url = f"http://localhost:5173/reset-password/{token}"
+    reset_url = f"{app.config["FRONTEND_DEV_URL"]}3/reset-password/{token}"
     subject = "Password Reset Request"
     body = (f"Hello dear friend,\n\nTo reset your password, click the link below:\n{reset_url}.\n\nIf you did not "
             f"request a password reset, please ignore this email.\n\n This token will be valid for 5 minutes!")
@@ -111,7 +111,7 @@ def logout():
 @jwt_required()
 def auth_status():
     user_id = get_jwt_identity()
-    user = db.session.query(User).filter_by(id=user_id).first()
+    user = db.session.query(User).filter_by(id=user_id, is_active=True).first()
     if user:
         return jsonify({
             "authenticated": True,

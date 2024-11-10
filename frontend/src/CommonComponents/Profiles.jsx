@@ -40,7 +40,7 @@ function Profiles() {
             }
             toast.error(error.message || "An Error occurred");
         }
-    })
+    });
 
     const {mutate: choseProfile} = useMutation({
         mutationFn: (profileName) => chosenProfile(profileName),

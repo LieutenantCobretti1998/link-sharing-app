@@ -16,18 +16,19 @@ function CreateUser() {
             defaultValue: "",
             exact: true
         });
-    const {mutate:createNewUser, isLoading, isError} = useMutation({
+    const {mutate:createNewUser, isLoading: isCreating} = useMutation({
             mutationFn: (data) => createUser(data.username, data.password, data.email),
-            onSuccess: () => navigate("/login", {
+            onSuccess: (data) => navigate(`/confirm-email/${data.email}`, {
                 state: {
-                    "message": "User created successfully"
+                    "email": data.email,
                 }
             }),
             onError: (error) => toast.error(error.message || "An Error occurred. Please try again later ")
     });
+
     const onSubmit = (data) => {
         createNewUser(data);
-        }
+        };
     return (
         <main className="flex justify-center items-center h-screen">
             <div className="flex flex-col gap-5">
@@ -130,7 +131,7 @@ function CreateUser() {
                             {errors.confirm &&
                                 <p className="text-red text-end font-instrumentBold">{errors.confirm.message}</p>}
                         </div>
-                        <Button type={"login"} typeForm={true}>{isLoading ? <MiniSpinner />: "Create user"}</Button>
+                        <Button type={"login"} typeForm={true}>{isCreating ? <MiniSpinner/> : "Create user"}</Button>
                         <div className="xs:flex-col xs:items-center sm:flex-row flex gap-2">
                             <p className="font-instrumentNormal">Already have an account ?</p>
                             <Link to="/login" className="text-primaryPurple font-instrumentNormal">Login</Link>
@@ -138,7 +139,7 @@ function CreateUser() {
                     </form>
                 </section>
             </div>
-            <Toaster />
+            <Toaster/>
         </main>
     );
 }
