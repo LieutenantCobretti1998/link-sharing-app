@@ -1,35 +1,31 @@
+import {NavLink, useParams} from "react-router-dom";
 import Button from "../UI/Button.jsx";
 import MiniSpinner from "../UI/MiniSpinner.jsx";
-import {useForm} from "react-hook-form";
-import {NavLink, useLoaderData, useLocation, useNavigate} from "react-router-dom";
 import {useMutation} from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import {useEffect} from "react";
-import {resendEmail} from "../API/Login.js";
+import {useForm} from "react-hook-form";
+import {submitEmail} from "../API/Login.js";
 
-function SubmitUser() {
-    const loaderData = useLoaderData();
+function SubmitConfirmation() {
+    const { token} = useParams();
     const {handleSubmit } = useForm();
-    const location = useLocation();
-    useEffect(() => {
-        if (loaderData) {
-            const { success, message } = loaderData;
-            if (success) {
-                toast.success(message);
-            } else {
-                toast.error(message);
-            }
-        }
-    }, [loaderData]);
-
-    const {mutate:sendAgain, isLoading} = useMutation({
-            mutationFn: () => resendEmail(location.state?.email),
-            onSuccess: (data) => toast.success(data.message || "Submission was resent"),
+    const {mutate:resendEmail, isLoading, isSuccess} = useMutation({
+            mutationFn: () => submitEmail(token),
+            onSuccess: (data) => toast.success(data.message || "User is active now😍"),
             onError: (error) => toast.error(error.message || "An Error occurred. Please try again later ")
     });
     const onSubmit = () => {
-            sendAgain();
+            resendEmail();
         }
+    if (isSuccess) {
+        return (
+            <main className="flex justify-center items-center h-screen">
+                <div className="mb-10 text-center">
+                    <h1 className="text-3xl mb-2 font-instrumentBold"><b>User is now active. Close this page</b></h1>
+                </div>
+            </main>
+        )
+    }
     return (
         <main className="flex justify-center items-center h-screen">
             <div className="flex flex-col gap-5">
@@ -57,18 +53,10 @@ function SubmitUser() {
                         </svg>
                     </NavLink>
                     <div className="mb-10 text-center">
-                        <h1 className="text-2xl mb-2 font-instrumentBold"><b>Verify your Email Address</b></h1>
-                    </div>
-                    <div className="mb-10 text-center">
-                        <p className="max-xs:text-[.9rem] text-base mb-2 font-instrumentNormal">A verification link has
-                            been sent to: <b>{location.state?.email}</b></p>
-                    </div>
-                    <div>
-                        <p className="max-xs:text-[.9rem] text-base mb-2 font-instrumentNormal">Please click the button
-                            in the message to confirm your email address.</p>
+                        <h1 className="text-2xl mb-2 font-instrumentBold"><b>Submit your Email Address</b></h1>
                     </div>
                     <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-                        <Button type={"login"} typeForm={true}>{isLoading ? <MiniSpinner/> : "Resend Email"}</Button>
+                        <Button type={"login"} typeForm={true}>{isLoading ? <MiniSpinner/> : "Submit Email"}</Button>
                     </form>
                 </section>
             </div>
@@ -76,4 +64,4 @@ function SubmitUser() {
     );
 }
 
-export default SubmitUser;
+export default SubmitConfirmation;

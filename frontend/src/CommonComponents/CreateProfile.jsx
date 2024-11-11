@@ -3,9 +3,10 @@ import MiniSpinner from "../UI/MiniSpinner.jsx";
 import {NavLink, useNavigate} from "react-router-dom";
 import toast, {Toaster} from "react-hot-toast";
 import {useForm} from "react-hook-form";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {createProfile} from "../API/Profiles.js";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import {allProfiles, createProfile} from "../API/Profiles.js";
 import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
+import Spinner from "../UI/Spinner.jsx";
 
 function CreateProfile() {
     const navigate = useNavigate();
@@ -28,8 +29,23 @@ function CreateProfile() {
             toast.error(error.message || "An Error occurred. Please try again later ")
         }
     });
+    const { data: userCredentials, isLoading: fetchingProfiles } = useQuery({
+        queryKey: ["allRelatedProfiles"],
+        refetchOnMount: true,
+        queryFn: () => allProfiles(),
+        enabled: true
+    });
+    const {profiles} = userCredentials?.user || [];
     const onSubmit = (data) => {
-        createNewProfile(data.username);
+        const trimmedUsername = data.username.trim();
+        createNewProfile(trimmedUsername);
+    }
+    if (fetchingProfiles) {
+        return (
+            <main className="flex justify-center items-center h-screen">
+                <Spinner />
+            </main>
+        )
     }
     return (
         <main className="flex justify-center items-center h-screen">
@@ -45,14 +61,16 @@ function CreateProfile() {
                           d="M174.743 32.5c-2.585 0-4.64-.525-6.163-1.575-1.524-1.05-2.355-2.497-2.494-4.34h4.641c.115.793.507 1.4 1.177 1.82.692.397 1.639.595 2.839.595 1.085 0 1.87-.152 2.355-.455.508-.327.762-.782.762-1.365 0-.443-.15-.782-.45-1.015-.277-.257-.797-.467-1.558-.63l-2.84-.595c-2.101-.443-3.647-1.108-4.64-1.995-.993-.91-1.489-2.077-1.489-3.5 0-1.727.658-3.068 1.974-4.025 1.316-.98 3.151-1.47 5.506-1.47 2.331 0 4.189.478 5.575 1.435 1.385.933 2.146 2.24 2.285 3.92h-4.64c-.092-.607-.416-1.062-.97-1.365-.554-.327-1.339-.49-2.354-.49-.924 0-1.616.14-2.078.42-.439.257-.658.63-.658 1.12 0 .42.185.758.554 1.015.369.233.981.443 1.835.63l3.186.665c1.778.373 3.117 1.073 4.017 2.1.923 1.003 1.385 2.193 1.385 3.57 0 1.75-.681 3.115-2.043 4.095-1.339.957-3.243 1.435-5.714 1.435Z"/>
                 </svg>
                 <section className="xs:w-[350px] sm:w-[500px] xl:w-[700px]  bg-white p-[10%] rounded-xl">
-                    <NavLink to="/profiles" className="inline-block">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="ionicon w-7 group hover:cursor-pointer" viewBox="0 0 512 512">
-                            <path className="group-hover:stroke-primaryPurple3 transition-colors duration-300" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
-                                  strokeWidth="32" d="M249.38 336L170 256l79.38-80M181.03 256H342"/>
-                            <path className="group-hover:stroke-primaryPurple3 transition-colors duration-300" d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z" fill="none"
-                                  stroke="currentColor" strokeMiterlimit="10" strokeWidth="32"/>
-                        </svg>
-                    </NavLink>
+                    {profiles.length !== 0 && (
+                        <NavLink to="/profiles" className="inline-block">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="ionicon w-7 group hover:cursor-pointer" viewBox="0 0 512 512">
+                                <path className="group-hover:stroke-primaryPurple3 transition-colors duration-300" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
+                                      strokeWidth="32" d="M249.38 336L170 256l79.38-80M181.03 256H342"/>
+                                <path className="group-hover:stroke-primaryPurple3 transition-colors duration-300" d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z" fill="none"
+                                      stroke="currentColor" strokeMiterlimit="10" strokeWidth="32"/>
+                            </svg>
+                        </NavLink>
+                    )}
                     <div className="mb-10 text-center">
                         <h1 className="max-xs:text-[1.5rem] text-3xl mb-2 font-instrumentBold"><b>Create your profile</b></h1>
                         <p className="font-instrumentNormal">Let's get started sharing your links</p>

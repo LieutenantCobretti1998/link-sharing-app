@@ -8,11 +8,13 @@ import { editLinkLoader } from "./Links/EditLinksPreLoader.js";
 import { AuthProvider } from "./CustomLogic/AuthProvider.jsx";
 import { ProfileProvider } from "./CustomLogic/ProfileProvider.jsx";
 import ErrorBoundary from "./UI/Errors/GlobalErrorBoundary.jsx";
-import SubmitUser from "./CommonComponents/SubmitUser.jsx";
 import {confirmEmailLoader} from "./Helpers/EmailAutoSending.js";
+
 
 // Lazy load all components
 const Layout = lazy(() => import('./CommonComponents/Layout.jsx'));
+const SubmitConfirmation = lazy(() => import("./CommonComponents/SubmitConfirmation.jsx"));
+const SubmitUser = lazy(() => import("./CommonComponents/SubmitUser.jsx"));
 const Links = lazy(() => import('./Links/Links.jsx'));
 const ProfileDetails = lazy(() => import('./ProfileDetails/ProfileDetails.jsx'));
 const Preview = lazy(() => import('./Preview/Preview.jsx'));
@@ -249,6 +251,23 @@ const router = createBrowserRouter([
       </Suspense>
     ),
     loader: confirmEmailLoader,
+    errorElement: (
+      <Suspense fallback={<Spinner />}>
+        <ErrorBoundary>
+          <NotFoundError />
+        </ErrorBoundary>
+      </Suspense>
+    ),
+  },
+  {
+    path: "/confirmation/:token",
+    element: (
+      <Suspense fallback={<Spinner />}>
+        <ErrorBoundary>
+          <SubmitConfirmation />
+        </ErrorBoundary>
+      </Suspense>
+    ),
     errorElement: (
       <Suspense fallback={<Spinner />}>
         <ErrorBoundary>

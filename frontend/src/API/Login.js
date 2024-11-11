@@ -21,7 +21,6 @@ export const createUser = async (username, password, email) => {
     return responseData;
 };
 
-
 export const resendEmail = async (email) => {
     const response = await fetch("/api/send_email", {
         method: "POST",
@@ -37,6 +36,24 @@ export const resendEmail = async (email) => {
          throw new Error(responseData.message);
     }
     return responseData;
+};
+
+export const submitEmail = async (token) => {
+    const response  = await fetch('/api/verify_email', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            token: token,
+        })
+    })
+    const responseData = await response.json();
+    if (!response.ok) {
+         throw new Error(responseData.message);
+    }
+    return responseData;
+
 }
 
 export const updatePassword = async(token, new_password) => {

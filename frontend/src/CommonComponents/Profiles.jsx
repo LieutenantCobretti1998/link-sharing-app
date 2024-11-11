@@ -19,7 +19,8 @@ function Profiles() {
         queryKey: ["allRelatedProfiles"],
         refetchOnMount: true,
         queryFn: () => allProfiles(),
-        onSuccess: (profiles) => {
+        onSuccess: (data) => {
+            const { profiles } = data.user;
             if (profiles?.length === 0) {
                 navigate("/create-profile", {replace: true});
             }

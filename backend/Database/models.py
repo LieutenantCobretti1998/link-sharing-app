@@ -1,5 +1,6 @@
 import random
 import string
+from datetime import datetime, timezone
 from flask_jwt_extended import create_access_token, decode_token
 from flask import current_app as app
 from sqlalchemy import Column, Integer, String, DateTime, JSON, VARCHAR, ForeignKey, BOOLEAN
@@ -14,6 +15,7 @@ class User(Base):
     email = Column(VARCHAR, unique=True, nullable=False)
     password = db.Column(VARCHAR(), nullable=False, unique=False)
     is_active = Column(BOOLEAN, default=False, nullable=False)
+    registered_time = Column(DateTime, default=datetime.now(timezone.utc), nullable=False)
     role = Column(VARCHAR(20), nullable=False, default='user')
     profiles = relationship("Profile", backref="user", cascade="all, delete", lazy=True)
 
@@ -55,7 +57,8 @@ class BlackListToken(Base):
     user_id = Column(Integer, nullable=True)
     expires_at = Column(DateTime, nullable=False)
 
-    def __init__(self, jti, expires_at, user_id=None):
+    def __init__(self, jti, expires_at, user_id=None, **kw):
+        super().__init__(**kw)
         self.jti = jti
         self.expires_at = expires_at
         self.user_id = user_id
@@ -124,5 +127,22 @@ def verify_reset_token(token: str):
         if db.session.query(BlackListToken).filter(BlackListToken.jti == jti).first():
             return False
         return user_id
+    except Exception as e:
+        return None
+
+
+def verify_email_confirmation_token(token: str):
+    """
+    :param token: str
+    :return:
+    The function for checking the validation of email confirmation token
+    """
+    try:
+        data = decode_token(token)
+        jti = data["jti"]
+        email = data["sub"]
+        if db.session.query(BlackListToken).filter(BlackListToken.jti == jti).first():
+            return False
+        return email
     except Exception as e:
         return None

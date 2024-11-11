@@ -1,9 +1,7 @@
 from abc import ABC
-from operator import truediv
 from typing import Any
-
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_
+from flask_jwt_extended import decode_token
 from sqlalchemy.exc import OperationalError, NoResultFound
 from werkzeug.security import check_password_hash
 
@@ -204,6 +202,24 @@ class UserLogic(AbstractDataValidator):
     def __init__(self, db_session):
         super().__init__(db_session)
 
+    def confirm_invalidate_email(self, email: str):
+        """
+        :param email: str
+        :return:
+        """
+        try:
+            from .models import User
+            existed_inactive_user = self.db_session.query(User).filter(User.email == email, User.is_active == False).first()
+            if existed_inactive_user:
+                existed_inactive_user.is_active = True
+                self.db_session.commit()
+                return existed_inactive_user.id, {"message": "Email is active. Please, return to login page"}, 200
+            else:
+                return {"message": "User is not found"}, 404
+        except OperationalError:
+            self.db_session.rollback()
+            return {"error": "Database Fatal Error"}, 500
+
     def check_user(self, password: str, email: str) -> Any | None:
         """
         password: str,
@@ -212,7 +228,7 @@ class UserLogic(AbstractDataValidator):
         Check if the user exists and then log it in
         """
         from .models import User
-        user = self.db_session.query(User).filter(User.email == email).first()
+        user = self.db_session.query(User).filter(User.email == email, User.is_active == True).first()
         if user and check_password_hash(pwhash=user.password, password=password):
             return user
         else:
@@ -255,8 +271,10 @@ class UserLogic(AbstractDataValidator):
         Chosen profile and its data
         """
         from .models import Profile, User
+        print(user_id, profile_name)
         current_user = self.db_session.query(User).filter(User.id == user_id).first()
         chosen_profile = self.db_session.query(Profile).filter(Profile.username == profile_name).first()
+        print(current_user, chosen_profile)
         if chosen_profile and current_user:
             return {"profile_name": chosen_profile.username, "profile_id": chosen_profile.id,
                     "current_user": current_user.email}, {"message": "Profile is loaded successfully"}, 200
