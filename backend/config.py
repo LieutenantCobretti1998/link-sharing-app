@@ -23,7 +23,7 @@ class Config:
 
 
 class DevelopmentConfig(Config):
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=2)
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(seconds=5)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=3)
     JWT_COOKIE_SECURE = False
     FRONTEND_URL = os.getenv('FRONTEND_DEV_URL')

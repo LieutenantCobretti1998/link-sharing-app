@@ -21,6 +21,7 @@ function ManageProfile({onProfileNameChange}) {
         onSuccess: (data) => {
             onProfileNameChange(data.new_name);
             toast.success(data.message || "Profile name updated");
+            navigate(`/${data.new_name}/settings`, {replace: true});
         },
         onError: (error) => {
             if (error.message === "Session expired. Please log in again.") {

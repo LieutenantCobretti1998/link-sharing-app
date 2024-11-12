@@ -1,5 +1,5 @@
 import {useNavigate} from "react-router-dom";
-import {useMutation, useQuery} from "@tanstack/react-query";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {allProfiles, chosenProfile} from "../API/Profiles.js";
 import toast from "react-hot-toast";
 import Button from "../UI/Button.jsx";
@@ -13,6 +13,7 @@ import {ProfileContext} from "../CustomLogic/ProfileProvider.jsx";
 
 function Profiles() {
     const handleSessionExpired = useHandleSessionExpired();
+    const queryClient = useQueryClient();
     const navigate = useNavigate();
     const { setChosenProfile } = useContext(ProfileContext);
     const {data: userCredentials, isLoading: fetchingProfiles} = useQuery({
@@ -34,7 +35,12 @@ function Profiles() {
 
     const {mutate: logOut, isLoading: isLoggingOut} = useMutation({
         mutationFn: () => logoutUser(),
-        onSuccess: () => navigate("/login", {replace: true}),
+        onSuccess: () => {
+            localStorage.removeItem("current-profile");
+            setChosenProfile(null);
+            queryClient.clear();
+            navigate("/login", {replace: true});
+        },
         onError: (error) => {
             if (error.message === "Session expired. Please log in again.") {
                 handleSessionExpired();
@@ -43,7 +49,7 @@ function Profiles() {
         }
     });
 
-    const {mutate: choseProfile} = useMutation({
+    const {mutate: choseProfile, isLoading: choosingProfile} = useMutation({
         mutationFn: (profileName) => chosenProfile(profileName),
         onSuccess: (data) => {
             setChosenProfile(JSON.stringify(data.profile));
@@ -59,10 +65,15 @@ function Profiles() {
     const goToCreateProfilesPage = () => {
         navigate("/create-profile");
     }
-
+    if(fetchingProfiles || choosingProfile) {
+        return (
+            <main className="flex justify-center items-center h-screen">
+                <Spinner />
+            </main>
+        )
+    }
     return (
         <main className="flex justify-center items-center h-screen">
-            {fetchingProfiles ? <Spinner /> : (
                 <div className="flex flex-col gap-5">
                     <svg className="xs:self-start xs:ml-[2rem] sm:self-center sm:ml-[0]" xmlns="http://www.w3.org/2000/svg" width="183" height="40" fill="none"
                          viewBox="0 0 183 40">
@@ -91,7 +102,6 @@ function Profiles() {
                         </div>
                     </section>
                 </div>
-            )}
         </main>
     );
 }

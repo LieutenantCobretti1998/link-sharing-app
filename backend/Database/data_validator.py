@@ -1,9 +1,9 @@
 from abc import ABC
 from typing import Any
 from sqlalchemy import or_
-from flask_jwt_extended import decode_token
 from sqlalchemy.exc import OperationalError, NoResultFound
 from werkzeug.security import check_password_hash
+from ..exceptions import DeleteUserError
 
 
 class AbstractDataValidator(ABC):
@@ -449,3 +449,24 @@ class UserLogic(AbstractDataValidator):
         except OperationalError:
             self.db_session.rollback()
             return {"error": "Database Fatal Error"}, 500
+
+    def delete_account(self, user_id: int) -> tuple:
+        """
+        :param user_id: int
+        Method for deleting the corresponding account
+        """
+        try:
+            from .models import User
+            user = self.db_session.query(User).filter(User.id == user_id, User.is_active == True).first()
+
+            if user:
+                self.db_session.delete(user)
+                self.db_session.commit()
+                return {"message": "User deleted successfully"}, 200
+            else:
+                raise DeleteUserError("User does not exist", 409)
+
+        except OperationalError:
+            self.db_session.rollback()
+            raise DeleteUserError("Database Fatal Error", 500)
+

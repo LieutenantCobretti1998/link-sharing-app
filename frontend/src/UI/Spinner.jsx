@@ -3,7 +3,7 @@ import {useLocation} from "react-router-dom";
 function Spinner() {
   const location = useLocation();
     return (
-    <div className={`flex justify-center items-center ${(location.pathname === "/" || location.pathname.includes("preview-linksGroup")) ? "max-sm:h-[15vh] max-sm:w-[95%] h-[50vh] w-[50%]": "h-[60vh] w-[95%]"}`}>
+    <div className={`flex justify-center items-center ${(location.pathname.includes("preview-linksGroup")) ? "max-sm:h-[15vh] max-sm:w-[95%] h-[50vh] w-[50%]": "h-[60vh] w-[95%]"}`}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="183"

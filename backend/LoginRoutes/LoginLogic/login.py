@@ -7,6 +7,7 @@ from ...Database import db
 from ...Database.models import User, BlackListToken, generate_reset_token, verify_reset_token
 from ...Database.data_validator import UserLogic
 from ...email_utils import send_mail
+from ...exceptions import DeleteUserError
 
 login_bp = Blueprint('login', __name__)
 
@@ -46,12 +47,24 @@ def forgot_password():
     if not user:
         return jsonify({"message": "No user found with that email"}), 404
     token = generate_reset_token(user.id)
-    reset_url = f"{app.config["FRONTEND_DEV_URL"]}3/reset-password/{token}"
+    reset_url = f"{app.config["FRONTEND_URL"]}/reset-password/{token}"
     subject = "Password Reset Request"
-    body = (f"Hello dear friend,\n\nTo reset your password, click the link below:\n{reset_url}.\n\nIf you did not "
-            f"request a password reset, please ignore this email.\n\n This token will be valid for 5 minutes!")
+    html_content = f""" <html> <body style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;"> 
+    <p>Hello,</p> <p>Thank you for signing up in DevLinks App! To be able to reset your password, please click the 
+    button below to reset your password which will be valid for 5 minutes.</p> <p style="text-align: center;"> <a 
+    href="{reset_url}" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #007bff; 
+    text-decoration: none; border-radius: 5px; font-weight: bold;"> Reset Password </a> </p> <p>If you did not call 
+    this action, no further action is required, and your email address will be deleted automatically after a few days.
+    </p> 
+    <p>Kind regards,<br>DevLinks App</p> <hr> <p style="font-size: 0.9em; color: #555;"> If you're having trouble 
+    clicking the "Verify Email Address" button, copy and paste the URL below into your web browser: <br><a href=" 
+    {reset_url}" style="color: #007bff;">{reset_url}</a>
+                    </p>
+                </body>
+            </html>
+            """
 
-    send_mail(user.email, subject, body)
+    send_mail(user.email, subject, html=html_content)
     return jsonify({"message": "Password reset link sent to your email"}), 200
 
 
@@ -107,6 +120,67 @@ def logout():
         return jsonify({'message': 'User does not authenticated'}), 401
 
 
+@login_bp.route("/delete-account", methods=["DELETE"])
+@jwt_required()
+def delete_account():
+    user_id = get_jwt_identity()
+    user_instance = UserLogic(db.session)
+    refresh_token = request.cookies.get('refresh_token_cookie')
+    access_token = request.cookies.get('access_token_cookie')
+    if refresh_token:
+        refresh_token_data = decode_token(refresh_token)
+        user_id_from_refresh = refresh_token_data["sub"]  # Typically, "sub" contains the user_id
+    else:
+        return jsonify({'message': 'Refresh token missing'}), 401
+
+    if not user_id:
+        return jsonify({'message': 'User not authenticated'}), 401
+
+    if user_id != user_id_from_refresh:
+        return jsonify({'message': 'Token mismatch'}), 401
+
+    try:
+        # Delete the user account
+        message = user_instance.delete_account(user_id)
+
+        # Blacklist the access token
+        try:
+            access_token_data = decode_token(access_token)
+            jti_access = access_token_data["jti"]
+            expires_at_access = datetime.fromtimestamp(access_token_data["exp"])
+            access_blacklist = BlackListToken(
+                jti=jti_access, expires_at=expires_at_access, user_id=user_id
+            )
+            db.session.add(access_blacklist)
+        except Exception:
+            return jsonify({"message": "Invalid access token"}), 401
+
+        # Blacklist the refresh token
+        try:
+            jti_refresh = refresh_token_data["jti"]
+            expires_at_refresh = datetime.fromtimestamp(refresh_token_data["exp"])
+            blacklist_token_refresh = BlackListToken(
+                jti=jti_refresh, expires_at=expires_at_refresh, user_id=user_id
+            )
+            db.session.add(blacklist_token_refresh)
+        except Exception:
+            return jsonify({"message": "Invalid refresh token"}), 401
+
+        # Unset the JWT cookies
+        response = jsonify({"message": "Account deleted successfully"})
+        unset_jwt_cookies(response)
+        db.session.commit()
+        return response, 200
+
+    except DeleteUserError as e:
+        db.session.rollback()
+        return jsonify({"message": str(e)}), e.status_code
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": "An unexpected error occurred"}), 500
+
+
 @login_bp.route('/auth_status', methods=['GET'])
 @jwt_required()
 def auth_status():
@@ -125,9 +199,17 @@ def auth_status():
 @login_bp.route('/token/refresh', methods=['POST'])
 @jwt_required(refresh=True)
 def token_refresh():
-    current_user = get_jwt_identity()
-    if current_user:
-        access_token = create_access_token(identity=current_user)
+    current_user_id = get_jwt_identity()
+    old_access_token = request.cookies.get('access_token_cookie')
+    if current_user_id and old_access_token:
+        access_token_data = decode_token(old_access_token, allow_expired=True)
+        jti_access = access_token_data["jti"]
+        expires_at_access = datetime.fromtimestamp(access_token_data["exp"])
+        access_blacklist = BlackListToken(
+            jti=jti_access, expires_at=expires_at_access, user_id=current_user_id
+        )
+        db.session.add(access_blacklist)
+        access_token = create_access_token(identity=current_user_id)
         response = jsonify({
             "message": "Successfully logged in",
         })

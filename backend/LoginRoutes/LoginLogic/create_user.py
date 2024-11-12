@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from flask import Blueprint, request, jsonify, current_app as app
 from flask_jwt_extended import decode_token
 from werkzeug.security import generate_password_hash
@@ -40,6 +39,17 @@ def verify_email():
     return jsonify(message), code
 
 
+@create_user_bp.route('/check_token', methods=['POST'])
+def check_token():
+    token = request.json.get('token')
+    if not token:
+        return jsonify({"message": "Token is missing"}), 400
+    email = verify_email_confirmation_token(token)
+    if not email:
+        return jsonify({"message": "Token is invalid. Please resend"}), 400
+    return jsonify({"message": "Token is valid"}), 200
+
+
 @create_user_bp.route('/send_email', methods=['POST'])
 def send_email():
     email = request.json.get('email')
@@ -58,7 +68,7 @@ def send_email():
                     <a href="{submission_url}" style="display: inline-block; padding: 10px 20px; color: #fff; 
                     background-color: #007bff; text-decoration: none; border-radius: 5px; font-weight: bold;"> Verify 
                     Email Address </a> </p> <p>If you did not sign up, no further action is required, and your email 
-                    address will be deleted automatically after a few days.</p> <p>Kind regards,<br>YDevLinks App</p> 
+                    address will be deleted automatically after a few days.</p> <p>Kind regards,<br>DevLinks App</p> 
                     <hr> <p style="font-size: 0.9em; color: #555;"> If you're having trouble clicking the "Verify 
                     Email Address" button, copy and paste the URL below into your web browser: <br><a href="
                     {submission_url}" style="color: #007bff;">{submission_url}</a>

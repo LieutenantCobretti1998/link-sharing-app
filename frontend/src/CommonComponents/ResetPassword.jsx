@@ -5,10 +5,12 @@ import MiniSpinner from "../UI/MiniSpinner.jsx";
 import {useParams} from "react-router-dom";
 import toast from "react-hot-toast";
 import {updatePassword} from "../API/Login.js";
+import useCheckToken from "../CustomLogic/useCheckToken.jsx";
 
 function ResetPassword() {
     const {register, handleSubmit, setError, control, formState: {errors} } = useForm();
     const {token} = useParams();
+    useCheckToken();
     const password = useWatch(
         {
             control: control,

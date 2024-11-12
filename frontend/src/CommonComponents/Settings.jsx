@@ -1,17 +1,23 @@
-import {useState} from "react";
+import {useContext, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import ManageProfile from "../UI/ManageProfile.jsx";
 import toast from "react-hot-toast";
-import {useMutation} from "@tanstack/react-query";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {logoutUser} from "../API/Login.js";
 import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
 import Spinner from "../UI/Spinner.jsx";
 import {updateProfileName} from "../SaveLogic/SaveSlice.js";
 import {useDispatch} from "react-redux";
+import ConfirmDeletion from "./ConfirmDeletion.jsx";
+import {ProfileContext} from "../CustomLogic/ProfileProvider.jsx";
+
 
 function Settings() {
     const [selectedMenu, setSelectedMenu] = useState("Manage Profile");
+    const queryClient = useQueryClient();
+    const { setChosenProfile } = useContext(ProfileContext);
     const dispatch = useDispatch();
+    const [modalOpen, setModalOpen] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const navigate = useNavigate();
     const handleSessionExpired = useHandleSessionExpired();
@@ -21,7 +27,6 @@ function Settings() {
     });
     const profileName = parsedProfileData.profile_name;
     const currentUser = parsedProfileData.current_user;
-
     const handleProfileChange = (newProfileName) => {
         const updatedProfileData = {...parsedProfileData, profile_name: newProfileName};
         setParsedProfileData(updatedProfileData);
@@ -31,25 +36,33 @@ function Settings() {
 
     const {mutate: logOut, isLoading: isLoggingOut} = useMutation({
         mutationFn: () => logoutUser(),
-        onSuccess: () => navigate("/login", {replace: true}),
+        onSuccess: () => {
+            navigate("/login", {replace: true});
+            setChosenProfile(null);
+            queryClient.clear();
+        },
         onError: (error) => {
             if (error.message === "Session expired. Please log in again.") {
                 handleSessionExpired();
             }
             toast.error(error.message || "An Error occurred");
         }
-    })
-
+    });
+    const deleteAccount = () => {
+        setSelectedMenu("deleteAccount");
+        setModalOpen(true);
+    }
     const renderContent = () => {
         switch (selectedMenu) {
             case "Manage Profile":
-                return <ManageProfile onProfileNameChange={handleProfileChange} />;
+                return <ManageProfile onProfileNameChange={handleProfileChange}/>;
             default:
                 return null;
         }
-    }
+    };
     return (
         <main className="flex justify-center items-center h-screen bg-grey">
+            {modalOpen && <ConfirmDeletion setIsOpen={setModalOpen} resetMenu={setSelectedMenu} />}
             {isLoggingOut ? (
                 <Spinner/>
             ) : (
@@ -133,9 +146,30 @@ function Settings() {
                                         strokeWidth="32"
                                     />
                                 </svg>
-                                <span className="text-red transition-colors duration-300">
-                  LogOut
-                </span>
+                                <span className="text-red transition-colors duration-300">LogOut</span>
+                            </li>
+
+                            <li
+                                className={`flex items-center gap-3 p-2 ${
+                                    selectedMenu === "deleteAccount"
+                                        ? "bg-grey cursor-default"
+                                        : "hover:bg-grey cursor-pointer"
+                                } rounded-md group transition-colors duration-300`}
+                                onClick={() => deleteAccount()}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="ionicon w-5 text-red" viewBox="0 0 512 512">
+                                    <path
+                                        d="M112 112l20 320c.95 18.49 14.4 32 32 32h184c17.67 0 30.87-13.51 32-32l20-320"
+                                        fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
+                                        strokeWidth="32"/>
+                                    <path stroke="currentColor" strokeLinecap="round" strokeMiterlimit="10"
+                                          strokeWidth="32" d="M80 112h352"/>
+                                    <path
+                                        d="M192 112V72h0a23.93 23.93 0 0124-24h80a23.93 23.93 0 0124 24h0v40M256 176v224M184 176l8 224M328 176l-8 224"
+                                        fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
+                                        strokeWidth="32"/>
+                                </svg>
+                                <span className="text-red transition-colors duration-300">Delete Account</span>
                             </li>
                         </ul>
                     </aside>
@@ -164,7 +198,7 @@ function Settings() {
                             </button>
                             <div className="mb-10">
                                 <h3 className="text-lg text-lightBlack-3 mb-2">
-                                    Current User:{" "}
+                                Current User:{" "}
                                     <strong className="text-lightBlack-1">{currentUser}</strong>
                                 </h3>
                                 <h3 className="text-lg text-lightBlack-3">
@@ -216,8 +250,8 @@ function Settings() {
                                                 : "text-lightBlack-3 group-hover:text-lightBlack-1"
                                         } transition-colors duration-300`}
                                     >
-                    Manage Profile
-                  </span>
+                                    Manage Profile
+                                </span>
                                 </li>
                                 <li
                                     className={`flex items-center gap-3 p-2 ${
@@ -244,9 +278,32 @@ function Settings() {
                                             strokeWidth="32"
                                         />
                                     </svg>
-                                    <span className="text-red transition-colors duration-300">
-                    LogOut
-                  </span>
+                                    <span className="text-red transition-colors duration-300">LogOut</span>
+                                </li>
+                                <li
+                                    className={`flex items-center gap-3 p-2 ${
+                                        selectedMenu === "deleteAccount"
+                                            ? "bg-grey cursor-default"
+                                            : "hover:bg-grey cursor-pointer"
+                                    } rounded-md group transition-colors duration-300`}
+                                    onClick={() => deleteAccount()}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="ionicon w-5 text-red"
+                                         viewBox="0 0 512 512">
+                                        <path
+                                            d="M112 112l20 320c.95 18.49 14.4 32 32 32h184c17.67 0 30.87-13.51 32-32l20-320"
+                                            fill="none" stroke="currentColor" strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="32"/>
+                                        <path stroke="currentColor" strokeLinecap="round" strokeMiterlimit="10"
+                                              strokeWidth="32" d="M80 112h352"/>
+                                        <path
+                                            d="M192 112V72h0a23.93 23.93 0 0124-24h80a23.93 23.93 0 0124 24h0v40M256 176v224M184 176l8 224M328 176l-8 224"
+                                            fill="none" stroke="currentColor" strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="32"/>
+                                    </svg>
+                                    <span className="text-red transition-colors duration-300">Delete Account</span>
                                 </li>
                             </ul>
                         </aside>
@@ -259,7 +316,7 @@ function Settings() {
                                 className="lg:hidden"
                                 onClick={() => setIsSidebarOpen(true)}
                             >
-                            {/* Open Sidebar Button for Small Screens */}
+                                {/* Open Sidebar Button for Small Screens */}
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     className="ionicon w-6 h-6"

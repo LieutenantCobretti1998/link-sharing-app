@@ -5,10 +5,12 @@ import {useMutation} from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import {useForm} from "react-hook-form";
 import {submitEmail} from "../API/Login.js";
+import useCheckToken from "../CustomLogic/useCheckToken.jsx";
 
 function SubmitConfirmation() {
     const { token} = useParams();
     const {handleSubmit } = useForm();
+    useCheckToken();
     const {mutate:resendEmail, isLoading, isSuccess} = useMutation({
             mutationFn: () => submitEmail(token),
             onSuccess: (data) => toast.success(data.message || "User is active now😍"),

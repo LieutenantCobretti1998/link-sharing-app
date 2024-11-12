@@ -66,11 +66,12 @@ export const chosenProfile = async (profileName) => {
         if (!response.ok) {
             if (response.status === 401) {
             const refreshed = await refreshAccessToken();
-            if (refreshed) {
-            } else {
-                throw new Error('Session expired. Please log in again.');
+                console.log(refreshed)
+                if (refreshed) {
+                } else {
+                    throw new Error('Session expired. Please log in again.');
+                }
             }
-        }
              throw new Error(responseData.message);
         }
     return responseData;

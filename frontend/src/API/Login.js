@@ -53,7 +53,18 @@ export const submitEmail = async (token) => {
          throw new Error(responseData.message);
     }
     return responseData;
+};
 
+export const checkToken = async (token) => {
+    return await fetch('/api/check_token', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            token: token,
+        })
+    });
 }
 
 export const updatePassword = async(token, new_password) => {
