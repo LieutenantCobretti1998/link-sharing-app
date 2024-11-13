@@ -65,7 +65,6 @@ function AllLinks() {
         },
         enabled: true,
         keepPreviousData: true,
-        refetchOnMount: false
     });
     const links = data?.links || [];
     const currentPage = data?.current_page || DEFAULT_PAGE;

@@ -1,1 +1,0 @@
-import{ah as o,j as r,ai as s}from"./index-BzrmovQz.js";import{S as t}from"./ServerError-Bl_0vB1j.js";function n(){switch(o().status){case 404:return r.jsx(s,{});case 500:return r.jsx(t,{})}}export{n as default};
