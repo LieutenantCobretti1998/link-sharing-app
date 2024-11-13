@@ -2,7 +2,7 @@ import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {deleteLink, getLinks} from "../../API/DataFetchingApi.js";
 import Spinner from "../../UI/Spinner.jsx";
 import {getBackgroundImage, getPlatformColor, getPlatformIcon} from "../../Helpers/SliceFunctions.js";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {useNavigate, useSearchParams} from "react-router-dom";
 import ServerError from "../../UI/Errors/ServerError.jsx";
 import Pagination from "../../UI/Pagination.jsx";
@@ -63,7 +63,6 @@ function AllLinks() {
             }
         },
         enabled: true,
-        keepPreviousData: true,
     });
     const links = data?.links || [];
     const currentPage = data?.current_page || DEFAULT_PAGE;

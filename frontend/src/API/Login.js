@@ -163,7 +163,7 @@ export const checkAuthStatus = async () => {
                     credentials: "include",
                 });
                 if (retryResponse.ok) {
-                    return await retryResponse.json();
+                    return retryResponse.json();
                 }
             } else {
                 throw new Error('Session expired. Please log in again.');

@@ -21,6 +21,24 @@ export const createProfile = async(profileName) => {
             if (response.status === 401) {
             const refreshed = await refreshAccessToken();
             if (refreshed) {
+                const retryResponse = await fetch("/api/create_profile", {
+                         method: "POST",
+                         body: JSON.stringify({
+                            new_profile_name: profileName,
+                         }),
+                         headers: {
+                            "Content-Type": "application/json",
+                            'X-CSRF-TOKEN': getCSRFToken()
+
+                         },
+                      });
+
+                   const retryData = await retryResponse.json();
+                   if (!retryResponse.ok) {
+                    const errorMessage = retryData?.message || "Error fetching links after token refresh.";
+                    throw new Error(errorMessage);
+                   }
+                   return retryData; // Return the data from the retried request
             } else {
                 throw new Error('Session expired. Please log in again.');
             }
@@ -44,6 +62,20 @@ export const allProfiles = async() => {
             if (response.status === 401) {
                 const refreshed = await refreshAccessToken();
                 if (refreshed) {
+                    const retryResponse = await fetch(`/api/related-profiles`, {
+                         method: "GET",
+                         headers: {
+                            "Content-Type": "application/json",
+
+                         },
+                         credentials: "include"
+                      });
+                   const retryData = await retryResponse.json();
+                   if (!retryResponse.ok) {
+                    const errorMessage = retryData?.message || "Error fetching links after token refresh.";
+                    throw new Error(errorMessage);
+                   }
+                   return retryData; // Return the data from the retried request
                 } else {
                     throw new Error('Session expired. Please log in again.');
                 }
@@ -66,8 +98,21 @@ export const chosenProfile = async (profileName) => {
         if (!response.ok) {
             if (response.status === 401) {
             const refreshed = await refreshAccessToken();
-                console.log(refreshed)
                 if (refreshed) {
+                    const retryResponse = await fetch(`/api/choose_profile/${profileName}`, {
+                         method: "GET",
+                         headers: {
+                            "Content-Type": "application/json",
+
+                         },
+                         credentials: "include"
+                      });
+                   const retryData = await retryResponse.json();
+                   if (!retryResponse.ok) {
+                    const errorMessage = retryData?.message || "Error fetching links after token refresh.";
+                    throw new Error(errorMessage);
+                   }
+                   return retryData; // Return the data from the retried request
                 } else {
                     throw new Error('Session expired. Please log in again.');
                 }
@@ -97,6 +142,21 @@ export const updateProfileName = async(new_profile_name) => {
         if (response.status === 401) {
             const refreshed = await refreshAccessToken();
             if (refreshed) {
+                const retryResponse = await fetch(`/api/change-profile-name/${parsedProfileData.profile_id}/${parsedProfileData.profile_name}`, {
+                         method: "PATCH",
+                         body: JSON.stringify({"new_profile_name": new_profile_name}),
+                         headers: {
+                             "Content-Type": "application/json",
+                             'X-CSRF-TOKEN': getCSRFToken()
+                        },
+                        credentials: "include"
+                      });
+                   const retryData = await retryResponse.json();
+                   if (!retryResponse.ok) {
+                    const errorMessage = retryData?.error || "Error fetching links after token refresh.";
+                    throw new Error(errorMessage);
+                   }
+                   return retryData; // Return the data from the retried request
             } else {
                 throw new Error('Session expired. Please log in again.');
             }
@@ -124,6 +184,19 @@ export const deleteProfile = async() => {
         if (response.status === 401) {
             const refreshed = await refreshAccessToken();
             if (refreshed) {
+                const retryResponse = await fetch(`/api/delete-profile/${parsedProfileData.profile_id}/${parsedProfileData.profile_name}`, {
+                         method: "DELETE",
+                         headers: {
+                             'X-CSRF-TOKEN': getCSRFToken()
+                         },
+                         credentials: "include"
+                      });
+                   const retryData = await retryResponse.json();
+                   if (!retryResponse.ok) {
+                    const errorMessage = retryData?.error || "Error fetching links after token refresh.";
+                    throw new Error(errorMessage);
+                   }
+                   return retryData; // Return the data from the retried request
             } else {
                 throw new Error('Session expired. Please log in again.');
             }

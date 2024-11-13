@@ -31,7 +31,6 @@ const ForgetPassword = lazy(() => import('./CommonComponents/ForgetPassword.jsx'
 const NotFoundError = lazy(() => import('./UI/Errors/NotFoundError.jsx'));
 const DynamicError = lazy(() => import('./UI/Errors/DynamicError.jsx'));
 
-
 const router = createBrowserRouter([
   {
     path: "/",
@@ -363,7 +362,13 @@ const router = createBrowserRouter([
   },
 ]);
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            refetchOnWindowFocus: false
+        }
+    }
+});
 
 function App() {
   return (
