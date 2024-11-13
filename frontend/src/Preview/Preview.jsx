@@ -16,7 +16,7 @@ function Preview() {
     const dispatch = useDispatch();
     const handleSessionExpired = useHandleSessionExpired();
     const { id} = useParams();
-    const {data: LinksGroupData, isError: FailedRequest, isLoading} = useQuery({
+    const {data: LinksGroupData, isLoading} = useQuery({
         queryKey: ["linksGroupPreview", id],
         queryFn: () => getLink(id),
         enabled: !!id,
@@ -24,7 +24,8 @@ function Preview() {
             if (error.message === "Session expired. Please log in again.") {
                 handleSessionExpired();
             }
-        }
+        },
+        keepPreviousData: true,
     });
     const {
         linksGroupName, links, shortDescription,

@@ -1,6 +1,6 @@
 import {createContext, useEffect, useState} from "react";
 import {checkAuthStatus} from "../API/Login.js";
-import {useLocation, useNavigate} from "react-router-dom";
+
 
 
 export const AuthContext = createContext();

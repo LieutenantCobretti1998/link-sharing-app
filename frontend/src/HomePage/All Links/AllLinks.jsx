@@ -20,7 +20,7 @@ function AllLinks() {
     const handleSessionExpired = useHandleSessionExpired();
     const [visible, setVisible] = useState(false);
     let [searchParams, setSearchParams] = useSearchParams();
-    const page = parseInt(searchParams.get("page")) || DEFAULT_PAGE;
+    const page = parseInt(searchParams.get("page")) || DEFAULT_PAGE.toString();
     const search = searchParams.get("search") || "";
     const queryClient = useQueryClient();
     const navigate = useNavigate();
@@ -30,8 +30,9 @@ function AllLinks() {
     const {mutate:deleteLinkGroup, isError: DeleteLinkError, isLoading: isDeleting} = useMutation({
         mutationFn: deleteLink,
         onSuccess: (data) => {
-            queryClient.resetQueries({
-                queryKey: ["userLinks", parseInt(page), search],
+            queryClient.invalidateQueries({
+                queryKey: ["userLinks"],
+                exact: false
             });
             toast.success(data.message || "LinksGroup deleted successfully", {
                 duration: 3000,
@@ -63,6 +64,8 @@ function AllLinks() {
             }
         },
         enabled: true,
+        keepPreviousData: true,
+        refetchOnMount: false
     });
     const links = data?.links || [];
     const currentPage = data?.current_page || DEFAULT_PAGE;

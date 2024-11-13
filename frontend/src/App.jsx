@@ -362,25 +362,18 @@ const router = createBrowserRouter([
   },
 ]);
 
-const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            refetchOnWindowFocus: false
-        }
-    }
-});
-
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <ProfileProvider>
-          <RouterProvider router={router}></RouterProvider>
-        </ProfileProvider>
-      </AuthProvider>
-      <Toaster />
-      <ReactQueryDevtools />
-    </QueryClientProvider>
+      <>
+          <AuthProvider>
+            <ProfileProvider>
+              <RouterProvider router={router}></RouterProvider>
+            </ProfileProvider>
+          </AuthProvider>
+          <Toaster />
+          <ReactQueryDevtools />
+      </>
+
   );
 }
 
