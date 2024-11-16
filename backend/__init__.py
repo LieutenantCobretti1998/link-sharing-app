@@ -12,12 +12,8 @@ from .ProfilesRoutes import init_profile_routes
 from .Database.models import BlackListToken, User
 from .config import DevelopmentConfig, ProductionConfig, TestingConfig
 from .Database import db
-if os.getenv("FLASK_ENV") == "production":
-    cors_origins = ["https://dvlinks.netlify.app"]
-else:
-    cors_origins = ["http://localhost:3000"]
 jwt = JWTManager()
-cors = CORS(origins=cors_origins)
+cors = CORS()
 scheduler = BackgroundScheduler()
 mail = Mail()
 
@@ -51,12 +47,15 @@ def create_app(config_class=None):
     app = Flask(__name__, static_folder="../static")
 
     # Get the environment from the FLASK_ENV variable (default to 'development')
+    env = os.getenv('FLASK_ENV', 'development')
+    cors_origins = ""
     if not config_class:
-        env = os.getenv('FLASK_ENV', 'development')
         if env == 'development':
             config_class = DevelopmentConfig
+            cors_origins = ["http://localhost:3000"]
         elif env == 'production':
             config_class = ProductionConfig
+            cors_origins = ["https://dvlinks.netlify.app"]
         elif env == 'testing':
             config_class = TestingConfig
         else:
@@ -70,7 +69,7 @@ def create_app(config_class=None):
     db.init_app(app)
     mail.init_app(app)
     jwt.init_app(app)
-    cors.init_app(app, supports_credentials=True, resources={r"/*": {"origins": "http://localhost:5173"}})
+    cors.init_app(app, supports_credentials=True, resources={r"/*": {"origins": cors_origins}})
     migrate = Migrate()
     migrate.init_app(app, db)
     with app.app_context():

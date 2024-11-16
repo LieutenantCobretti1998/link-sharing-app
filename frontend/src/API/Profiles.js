@@ -18,6 +18,7 @@ export const createProfile = async(profileName) => {
             'X-CSRF-TOKEN': getCSRFToken()
 
         },
+        credentials: "include"
     });
 
     const responseData = await response.json();
@@ -35,6 +36,7 @@ export const createProfile = async(profileName) => {
                             'X-CSRF-TOKEN': getCSRFToken()
 
                          },
+                         credentials: "include"
                       });
 
                    const retryData = await retryResponse.json();
