@@ -1,9 +1,13 @@
 "use strict";
 
 import {getRefreshCSRFToken} from "../Helpers/AuthHelpers.js";
+import {VITE_BACKEND_API_BASE_URL_DEV, VITE_BACKEND_API_BASE_URL_PROD} from "./API_ROUTES.js";
+
+const mode = import.meta.env.MODE;
+const BACKEND_API_BASE_URL = mode === "development" ? VITE_BACKEND_API_BASE_URL_DEV : VITE_BACKEND_API_BASE_URL_PROD;
 
 export const createUser = async (username, password, email) => {
-    const response = await fetch("/api/register", {
+    const response = await fetch(`${BACKEND_API_BASE_URL}/register`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -22,7 +26,7 @@ export const createUser = async (username, password, email) => {
 };
 
 export const resendEmail = async (email) => {
-    const response = await fetch("/api/send_email", {
+    const response = await fetch(`${BACKEND_API_BASE_URL}/send_email`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -39,7 +43,7 @@ export const resendEmail = async (email) => {
 };
 
 export const submitEmail = async (token) => {
-    const response  = await fetch('/api/verify_email', {
+    const response  = await fetch(`${BACKEND_API_BASE_URL}/verify_email`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -56,7 +60,7 @@ export const submitEmail = async (token) => {
 };
 
 export const checkToken = async (token) => {
-    return await fetch('/api/check_token', {
+    return await fetch(`${BACKEND_API_BASE_URL}/check_token`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -68,7 +72,7 @@ export const checkToken = async (token) => {
 }
 
 export const updatePassword = async(token, new_password) => {
-    const response  = await fetch(`/api/reset-password/${token}`, {
+    const response  = await fetch(`${BACKEND_API_BASE_URL}/reset-password/${token}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -85,7 +89,7 @@ export const updatePassword = async(token, new_password) => {
 }
 
 export const loginUser = async (email, password) => {
-        const response = await fetch("/api/login", {
+        const response = await fetch(`${BACKEND_API_BASE_URL}/login`, {
             method: "POST",
             headers: {
                  "Content-Type": "application/json"
@@ -104,7 +108,7 @@ export const loginUser = async (email, password) => {
 };
 
 export const logoutUser = async () => {
-    const response = await fetch("/api/logout", {
+    const response = await fetch(`${BACKEND_API_BASE_URL}/logout`, {
             method: "POST",
             headers: {
                  "X-CSRF-TOKEN": getRefreshCSRFToken()
@@ -119,7 +123,7 @@ export const logoutUser = async () => {
 };
 
 export const forgotPassword = async (email) => {
-    const response = await fetch("/api/forgot-password", {
+    const response = await fetch(`${BACKEND_API_BASE_URL}/forgot-password`, {
         method: "POST",
         headers: {
                  "Content-Type": "application/json"
@@ -136,7 +140,7 @@ export const forgotPassword = async (email) => {
 }
 
 export async function refreshAccessToken() {
-    const response = await fetch("/api/token/refresh", {
+    const response = await fetch(`${BACKEND_API_BASE_URL}/token/refresh`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -148,7 +152,7 @@ export async function refreshAccessToken() {
 }
 
 export const checkAuthStatus = async () => {
-    const response = await fetch("/api/auth_status", {
+    const response = await fetch(`${BACKEND_API_BASE_URL}/auth_status`, {
         method: "GET",
         credentials: "include",
     });
@@ -158,7 +162,7 @@ export const checkAuthStatus = async () => {
         if (response.status === 401) {
             const refreshed = await refreshAccessToken();
                 if (refreshed) {
-                    const retryResponse = await fetch("/api/auth_status", {
+                    const retryResponse = await fetch(`${BACKEND_API_BASE_URL}/auth_status`, {
                     method: "GET",
                     credentials: "include",
                 });

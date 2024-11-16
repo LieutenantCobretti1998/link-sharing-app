@@ -1,9 +1,11 @@
 import {getCSRFToken} from "../Helpers/AuthHelpers.js";
 import {refreshAccessToken} from "./Login.js";
 
+const BACKEND_API_BASE_URL = import.meta.env.BACKEND_API_BASE_URL;
+
 export const deleteAccount = async() => {
 
-     const response = await fetch('/api/delete-account', {
+     const response = await fetch(`${BACKEND_API_BASE_URL}/delete-account`, {
          method: "DELETE",
          headers: {
              'X-CSRF-TOKEN': getCSRFToken()

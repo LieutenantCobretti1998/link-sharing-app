@@ -2,6 +2,10 @@
 
 import {getCSRFToken} from "../Helpers/AuthHelpers.js";
 import {refreshAccessToken} from "../API/Login.js";
+import {VITE_BACKEND_API_BASE_URL_DEV, VITE_BACKEND_API_BASE_URL_PROD} from "../API/API_ROUTES.js";
+
+const mode = import.meta.env.MODE;
+const BACKEND_API_BASE_URL = mode === "development" ? VITE_BACKEND_API_BASE_URL_DEV : VITE_BACKEND_API_BASE_URL_PROD;
 
 const saveLink = async (newLinkData) => {
     const {showModal, ...rest} = newLinkData;
@@ -10,7 +14,7 @@ const saveLink = async (newLinkData) => {
     if (!parsedProfileData) {
         throw new Error("Profile is missed!");
     }
-    const response = await fetch(`/api/save_link/${parsedProfileData.profile_id}`, {
+    const response = await fetch(`${BACKEND_API_BASE_URL}/save_link/${parsedProfileData.profile_id}`, {
         method: "POST",
         body: JSON.stringify(rest),
         headers: {

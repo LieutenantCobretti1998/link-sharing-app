@@ -1,0 +1,1 @@
+import{aj as o,j as r,ak as s}from"./index-DBZSsRlN.js";import{S as t}from"./ServerError-Bqy66ofp.js";function n(){switch(o().status){case 404:return r.jsx(s,{});case 500:return r.jsx(t,{})}}export{n as default};

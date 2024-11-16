@@ -12,9 +12,12 @@ from .ProfilesRoutes import init_profile_routes
 from .Database.models import BlackListToken, User
 from .config import DevelopmentConfig, ProductionConfig, TestingConfig
 from .Database import db
-
+if os.getenv("FLASK_ENV") == "production":
+    cors_origins = ["https://dvlinks.netlify.app"]
+else:
+    cors_origins = ["http://localhost:3000"]
 jwt = JWTManager()
-cors = CORS()
+cors = CORS(origins=cors_origins)
 scheduler = BackgroundScheduler()
 mail = Mail()
 

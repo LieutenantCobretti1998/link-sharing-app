@@ -2,9 +2,13 @@
 
 import {getCSRFToken} from "../Helpers/AuthHelpers.js";
 import {refreshAccessToken} from "./Login.js";
+import {VITE_BACKEND_API_BASE_URL_DEV, VITE_BACKEND_API_BASE_URL_PROD} from "./API_ROUTES.js";
+
+const mode = import.meta.env.MODE;
+const BACKEND_API_BASE_URL = mode === "development" ? VITE_BACKEND_API_BASE_URL_DEV : VITE_BACKEND_API_BASE_URL_PROD;
 
 export const createProfile = async(profileName) => {
-    const response = await fetch("/api/create_profile", {
+    const response = await fetch(`${BACKEND_API_BASE_URL}/create_profile`, {
         method: "POST",
         body: JSON.stringify({
             new_profile_name: profileName,
@@ -21,7 +25,7 @@ export const createProfile = async(profileName) => {
             if (response.status === 401) {
             const refreshed = await refreshAccessToken();
             if (refreshed) {
-                const retryResponse = await fetch("/api/create_profile", {
+                const retryResponse = await fetch(`${BACKEND_API_BASE_URL}/create_profile`, {
                          method: "POST",
                          body: JSON.stringify({
                             new_profile_name: profileName,
@@ -49,7 +53,7 @@ export const createProfile = async(profileName) => {
 };
 
 export const allProfiles = async() => {
-    const response = await fetch(`/api/related-profiles`, {
+    const response = await fetch(`${BACKEND_API_BASE_URL}/related-profiles`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -62,7 +66,7 @@ export const allProfiles = async() => {
             if (response.status === 401) {
                 const refreshed = await refreshAccessToken();
                 if (refreshed) {
-                    const retryResponse = await fetch(`/api/related-profiles`, {
+                    const retryResponse = await fetch(`${BACKEND_API_BASE_URL}/related-profiles`, {
                          method: "GET",
                          headers: {
                             "Content-Type": "application/json",
@@ -86,7 +90,7 @@ export const allProfiles = async() => {
 }
 
 export const chosenProfile = async (profileName) => {
-    const response = await fetch(`/api/choose_profile/${profileName}`, {
+    const response = await fetch(`${BACKEND_API_BASE_URL}/choose_profile/${profileName}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -99,7 +103,7 @@ export const chosenProfile = async (profileName) => {
             if (response.status === 401) {
             const refreshed = await refreshAccessToken();
                 if (refreshed) {
-                    const retryResponse = await fetch(`/api/choose_profile/${profileName}`, {
+                    const retryResponse = await fetch(`${BACKEND_API_BASE_URL}/choose_profile/${profileName}`, {
                          method: "GET",
                          headers: {
                             "Content-Type": "application/json",
@@ -128,7 +132,7 @@ export const updateProfileName = async(new_profile_name) => {
     if (!parsedProfileData) {
         throw new Error("Profile is missed!");
     }
-     const response = await fetch(`/api/change-profile-name/${parsedProfileData.profile_id}/${parsedProfileData.profile_name}`, {
+     const response = await fetch(`${BACKEND_API_BASE_URL}/change-profile-name/${parsedProfileData.profile_id}/${parsedProfileData.profile_name}`, {
          method: "PATCH",
          body: JSON.stringify({"new_profile_name": new_profile_name}),
          headers: {
@@ -142,7 +146,7 @@ export const updateProfileName = async(new_profile_name) => {
         if (response.status === 401) {
             const refreshed = await refreshAccessToken();
             if (refreshed) {
-                const retryResponse = await fetch(`/api/change-profile-name/${parsedProfileData.profile_id}/${parsedProfileData.profile_name}`, {
+                const retryResponse = await fetch(`${BACKEND_API_BASE_URL}/change-profile-name/${parsedProfileData.profile_id}/${parsedProfileData.profile_name}`, {
                          method: "PATCH",
                          body: JSON.stringify({"new_profile_name": new_profile_name}),
                          headers: {
@@ -172,7 +176,7 @@ export const deleteProfile = async() => {
     if (!parsedProfileData) {
         throw new Error("Profile is missed!");
     }
-     const response = await fetch(`/api/delete-profile/${parsedProfileData.profile_id}/${parsedProfileData.profile_name}`, {
+     const response = await fetch(`${BACKEND_API_BASE_URL}/delete-profile/${parsedProfileData.profile_id}/${parsedProfileData.profile_name}`, {
          method: "DELETE",
          headers: {
              'X-CSRF-TOKEN': getCSRFToken()
@@ -184,7 +188,7 @@ export const deleteProfile = async() => {
         if (response.status === 401) {
             const refreshed = await refreshAccessToken();
             if (refreshed) {
-                const retryResponse = await fetch(`/api/delete-profile/${parsedProfileData.profile_id}/${parsedProfileData.profile_name}`, {
+                const retryResponse = await fetch(`${BACKEND_API_BASE_URL}/delete-profile/${parsedProfileData.profile_id}/${parsedProfileData.profile_name}`, {
                          method: "DELETE",
                          headers: {
                              'X-CSRF-TOKEN': getCSRFToken()
