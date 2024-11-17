@@ -8,7 +8,6 @@ const mode = import.meta.env.MODE;
 const BACKEND_API_BASE_URL = mode === "development" ? VITE_BACKEND_API_BASE_URL_DEV : VITE_BACKEND_API_BASE_URL_PROD;
 
 export const createProfile = async(profileName) => {
-    console.log(getCSRFToken())
     const response = await fetch(`${BACKEND_API_BASE_URL}/create_profile`, {
         method: "POST",
         body: JSON.stringify({
