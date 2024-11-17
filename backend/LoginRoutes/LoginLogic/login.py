@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import Blueprint, request, jsonify, current_app as app
 from werkzeug.security import generate_password_hash
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, create_refresh_token, \
-    set_access_cookies, set_refresh_cookies, unset_jwt_cookies, get_jwt, decode_token
+    set_access_cookies, set_refresh_cookies, unset_jwt_cookies, get_jwt, decode_token, get_csrf_token
 from ...Database import db
 from ...Database.models import User, BlackListToken, generate_reset_token, verify_reset_token
 from ...Database.data_validator import UserLogic
@@ -20,6 +20,8 @@ def login():
     if user:
         access_token = create_access_token(identity=user.id)
         refresh_token = create_refresh_token(identity=user.id)
+        access_csrf_token = get_csrf_token(access_token)
+        refresh_csrf_token = get_csrf_token(refresh_token)
         profiles = []
         for profile in user.profiles:
             profiles.append({
@@ -31,7 +33,11 @@ def login():
         }
         response = jsonify({
             "message": "Successfully logged in",
-            "user": user_data
+            "user": user_data,
+            "csrf_tokens": {
+                "access_token": access_csrf_token,
+                "refresh_token": refresh_csrf_token,
+            }
         })
         set_access_cookies(response, access_token)
         set_refresh_cookies(response, refresh_token)
@@ -210,8 +216,11 @@ def token_refresh():
         )
         db.session.add(access_blacklist)
         access_token = create_access_token(identity=current_user_id)
+        new_csrf_access_token = get_csrf_token(access_token)
+        print(new_csrf_access_token)
         response = jsonify({
             "message": "Successfully logged in",
+            "access_csrf_token": new_csrf_access_token,
         })
         set_access_cookies(response, access_token)
         return response, 200

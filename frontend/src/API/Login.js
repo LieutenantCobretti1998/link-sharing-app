@@ -104,6 +104,8 @@ export const loginUser = async (email, password) => {
         if (!response.ok) {
              throw new Error(responseData.message);
         }
+        localStorage.setItem("csrf_access_token", responseData.csrf_tokens.access_token);
+        localStorage.setItem("csrf_refresh_token", responseData.csrf_tokens.refresh_token);
         return responseData;
 };
 
@@ -148,6 +150,8 @@ export async function refreshAccessToken() {
         },
         credentials: "include"
     });
+    const responseData = await response.json();
+    localStorage.setItem("csrf_access_token", responseData.access_csrf_token);
     return response.ok;
 }
 
