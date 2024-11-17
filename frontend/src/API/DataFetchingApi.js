@@ -2,6 +2,7 @@
 
 import {refreshAccessToken} from "./Login.js";
 import {VITE_BACKEND_API_BASE_URL_DEV, VITE_BACKEND_API_BASE_URL_PROD} from "./API_ROUTES.js";
+import {getCSRFToken} from "../Helpers/AuthHelpers.js";
 const mode = import.meta.env.MODE;
 const BACKEND_API_BASE_URL = mode === "development" ? VITE_BACKEND_API_BASE_URL_DEV : VITE_BACKEND_API_BASE_URL_PROD;
 
@@ -126,6 +127,7 @@ export const updateLinksGroup = async ({id, links}) => {
          body: JSON.stringify(links),
          headers: {
              "Content-Type": "application/json",
+             'X-CSRF-TOKEN': getCSRFToken()
          },
         credentials: "include"
     });
@@ -139,6 +141,7 @@ export const updateLinksGroup = async ({id, links}) => {
                          body: JSON.stringify(links),
                          headers: {
                              "Content-Type": "application/json",
+                             'X-CSRF-TOKEN': getCSRFToken()
                          },
                         credentials: "include"
                       });
@@ -172,6 +175,7 @@ export const updateLinksProfile = async ({id, profile}) => {
          body: JSON.stringify(profile),
          headers: {
              "Content-Type": "application/json",
+             'X-CSRF-TOKEN': getCSRFToken()
          },
         credentials: 'include'
     });
@@ -185,6 +189,7 @@ export const updateLinksProfile = async ({id, profile}) => {
                          body: JSON.stringify(profile),
                          headers: {
                            "Content-Type": "application/json",
+                             'X-CSRF-TOKEN': getCSRFToken()
                          },
                          credentials: 'include'
                       });
@@ -215,6 +220,7 @@ export const deleteLink = async (id) => {
     const response = await fetch(`${BACKEND_API_BASE_URL}/delete-link-group/${parsedProfileData.profile_id}/${parsedProfileData.profile_name}/${id}`, {
         method: "DELETE",
         headers: {
+            'X-CSRF-TOKEN': getCSRFToken()
         },
         credentials: 'include'
     });
@@ -227,6 +233,7 @@ export const deleteLink = async (id) => {
                     const retryResponse = await fetch(`${BACKEND_API_BASE_URL}/delete-link-group/${parsedProfileData.profile_id}/${parsedProfileData.profile_name}/${id}`, {
                          method: "DELETE",
                          headers: {
+                             'X-CSRF-TOKEN': getCSRFToken()
                          },
                          credentials: 'include'
                       });
