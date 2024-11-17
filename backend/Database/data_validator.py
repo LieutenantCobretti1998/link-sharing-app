@@ -4,6 +4,7 @@ from sqlalchemy import or_
 from sqlalchemy.exc import OperationalError, NoResultFound
 from werkzeug.security import check_password_hash
 from ..exceptions import DeleteUserError
+from flask import current_app as app
 
 
 class AbstractDataValidator(ABC):
@@ -62,7 +63,7 @@ class GetAllLinksData(AbstractDataValidator):
         try:
             from .models import LinksGroup
             link_group = self.db_session.query(LinksGroup).filter_by(
-                shorten_url=f"http://localhost:3000/{username}/{links_group_id}").first()
+                shorten_url=f"${app.config['BASE_URL']}/{username}/{links_group_id}").first()
             if not link_group:
                 raise NoResultFound(f"LinksGroup with id {links_group_id} was not found")
             return link_group
