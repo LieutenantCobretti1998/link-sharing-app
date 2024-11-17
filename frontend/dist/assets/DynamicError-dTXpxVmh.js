@@ -1,1 +1,0 @@
-import{aj as o,j as r,ak as s}from"./index-BfRndUDF.js";import{S as t}from"./ServerError-O3Ler2xM.js";function n(){switch(o().status){case 404:return r.jsx(s,{});case 500:return r.jsx(t,{})}}export{n as default};
