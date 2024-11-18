@@ -14,6 +14,7 @@ import {updateLinksGroup} from "../API/DataFetchingApi.js";
 import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
 import useWindowSize from "../CommonComponents/UseWindowSize.jsx";
 import Spinner from "../UI/Spinner.jsx";
+import toast from "react-hot-toast";
 const MobileOverview =  lazy(() => import("../UI/MobileOverview.jsx"));
 
 function Links() {
@@ -37,12 +38,14 @@ function Links() {
         mutationFn: updateLinksGroup,
         mutationKey: ["update-link"],
         onSuccess: () => {
-            navigate(`/${profileName}/edit-links/${id}`)
+            navigate(`/${profileName}/edit-links/${id}`);
+            setIsVisible(true);
         },
         onError: (error) => {
             if (error.message === "Session expired. Please log in again.") {
                 handleSessionExpired();
             }
+            toast.error(error.message || "something went wrong");
         }
     })
     useEffect(() => {
@@ -76,7 +79,6 @@ function Links() {
     const handleEditLink = () => {
         const allErrors = handleSave();
         if(Object.keys(allErrors).length === 0) {
-            setIsVisible(true);
             saveNewLinks({id, links})
         }
     }
@@ -163,7 +165,9 @@ function Links() {
         } else {
             setErrors({});
             allErrors = {};
-            setIsVisible(true);
+            if (!id) {
+                setIsVisible(true);
+            }
             for (const field in linksReducer) {
                 if(field === "showForm") continue;
                  dispatch(saveChooses({ field: field, value: linksReducer[field] }));

@@ -3,24 +3,34 @@ import {Outlet, useLocation, useMatch, useNavigate} from 'react-router-dom';
 import Spinner from "../UI/Spinner.jsx";
 import {useMutation} from "@tanstack/react-query";
 import saveLink from "../SaveLogic/SaveMutation.js";
-import ServerError from "../UI/Errors/ServerError.jsx";
 import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
+import {useDispatch} from "react-redux";
+import {resetLinksState} from "../LinksAddition/LinkSlice.js";
+import {resetProfileState} from "../ProfileDetails/ProfileSlice.js";
+import {resetSaveState} from "../SaveLogic/SaveSlice.js";
+import toast from "react-hot-toast";
 
 function Layout() {
     const location = useLocation();
     const dynamicMatch = useMatch("/:username/:id");
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const handleSessionExpired = useHandleSessionExpired();
     const mutation = useMutation({
         mutationFn: saveLink,
-        onSuccess: () => {
+        onSuccess: (data) => {
+            dispatch(resetLinksState());
+            dispatch(resetProfileState());
+            dispatch(resetSaveState());
+            toast.success(data.message || "LinksGroup created Successfully.");
             navigate(`/`, {replace: true});
         },
         onError: (error) => {
             if (error.message === "Session expired. Please log in again.") {
                 handleSessionExpired();
             }
-            return <ServerError />
+            console.log(error)
+            toast.success(error.error || "Something went wrong.");
         }
     });
 

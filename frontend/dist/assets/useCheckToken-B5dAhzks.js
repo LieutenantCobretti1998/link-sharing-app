@@ -1,0 +1,1 @@
+import{a as r,e as n,l as s,ag as c}from"./index-PR08W0D-.js";function u(){const{token:a}=r(),e=n();s.useEffect(()=>{if(!a){e("/login",{replace:!0});return}async function t(){try{(await c(a)).ok||e("/login",{replace:!0})}catch{e("/login",{replace:!0})}}t()},[a,e])}export{u as U};

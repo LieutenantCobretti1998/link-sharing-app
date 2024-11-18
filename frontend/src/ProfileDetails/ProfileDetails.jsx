@@ -15,6 +15,7 @@ import {updateLinksProfile} from "../API/DataFetchingApi.js";
 import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
 import useWindowSize from "../CommonComponents/UseWindowSize.jsx";
 import Spinner from "../UI/Spinner.jsx";
+import toast from "react-hot-toast";
 const MobileOverview =  lazy(() => import("../UI/MobileOverview.jsx"));
 
 
@@ -101,11 +102,13 @@ function ProfileDetails() {
         mutationKey: ["update-profile"],
         onSuccess: () => {
             navigate(`/${profileName}/edit-profile/${id}`)
+            setIsVisible(true);
         },
         onError: (error) => {
             if (error.message === "Session expired. Please log in again.") {
                 handleSessionExpired();
             }
+            toast.error(error.message || "something went wrong");
         }
     })
 
@@ -143,6 +146,15 @@ function ProfileDetails() {
 
       // Validate file format
       const validTypes = ["image/png", "image/jpg", "image/jpeg"];
+      const fileSize = 2 * 1024 * 1024;
+      if (file.size > fileSize) {
+          dispatch({
+              type: SET_ERROR,
+              errorType: "invalidSize",
+              errorMessage: "File size exceeds 2MB"
+          })
+          return;
+      }
       if (!validTypes.includes(file.type)) {
         dispatch({
           type: SET_ERROR,
@@ -151,10 +163,12 @@ function ProfileDetails() {
         });
         return;
       }
+      dispatch({type: CLEAR_ERROR})
 
       // Load the image
       const image = new Image();
       image.src = URL.createObjectURL(file);
+
 
       image.onload = () => {
         const width = image.width;
@@ -175,7 +189,7 @@ function ProfileDetails() {
           ctx.drawImage(image, 0, 0, MAX_SIZE, MAX_SIZE);
 
           // Convert the canvas to a Data URL (base64 string)
-          const resizedImageUrl = canvas.toDataURL(file.type, 0.9); // You can adjust the quality if needed
+          const resizedImageUrl = canvas.toDataURL(file.type, 0.9);
 
           dispatch({
             type: SET_SUCCESS,
@@ -295,7 +309,9 @@ function ProfileDetails() {
         for (const field in updatedProfile) {
             dispatch_redux(saveChooses({ field: field, value: updatedProfile[field] }));
         }
-        setIsVisible(true);
+        if (!id) {
+            setIsVisible(true);
+        }
         return errors;
     }
 
@@ -323,7 +339,7 @@ function ProfileDetails() {
                         <input
                             ref={fileInputRef}
                             type="file"
-                            accept="image/png, image/jpg image/jpeg"
+                            accept="image/png, image/jpg, image/jpeg"
                             onChange={handleImageUpload}
                             className="hidden"
                         />
@@ -363,10 +379,10 @@ function ProfileDetails() {
                         </button>
                     )}
                     {state.errorType === 'invalidFormat' && (
-                        <p className="max-xs:text-[.7rem] absolute bottom-0 text-red mt-2 text-sm">Invalid file format.</p>
+                        <p className="max-xs:text-[.7rem] absolute bottom-0 text-red mt-2 text-sm">{state.errorMessage}</p>
                     )}
-                    {state.errorType === 'invalidDimensions' && (
-                        <p className="max-xs:text-[.7rem] absolute bottom-0 text-red mt-2 text-sm">Invalid size.</p>
+                    {state.errorType === 'invalidSize' && (
+                        <p className="max-xs:text-[.7rem] absolute bottom-0 text-red mt-2 text-sm">{state.errorMessage}</p>
                     )}
                 </div>
                 <div className="p-[1rem]  flex flex-col gap-10 bg-light-grey rounded-md border-light-grey">

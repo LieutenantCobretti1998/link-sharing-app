@@ -1,10 +1,8 @@
 import Button from "../UI/Button.jsx";
 import {NavLink, useLocation, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {resetSaveState, toggleModal} from "../SaveLogic/SaveSlice.js";
-import {resetLinksState} from "../LinksAddition/LinkSlice.js";
-import {resetProfileState} from "../ProfileDetails/ProfileSlice.js";
-import toast, {Toaster} from "react-hot-toast";
+import toggleModal from "../SaveLogic/SaveSlice.js";
+import toast from "react-hot-toast";
 import useWindowSize from "./UseWindowSize.jsx";
 
 
@@ -41,9 +39,6 @@ function Header({saveLinks}) {
             return;
         }
         saveLinks(savedParameters);
-        dispatch(resetLinksState());
-        dispatch(resetProfileState());
-        dispatch(resetSaveState());
     };
     if( location.pathname.includes("/preview-linksGroup")) {
         return (
@@ -69,7 +64,6 @@ function Header({saveLinks}) {
                             Copy Link
                         </Button>
                     </div>
-                    <Toaster/>
                 </header>
             </div>
         )

@@ -1,0 +1,1 @@
+import{l as e,U as a,e as r,M as u,$ as l}from"./index-PR08W0D-.js";function c(){const{setAuthStatus:t}=e.useContext(a),s=r(),n=u(),{setChosenProfile:o}=e.useContext(l);return()=>{t({authenticated:null}),n.clear(),o(null),s("/login",{replace:!0})}}export{c as U};

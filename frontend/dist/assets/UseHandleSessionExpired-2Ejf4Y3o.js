@@ -1,1 +1,0 @@
-import{l as e,U as a,i as r,M as u,Z as i}from"./index-tcDPEtUF.js";function c(){const{setAuthStatus:t}=e.useContext(a),s=r(),n=u(),{setChosenProfile:o}=e.useContext(i);return()=>{t({authenticated:null}),n.clear(),o(null),s("/login",{replace:!0})}}export{c as U};
