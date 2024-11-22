@@ -1,5 +1,0 @@
-[[redirects]]
-  from = "/*"
-  to = "https://app.dvlinks.website/:splat"
-  status = 301
-  force = true
