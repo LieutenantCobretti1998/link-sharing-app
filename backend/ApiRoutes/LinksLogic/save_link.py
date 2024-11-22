@@ -1,5 +1,7 @@
-from flask import Blueprint, jsonify, request
+import base64
+from flask import Blueprint, jsonify, request, current_app as app
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from werkzeug.exceptions import RequestEntityTooLarge
 from ...Database import map_frontend_to_backend, SaveLinksData, db, UserLogic
 from ...Database.models import generate_short_unique_url
 from .helpers import save_base64_image
@@ -19,11 +21,17 @@ def save_link(profile_id):
             base64_image = data.get("linksGroupImage")
             if base64_image != "":
                 try:
+                    # size_in_bytes = len(base64.b64decode(base64_image))
+                    # print(size_in_bytes)
+                    # print(app.config["MAX_CONTENT_LENGTH"])
+                    # if app.config["MAX_CONTENT_LENGTH"] < size_in_bytes:
+                    #     raise RequestEntityTooLarge
                     filepath = save_base64_image(base64_image)
                     data["linksGroupImage"] = filepath
+                except RequestEntityTooLarge:
+                    return jsonify({"error": "Too large image. 2m is a maximum."}), 413
                 except ValueError:
-                    message = "Invalid image extension. Please provide a valid image extension."
-                    return jsonify(message), 400
+                    return jsonify({"error": "Invalid image extension. Please provide a valid image extension."}), 400
             data.pop("profileName")
             data.update({"profile_id": profile_id})
 

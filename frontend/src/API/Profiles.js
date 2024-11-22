@@ -8,7 +8,6 @@ const mode = import.meta.env.MODE;
 const BACKEND_API_BASE_URL = mode === "development" ? VITE_BACKEND_API_BASE_URL_DEV : VITE_BACKEND_API_BASE_URL_PROD;
 
 export const createProfile = async(profileName) => {
-    console.log(getCSRFToken())
     const response = await fetch(`${BACKEND_API_BASE_URL}/create_profile`, {
         method: "POST",
         body: JSON.stringify({
@@ -137,7 +136,12 @@ export const updateProfileName = async(new_profile_name) => {
     }
      const response = await fetch(`${BACKEND_API_BASE_URL}/change-profile-name/${parsedProfileData.profile_id}/${parsedProfileData.profile_name}`, {
          method: "PATCH",
-         body: JSON.stringify({"new_profile_name": new_profile_name}),
+         body: JSON.stringify(
+             {
+                 "new_profile_name": new_profile_name,
+
+             }
+         ),
          headers: {
              "Content-Type": "application/json",
              'X-CSRF-TOKEN': getCSRFToken()
@@ -172,6 +176,58 @@ export const updateProfileName = async(new_profile_name) => {
     }
     return responseData;
 };
+
+
+export const updateProfileBio = async(new_profile_bio) => {
+    const profile_data = localStorage.getItem("current-profile");
+    const parsedProfileData = JSON.parse(profile_data);
+    if (!parsedProfileData) {
+        throw new Error("Profile is missed!");
+    }
+     const response = await fetch(`${BACKEND_API_BASE_URL}/change-profile-bio/${parsedProfileData.profile_id}/${parsedProfileData.profile_name}`, {
+         method: "PATCH",
+         body: JSON.stringify(
+             {
+                 "new_profile_bio": new_profile_bio,
+
+             }
+         ),
+         headers: {
+             "Content-Type": "application/json",
+             'X-CSRF-TOKEN': getCSRFToken()
+        },
+        credentials: "include"
+    });
+    const responseData = await response.json();
+    if (!response.ok) {
+        if (response.status === 401) {
+            const refreshed = await refreshAccessToken();
+            if (refreshed) {
+                const retryResponse = await fetch(`${BACKEND_API_BASE_URL}/change-profile-name/${parsedProfileData.profile_id}/${parsedProfileData.profile_name}`, {
+                         method: "PATCH",
+                         body: JSON.stringify({"new_profile_name": new_profile_name}),
+                         headers: {
+                             "Content-Type": "application/json",
+                             'X-CSRF-TOKEN': getCSRFToken()
+                        },
+                        credentials: "include"
+                      });
+                   const retryData = await retryResponse.json();
+                   if (!retryResponse.ok) {
+                    const errorMessage = retryData?.error || "Error fetching links after token refresh.";
+                    throw new Error(errorMessage);
+                   }
+                   return retryData; // Return the data from the retried request
+            } else {
+                throw new Error('Session expired. Please log in again.');
+            }
+        }
+        throw new Error(responseData.error);
+    }
+    return responseData;
+};
+
+
 
 export const deleteProfile = async() => {
     const profile_data = localStorage.getItem("current-profile");

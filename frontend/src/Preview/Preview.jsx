@@ -86,12 +86,13 @@ function Preview() {
     }
     return (
         <>
-            <section className="max-xs:top-[-140px] max-xs:h-1/2 drop-shadow-md relative top-[-120px] rounded-xl h-auto flex flex-col align-center justify-center"
-                 style={{
-                     backgroundColor: backgroundImage ? "white" : backgroundColor,
-                     backgroundImage: `url(${getBackgroundImage(backgroundImage)})`,
-                     backgroundSize: "cover",
-                     backgroundPosition: "center"
+            <section
+                className="self-center inline-block max-xs:top-[-140px] max-xs:h-1/2 drop-shadow-md relative top-[-120px] rounded-xl h-[500px] align-center justify-center"
+                style={{
+                    backgroundColor: backgroundImage ? "white" : backgroundColor,
+                    backgroundImage: `url(${getBackgroundImage(backgroundImage)})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center"
                 }}
             >
                 <svg xmlns="http://www.w3.org/2000/svg" width="300" height="585">
@@ -133,40 +134,47 @@ function Preview() {
                         {shortDescription}
                     </text>
                     {links.map((link, index) => (
-                    <g key={link.id}>
-                        <a href={link.url} target="_blank" rel="noopener noreferrer">
-                            <rect
-                                width="237"
-                                height="44"
-                                x="35"
-                                y={270 + index * 64}
-                                fill={getPlatformColor(link.label)}
-                                rx="8"
-                            />
-                            <g transform={`translate(45, ${284 + index * 64})`}>
-                                {getPlatformIcon(link.label)}
-                            </g>
-                            <text
-                                x="70"
-                                y={296 + index * 64}  /* Text positioning inside the rect */
-                                fontSize="14"
-                                fill="white"
-                            >
-                                {link.label || `Link #${index + 1}`}
-                            </text>
-                            <g transform={`translate(250, ${284 + index * 64})`}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
-                                     viewBox="0 0 16 16">
-                                    <path fill="#fff"
-                                          d="M2.667 7.333v1.334h8L7 12.333l.947.947L13.227 8l-5.28-5.28L7 3.667l3.667 3.666h-8Z"/>
-                                </svg>
-                            </g>
-                        </a>
-                    </g>
-                ))}
+                        <g key={link.id}>
+                            <a href={link.url} target="_blank" rel="noopener noreferrer">
+                                <rect
+                                    width="237"
+                                    height="44"
+                                    x="35"
+                                    y={270 + index * 64}
+                                    fill={getPlatformColor(link.label)}
+                                    rx="8"
+                                />
+                                <g transform={`translate(45, ${284 + index * 64})`}>
+                                    {getPlatformIcon(link.label)}
+                                </g>
+                                <text
+                                    x="70"
+                                    y={296 + index * 64}  /* Text positioning inside the rect */
+                                    fontSize="14"
+                                    fill="white"
+                                >
+                                    {link.label || `Link #${index + 1}`}
+                                </text>
+                                <g transform={`translate(250, ${284 + index * 64})`}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+                                         viewBox="0 0 16 16">
+                                        <path fill="#fff"
+                                              d="M2.667 7.333v1.334h8L7 12.333l.947.947L13.227 8l-5.28-5.28L7 3.667l3.667 3.666h-8Z"/>
+                                    </svg>
+                                </g>
+                            </a>
+                        </g>
+                    ))}
                 </svg>
             </section>
-                <Modal text={"Please check the required fields in the profile section"} isVisible={showModal}/>
+            <div
+                className="self-center w-full max-w-[50%] my-3  px-4 py-2 bg-grey rounded-md text-center">
+                <h1 className="text-lg font-bold mb-2">Bio Description</h1>
+                <p className="text-sm text-gray-700 break-words">
+                    fhgfhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhfghfghfghfghfgggggggggggggggggggg
+                </p>
+            </div>
+            <Modal text={"Please check the required fields in the profile section"} isVisible={showModal}/>
         </>
     );
 }

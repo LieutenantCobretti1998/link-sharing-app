@@ -75,7 +75,7 @@ function Button({type, children, isActive, onclick, disabled, typeForm}) {
             break;
         case "change-profile":
             buttonClasses = disabled ?
-                "mt-6 p-2 w-[150px] h-auto hover:bg-primaryPurple pointer-events-none cursor-not-allowed rounded-md text-white bg-lightPurple1 font-regular transition duration-300 ease-in-out":
+                " mt-6 p-2 w-[150px] h-auto hover:bg-primaryPurple pointer-events-none cursor-not-allowed rounded-md text-white bg-lightPurple1 font-regular transition duration-300 ease-in-out":
                 "mt-6 p-2 w-[150px] h-auto h-auto hover:bg-primaryPurple rounded-md text-white bg-lightPurple1 font-regular transition duration-300 ease-in-out"
             break;
         case "confirmUserDeletion":

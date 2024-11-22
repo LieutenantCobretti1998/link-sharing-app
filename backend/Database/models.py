@@ -27,6 +27,7 @@ class Profile(Base):
     __tablename__ = 'profiles'
     id = Column(Integer, primary_key=True)
     username = Column(VARCHAR(25), unique=True, nullable=False)
+    bio_description = Column(VARCHAR(280), nullable=True, default='', unique=False)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     link_groups = relationship("LinksGroup", backref="profile", cascade="all, delete", lazy=True)
 

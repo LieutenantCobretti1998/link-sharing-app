@@ -3,11 +3,13 @@ import {createSlice} from "@reduxjs/toolkit";
 const profile_data = localStorage.getItem("current-profile");
 const parsedProfileData = profile_data ? JSON.parse(profile_data) : null;
 const profileName = parsedProfileData ? parsedProfileData.profile_name : null;
-
+const profileBio = parsedProfileData ? parsedProfileData.profile_bio : null;
 
 const initialState = {
     profileName: profileName,
+    profileBio: profileBio,
     links: [],
+    linksGroupBio: "",
     linksGroupImage: "",
     linksGroupName: "",
     shortDescription: "",
@@ -41,7 +43,8 @@ const saveReducer = createSlice({
         resetSaveState: (state) => {
             return {
                 ...initialState,
-                profileName: state.profileName
+                profileName: state.profileName,
+                profileBio: state.profileBio
 
             };
         },
@@ -51,8 +54,11 @@ const saveReducer = createSlice({
         updateProfileName: (state, action) => {
             state.profileName = action.payload;
         },
+        updateProfileBio: (state, action) => {
+            state.profileBio = action.payload;
+        }
     }
 });
 
-export const {saveChooses, updateProfileName, saveData, resetSaveState, removeSavedLink, toggleModal, setBlendedColor} = saveReducer.actions;
+export const {saveChooses, updateProfileName, updateProfileBio, saveData, resetSaveState, removeSavedLink, toggleModal, setBlendedColor} = saveReducer.actions;
 export default saveReducer.reducer;

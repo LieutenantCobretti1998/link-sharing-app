@@ -63,7 +63,7 @@ class GetAllLinksData(AbstractDataValidator):
         try:
             from .models import LinksGroup
             link_group = self.db_session.query(LinksGroup).filter_by(
-                shorten_url=f"${app.config['BASE_URL']}/{username}/{links_group_id}").first()
+                shorten_url=f"{app.config['FRONTEND_URL']}{username}/{links_group_id}").first()
             if not link_group:
                 raise NoResultFound(f"LinksGroup with id {links_group_id} was not found")
             return link_group
@@ -272,13 +272,14 @@ class UserLogic(AbstractDataValidator):
         Chosen profile and its data
         """
         from .models import Profile, User
-        print(user_id, profile_name)
         current_user = self.db_session.query(User).filter(User.id == user_id).first()
         chosen_profile = self.db_session.query(Profile).filter(Profile.username == profile_name).first()
-        print(current_user, chosen_profile)
         if chosen_profile and current_user:
-            return {"profile_name": chosen_profile.username, "profile_id": chosen_profile.id,
-                    "current_user": current_user.email}, {"message": "Profile is loaded successfully"}, 200
+            return {"profile_name": chosen_profile.username,
+                    "profile_id": chosen_profile.id,
+                    "profile_bio": chosen_profile.bio_description,
+                    "current_user": current_user.email
+                    }, {"message": "Profile is loaded successfully"}, 200
         else:
             return None, {"message": "Profile or User is not existed"}, 404
 
@@ -423,6 +424,28 @@ class UserLogic(AbstractDataValidator):
                 user.username = updated_name
                 self.db_session.commit()
                 return {"message": "Profile name updated successfully", "new_name": updated_name}, 200
+            else:
+                return {"error": "Profile does not exist"}, 409
+        except OperationalError:
+            self.db_session.rollback()
+            return {"error": "Database Fatal Error"}, 500
+
+    def update_profile_bio(self, profile_id: int, profile_name: str, profile_bio: str) -> tuple:
+        """
+        :param profile_bio: str
+        :param profile_id: int
+        :param profile_name: str
+        :return:
+        The method for updating profile name
+        """
+        try:
+            from .models import Profile
+            user = self.db_session.query(Profile).filter(Profile.id == profile_id,
+                                                         Profile.username == profile_name).first()
+            if user:
+                user.bio_description = profile_bio
+                self.db_session.commit()
+                return {"message": "Profile bio updated successfully", "new_bio": profile_bio}, 200
             else:
                 return {"error": "Profile does not exist"}, 409
         except OperationalError:

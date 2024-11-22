@@ -15,6 +15,7 @@ class Config:
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=3)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     UPLOAD_FOLDER = "static/groupImages"
+    MAX_CONTENT_LENGTH = 2 * 1024 * 1024
     ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}
 
 

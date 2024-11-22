@@ -6,7 +6,7 @@ import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {logoutUser} from "../API/Login.js";
 import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
 import Spinner from "../UI/Spinner.jsx";
-import {updateProfileName} from "../SaveLogic/SaveSlice.js";
+import {updateProfileBio, updateProfileName} from "../SaveLogic/SaveSlice.js";
 import {useDispatch} from "react-redux";
 import ConfirmDeletion from "./ConfirmDeletion.jsx";
 import {ProfileContext} from "../CustomLogic/ProfileProvider.jsx";
@@ -32,6 +32,13 @@ function Settings() {
         setParsedProfileData(updatedProfileData);
         localStorage.setItem("current-profile", JSON.stringify(updatedProfileData));
         dispatch(updateProfileName(newProfileName));
+    };
+
+    const handleProfileBioChange = (newProfileBio) => {
+        const updatedProfileData = {...parsedProfileData, profile_bio: newProfileBio};
+        setParsedProfileData(updatedProfileData);
+        localStorage.setItem("current-profile", JSON.stringify(updatedProfileData));
+        dispatch(updateProfileBio(newProfileBio));
     }
 
     const {mutate: logOut, isLoading: isLoggingOut} = useMutation({
@@ -55,7 +62,7 @@ function Settings() {
     const renderContent = () => {
         switch (selectedMenu) {
             case "Manage Profile":
-                return <ManageProfile onProfileNameChange={handleProfileChange}/>;
+                return <ManageProfile onProfileBioChange={handleProfileBioChange} onProfileNameChange={handleProfileChange}/>;
             default:
                 return null;
         }
@@ -310,7 +317,7 @@ function Settings() {
                     )}
 
                     {/* Main Content */}
-                    <div className="h-[720px] p-8 w-full relative max-lg:h-auto">
+                    <div className="h-[720px] p-8 w-full relative max-lg:h-auto overflow-y-auto">
                         <div className="flex justify-between items-center">
                             <button
                                 className="lg:hidden"
