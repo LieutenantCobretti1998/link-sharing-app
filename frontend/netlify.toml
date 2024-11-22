@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "https://dvlinks.netlify.app/*"
+  to = "https://app.dvlinks.website/:splat"
+  status = 301
+  force = true
