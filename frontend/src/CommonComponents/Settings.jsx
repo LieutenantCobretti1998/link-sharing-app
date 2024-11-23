@@ -68,7 +68,7 @@ function Settings() {
         }
     };
     return (
-        <main className="flex justify-center items-center h-screen bg-grey">
+        <main className="flex justify-center items-center min-h-screen bg-grey">
             {modalOpen && <ConfirmDeletion setIsOpen={setModalOpen} resetMenu={setSelectedMenu} />}
             {isLoggingOut ? (
                 <Spinner/>

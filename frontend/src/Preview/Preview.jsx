@@ -85,9 +85,9 @@ function Preview() {
         return <Spinner />
     }
     return (
-        <>
+        <div className="flex flex-col">
             <section
-                className="self-center inline-block max-xs:top-[-140px] max-xs:h-1/2 drop-shadow-md relative top-[-120px] rounded-xl h-[500px] align-center justify-center"
+                className="self-center max-xs:top-[-140px] max-xs:h-1/2 drop-shadow-md relative top-[-120px] rounded-xl h-[500px] align-center justify-center"
                 style={{
                     backgroundColor: backgroundImage ? "white" : backgroundColor,
                     backgroundImage: `url(${getBackgroundImage(backgroundImage)})`,
@@ -167,15 +167,15 @@ function Preview() {
                     ))}
                 </svg>
             </section>
-            <div
-                className="self-center w-full max-w-[50%] my-3  px-4 py-2 bg-grey rounded-md text-center">
+            <section
+                className="relative self-center w-full max-w-[50%] my-3  px-4 py-2 bg-grey rounded-md text-center top-[-115px]">
                 <h1 className="text-lg font-bold mb-2">Bio Description</h1>
                 <p className="text-sm text-gray-700 break-words">
-                    fhgfhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhfghfghfghfghfgggggggggggggggggggg
+                    I’m a web developer specializing in front-end (React, HTML, CSS, JS) and back-end (Flask, Django). I create user-friendly, responsive websites and scalable apps. Constantly learning, I aim to solve real-world problems and deliver innovative, functional, and creative solutions.
                 </p>
-            </div>
+            </section>
             <Modal text={"Please check the required fields in the profile section"} isVisible={showModal}/>
-        </>
+        </div>
     );
 }
 

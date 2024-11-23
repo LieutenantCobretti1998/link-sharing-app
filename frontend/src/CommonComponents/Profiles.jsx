@@ -9,9 +9,12 @@ import MiniSpinner from "../UI/MiniSpinner.jsx";
 import {logoutUser} from "../API/Login.js";
 import {useContext} from "react";
 import {ProfileContext} from "../CustomLogic/ProfileProvider.jsx";
+import {useDispatch} from "react-redux";
+import {updateProfileName, updateProfileBio} from "../SaveLogic/SaveSlice.js";
 
 
 function Profiles() {
+    const dispatch = useDispatch();
     const handleSessionExpired = useHandleSessionExpired();
     const queryClient = useQueryClient();
     const navigate = useNavigate();
@@ -53,6 +56,8 @@ function Profiles() {
         mutationFn: (profileName) => chosenProfile(profileName),
         onSuccess: (data) => {
             setChosenProfile(JSON.stringify(data.profile));
+            dispatch(updateProfileName(JSON.stringify(data.profile.profile_name)));
+            dispatch(updateProfileBio(JSON.stringify(data.profile.profile_bio)));
             localStorage.setItem("current-profile", JSON.stringify(data.profile));
             navigate(`/`, {replace: true});
         },

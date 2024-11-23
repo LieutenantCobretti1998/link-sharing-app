@@ -32,7 +32,7 @@ function Login() {
         Login(data)
     }
     return (
-        <main className="flex justify-center items-center h-screen">
+        <main className="flex justify-center items-center min-h-screen">
             <div className="flex flex-col gap-5">
                 <svg className="xs:self-start xs:ml-[2rem] sm:self-center sm:ml-[0]" xmlns="http://www.w3.org/2000/svg" width="183" height="40" fill="none" viewBox="0 0 183 40">
                     <path fill="#633CFF" fillRule="evenodd"

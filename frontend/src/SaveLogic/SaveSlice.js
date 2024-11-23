@@ -2,12 +2,13 @@ import {createSlice} from "@reduxjs/toolkit";
 
 const profile_data = localStorage.getItem("current-profile");
 const parsedProfileData = profile_data ? JSON.parse(profile_data) : null;
-const profileName = parsedProfileData ? parsedProfileData.profile_name : null;
-const profileBio = parsedProfileData ? parsedProfileData.profile_bio : null;
+const profileName = parsedProfileData ? parsedProfileData.profile_name : "";
+const profileBio = parsedProfileData ? parsedProfileData.profile_bio : "";
 
 const initialState = {
     profileName: profileName,
     profileBio: profileBio,
+    BioIncluded: false,
     links: [],
     linksGroupBio: "",
     linksGroupImage: "",
@@ -19,6 +20,7 @@ const initialState = {
     backgroundColor: "#FFF",
     backgroundImage: "",
     blendedColor: "",
+    bioSaved: false,
     showModal: false,
 }
 
@@ -28,6 +30,9 @@ const saveReducer = createSlice({
     reducers: {
         saveChooses: (state, action) => {
             const {field, value} = action.payload;
+            if (state[field] === "BioInclude") {
+                state.bioSaved = value;
+            }
             state[field] = value;
         },
         removeSavedLink: (state, action) => {

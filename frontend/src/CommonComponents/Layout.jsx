@@ -41,7 +41,7 @@ function Layout() {
             ): (
                 <>
                 <Header saveLinks={mutation.mutate} />
-                <main className={`flex ${location.pathname === "/" && "max-sm:flex-col"} bg-light-grey m-2 flex-col flex-grow  font-instrumentNormal ${location.pathname.includes("preview-linksGroup")  || location.pathname.includes("/edit-preview") || location.pathname === "/"  || dynamicMatch  ? "justify-center" : ""}`}>
+                <main className={`flex ${location.pathname === "/" && "max-sm:flex-col"} bg-light-grey m-2  flex-grow  font-instrumentNormal ${location.pathname.includes("preview-linksGroup")  || location.pathname.includes("/edit-preview") || location.pathname === "/"  || dynamicMatch  ? "justify-center" : ""}`}>
                     <Outlet/>
                 </main>
                 </>
