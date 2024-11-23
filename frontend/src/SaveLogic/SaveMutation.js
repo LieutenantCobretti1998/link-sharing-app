@@ -8,7 +8,7 @@ const mode = import.meta.env.MODE;
 const BACKEND_API_BASE_URL = mode === "development" ? VITE_BACKEND_API_BASE_URL_DEV : VITE_BACKEND_API_BASE_URL_PROD;
 
 const saveLink = async (newLinkData) => {
-    const {showModal, ...rest} = newLinkData;
+    const {showModal, profileBio, ...rest} = newLinkData;
     const profile_data = localStorage.getItem("current-profile");
     const parsedProfileData = JSON.parse(profile_data);
     if (!parsedProfileData) {

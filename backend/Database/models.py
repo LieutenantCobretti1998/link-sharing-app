@@ -39,6 +39,7 @@ class LinksGroup(Base):
     created_at = Column(DateTime, default=db.func.current_timestamp())
     shorten_url = Column(String(100), unique=True, nullable=False)
     clicks = Column(Integer, default=0)
+    bio_included = Column(BOOLEAN, default=False, nullable=False)
     links = Column(JSON, nullable=True)
     links_group_image = Column(String(512), nullable=True)
     links_group_name = Column(String(255), nullable=False)

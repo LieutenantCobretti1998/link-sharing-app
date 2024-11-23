@@ -1,7 +1,7 @@
 import {createSlice} from '@reduxjs/toolkit'
 
 const initialState = {
-    BioIncluded: false,
+    bioIncluded: false,
     linksGroupImage: "",
     linksGroupName: "",
     shortDescription: "",

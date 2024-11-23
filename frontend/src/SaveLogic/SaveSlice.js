@@ -8,9 +8,8 @@ const profileBio = parsedProfileData ? parsedProfileData.profile_bio : "";
 const initialState = {
     profileName: profileName,
     profileBio: profileBio,
-    BioIncluded: false,
+    bioIncluded: false,
     links: [],
-    linksGroupBio: "",
     linksGroupImage: "",
     linksGroupName: "",
     shortDescription: "",
@@ -20,7 +19,6 @@ const initialState = {
     backgroundColor: "#FFF",
     backgroundImage: "",
     blendedColor: "",
-    bioSaved: false,
     showModal: false,
 }
 

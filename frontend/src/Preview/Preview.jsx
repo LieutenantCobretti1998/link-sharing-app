@@ -30,6 +30,7 @@ function Preview() {
     const {
         linksGroupName, links, shortDescription,
         linksGroupImage, textColor, commonColor,
+        bioIncluded, profileBio,
         backgroundColor, backgroundImage, showModal
         } = id ? LinksGroupData || {}: useSelector((state) => state.saveChooses);
     useEffect(() => {
@@ -167,13 +168,14 @@ function Preview() {
                     ))}
                 </svg>
             </section>
-            <section
-                className="relative self-center w-full max-w-[50%] my-3  px-4 py-2 bg-grey rounded-md text-center top-[-115px]">
-                <h1 className="text-lg font-bold mb-2">Bio Description</h1>
-                <p className="text-sm text-gray-700 break-words">
-                    I’m a web developer specializing in front-end (React, HTML, CSS, JS) and back-end (Flask, Django). I create user-friendly, responsive websites and scalable apps. Constantly learning, I aim to solve real-world problems and deliver innovative, functional, and creative solutions.
-                </p>
-            </section>
+            {bioIncluded && (
+                <section
+                    style={{backgroundColor:commonColor}}
+                    className="relative self-center w-full min-w-[500px] max-w-[700px] my-3  px-4 py-2 rounded-md text-center top-[-115px]">
+                    <h1 style={{color: textColor}} className="text-lg font-bold mb-2">Bio Description</h1>
+                    <p style={{color: textColor}} className="text-sm text-gray-700 break-words">{profileBio}</p>
+                </section>
+            )}
             <Modal text={"Please check the required fields in the profile section"} isVisible={showModal}/>
         </div>
     );

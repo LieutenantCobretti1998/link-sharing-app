@@ -119,7 +119,7 @@ function ManageProfile({onProfileNameChange, onProfileBioChange}) {
                             {isDeleting ? <MiniSpinner/> : "Delete"}
                         </Button>
                         <Button type={"update"} typeForm={true}>
-                            {isloadingProfile || isLoadingBio ? <MiniSpinner/> : "Update"}
+                            {isloadingProfile ? <MiniSpinner/> : "Update"}
                         </Button>
                     </div>
                 </div>

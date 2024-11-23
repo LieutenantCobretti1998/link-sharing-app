@@ -83,7 +83,6 @@ function ProfileDetails() {
     const savedData= useSelector((state) => state.saveChooses);
     const [imagePreview, setImagePreview] = useState("");
     const [description, setDescription] = useState("");
-    const [bioIncluded, setBioIncluded] = useState(false);
     const [linkName, setLinkName] = useState("");
     const [category, setCategory] = useState("");
     const [linkNameError, setLinkNameError] = useState("");
@@ -225,7 +224,6 @@ function ProfileDetails() {
     };
     const handleInputChange = (event) => {
         const {name, type, value, checked} = event.target
-        console.log(name)
         switch (name) {
             case "shortDescription":
                 if (event.target.value.length > maxDescriptionLength) return;
@@ -239,13 +237,8 @@ function ProfileDetails() {
                 if (event.target.value.length > maxCategoryLength) return;
                 setCategory(event.target.value);
                 break;
-            case "BioIncluded":
-                console.log(event.target.checked)
-                setBioIncluded(event.target.checked);
-                break;
         }
         const fieldValue = type === "checkbox" ? checked : value;
-        console.log(fieldValue)
         dispatch_redux(updateProfile({ field: name, value: fieldValue }));
     };
 
@@ -287,7 +280,6 @@ function ProfileDetails() {
         let hasError = false;
         let updatedProfile = { ...profile };
         let errors = {};
-        console.log(updatedProfile)
         const validateField = (fieldValue, savedValue, fieldName, setError) => {
             if (!fieldValue && !savedValue) {
                 setError('This field is required');
@@ -397,8 +389,8 @@ function ProfileDetails() {
                     {savedData.profileBio && (
                         <div className="max-xs:flex-col max-xs:items-start max-xs:gap-5 relative flex justify-between items-center w-full">
                             <label className="font-bold text-lightBlack-2 text-base" htmlFor="BioInclude">Include your bio</label>
-                            <input name="BioIncluded"
-                                   checked={bioIncluded}
+                            <input name="bioIncluded"
+                                   checked={profile.bioIncluded}
                                    onChange={handleInputChange}
                                    id="BioInclude"
                                    type="checkbox"

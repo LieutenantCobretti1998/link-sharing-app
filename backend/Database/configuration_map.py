@@ -7,6 +7,7 @@ models_map = {
     "backgroundColor": "background_color",
     "backgroundImage": "background_image",
     "blendedColor": "blended_color",
+    "bioIncluded": "bio_included"
 }
 
 

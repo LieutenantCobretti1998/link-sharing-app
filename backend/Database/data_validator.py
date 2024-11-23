@@ -63,7 +63,8 @@ class GetAllLinksData(AbstractDataValidator):
         try:
             from .models import LinksGroup
             link_group = self.db_session.query(LinksGroup).filter_by(
-                shorten_url=f"{app.config['FRONTEND_URL']}{username}/{links_group_id}").first()
+                shorten_url=f"{app.config['FRONTEND_URL']}/{username}/{links_group_id}").first()
+            print(f"{app.config['FRONTEND_URL']}/{username}/{links_group_id}")
             if not link_group:
                 raise NoResultFound(f"LinksGroup with id {links_group_id} was not found")
             return link_group
@@ -272,14 +273,13 @@ class UserLogic(AbstractDataValidator):
         Chosen profile and its data
         """
         from .models import Profile, User
+        print(user_id, profile_name)
         current_user = self.db_session.query(User).filter(User.id == user_id).first()
         chosen_profile = self.db_session.query(Profile).filter(Profile.username == profile_name).first()
+        print(current_user, chosen_profile)
         if chosen_profile and current_user:
-            return {"profile_name": chosen_profile.username,
-                    "profile_id": chosen_profile.id,
-                    "profile_bio": chosen_profile.bio_description,
-                    "current_user": current_user.email
-                    }, {"message": "Profile is loaded successfully"}, 200
+            return {"profile_name": chosen_profile.username, "profile_id": chosen_profile.id,
+                    "current_user": current_user.email}, {"message": "Profile is loaded successfully"}, 200
         else:
             return None, {"message": "Profile or User is not existed"}, 404
 
