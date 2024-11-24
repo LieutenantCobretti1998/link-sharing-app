@@ -2,15 +2,18 @@ import {useForm} from "react-hook-form";
 import MiniSpinner from "./MiniSpinner.jsx";
 import Button from "./Button.jsx";
 import {useMutation} from "@tanstack/react-query";
-import {deleteProfile, updateProfileBio, updateProfileName} from "../API/Profiles.js";
+import {deleteBioDescription, deleteProfile, updateProfileBio, updateProfileName} from "../API/Profiles.js";
 import toast from "react-hot-toast";
 import {useNavigate} from "react-router-dom";
 import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
+import {useDispatch} from "react-redux";
+import {clearProfileBio} from "../SaveLogic/SaveSlice.js";
 
 
 // eslint-disable-next-line react/prop-types
 function ManageProfile({onProfileNameChange, onProfileBioChange}) {
     const profile_data = localStorage.getItem("current-profile");
+    const dispatch = useDispatch();
     const handleSessionExpired = useHandleSessionExpired();
     const navigate = useNavigate();
     const parsedProfileData = profile_data ? JSON.parse(profile_data) : null;
@@ -71,7 +74,27 @@ function ManageProfile({onProfileNameChange, onProfileBioChange}) {
             }
             toast.error(error.message || "An Error occurred");
         }
-    })
+    });
+
+    const { mutate: deleteBio, isLoading: isDeletingBio } = useMutation({
+        mutationFn: () => deleteBioDescription(),
+        onSuccess: (data) => {
+            const currentUserData = JSON.parse(localStorage.getItem("current-profile")) || {};
+            if (currentUserData.profile_bio) {
+                delete currentUserData.profile_bio;
+                localStorage.setItem("current-profile", JSON.stringify(currentUserData));
+                dispatch(clearProfileBio());
+            }
+            toast.success(data.message || "Profile name updated");
+        },
+        onError: (error) => {
+            if (error.message === "Session expired. Please log in again.") {
+                handleSessionExpired();
+            }
+            toast.error(error.message || "An Error occurred");
+        },
+    });
+
 
     const goToProfilesPage = () => {
         navigate("/profiles");
@@ -114,7 +137,7 @@ function ManageProfile({onProfileNameChange, onProfileBioChange}) {
                 )}
                 <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                     <div className="flex gap-2">
-                        <Button disabled={isloadingProfile || isDeleting || isLoadingBio} type={"delete"} typeForm={false}
+                        <Button disabled={isloadingProfile || isDeleting || isLoadingBio || isDeletingBio} type={"delete"} typeForm={false}
                                 onclick={deleteCurrentProfile}>
                             {isDeleting ? <MiniSpinner/> : "Delete"}
                         </Button>
@@ -153,8 +176,8 @@ function ManageProfile({onProfileNameChange, onProfileBioChange}) {
             )}
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                 <div className="flex gap-2">
-                    <Button disabled={isloadingProfile || isDeleting || isLoadingBio} type={"delete"} typeForm={false}
-                            onclick={deleteCurrentProfile}>
+                    <Button disabled={isloadingProfile || isDeleting || isLoadingBio || isDeletingBio} type={"delete"} typeForm={false}
+                            onclick={deleteBio}>
                         {isDeleting ? <MiniSpinner/> : "Delete"}
                     </Button>
                     <Button type={"update"} typeForm={true}>

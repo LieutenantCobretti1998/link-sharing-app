@@ -21,11 +21,6 @@ def save_link(profile_id):
             base64_image = data.get("linksGroupImage")
             if base64_image != "":
                 try:
-                    # size_in_bytes = len(base64.b64decode(base64_image))
-                    # print(size_in_bytes)
-                    # print(app.config["MAX_CONTENT_LENGTH"])
-                    # if app.config["MAX_CONTENT_LENGTH"] < size_in_bytes:
-                    #     raise RequestEntityTooLarge
                     filepath = save_base64_image(base64_image)
                     data["linksGroupImage"] = filepath
                 except RequestEntityTooLarge:

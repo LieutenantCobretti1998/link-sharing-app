@@ -15,24 +15,25 @@ import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
 function Preview() {
     const dispatch = useDispatch();
     const handleSessionExpired = useHandleSessionExpired();
+    const {profileBio} = useSelector((state) => state.saveChooses)
     const { id} = useParams();
     const {data: LinksGroupData, isLoading} = useQuery({
         queryKey: ["linksGroupPreview", id],
         queryFn: () => getLink(id),
         enabled: !!id,
+        staleTime: 0,
         onError: (error) => {
             if (error.message === "Session expired. Please log in again.") {
                 handleSessionExpired();
             }
         },
-        keepPreviousData: true,
     });
     const {
         linksGroupName, links, shortDescription,
         linksGroupImage, textColor, commonColor,
-        bioIncluded, profileBio,
-        backgroundColor, backgroundImage, showModal
+        bioIncluded, backgroundColor, backgroundImage, showModal
         } = id ? LinksGroupData || {}: useSelector((state) => state.saveChooses);
+    console.log(LinksGroupData)
     useEffect(() => {
     if (showModal) {
         const timer = setTimeout(() => {

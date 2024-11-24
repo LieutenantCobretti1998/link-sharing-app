@@ -81,7 +81,7 @@ def generate_short_url(user_profile: str, length=6, domain=None) -> str:
     random_str = ''.join(random.choice(characters) for _ in range(length))
     if domain is None:
         if os.getenv("FLASK_ENV") == "development":
-            domain = f"{app.config['FRONTEND_URL']}{user_profile}/"
+            domain = f"{app.config['FRONTEND_URL']}/{user_profile}/"
     return f'{domain}{random_str}'
 
 

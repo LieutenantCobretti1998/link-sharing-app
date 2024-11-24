@@ -1,4 +1,4 @@
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {backgrounds} from "../BackgroundImages/BackgroundImages.jsx";
 import {platforms} from "../Platforms/PreDefaultPlatForms.jsx";
 import {useCallback, useEffect} from "react";
@@ -15,6 +15,8 @@ import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
 function CopyLinkPreview() {
     const dispatch = useDispatch();
     const {id, username} = useParams();
+    const {profileBio} = useSelector((state) => state.saveChooses);
+    console.log(profileBio)
     const handleSessionExpired = useHandleSessionExpired();
     const {data: CopiedLinksData, isError: FailedRequest, isLoading} = useQuery({
         queryKey: ["ChosenLinks", id, username],
@@ -28,7 +30,7 @@ function CopyLinkPreview() {
     const {
              linksGroupName, links, shortDescription,
              linksGroupImage, textColor, commonColor,
-             backgroundColor, backgroundImage
+             backgroundColor, backgroundImage, bioIncluded
           } = CopiedLinksData || {};
     const getBackgroundImage = (label) => {
         const background = backgrounds.find((image) => image.value === label);
@@ -70,8 +72,8 @@ function CopyLinkPreview() {
     return (
         <>
             <CopyPageHeader />
-            <main className="flex bg-light-grey m-2 flex-grow gap-5 font-instrumentNormal justify-center">
-                <section className="drop-shadow-md relative top-[-120px] rounded-xl h-auto flex flex-col align-center justify-center"
+            <main className="flex flex-col bg-light-grey m-2 flex-grow gap-5 font-instrumentNormal justify-center">
+                <section className="self-center max-xs:top-[-140px] max-xs:h-1/2 drop-shadow-md relative top-[-120px] rounded-xl h-[500px] align-center justify-center"
                      style={{
                          backgroundColor: backgroundImage ? "white" : backgroundColor,
                          backgroundImage: `url(${getBackgroundImage(backgroundImage)})`,
@@ -151,6 +153,14 @@ function CopyLinkPreview() {
                     ))}
                     </svg>
                 </section>
+                {bioIncluded && (
+                <section
+                    style={{backgroundColor:commonColor}}
+                    className="relative self-center w-full min-w-[500px] max-w-[700px] my-3  px-4 py-2 rounded-md text-center top-[-115px]">
+                    <h1 style={{color: textColor}} className="text-lg font-bold mb-2">Bio Description</h1>
+                    <p style={{color: textColor}} className="text-sm text-gray-700 break-words">{profileBio}</p>
+                </section>
+            )}
             </main>
 
         </>

@@ -62,7 +62,9 @@ def get_link(links_group_id, profile_name, profile_id):
                     "backgroundColor": chosen_link.background_color,
                     "backgroundImage": chosen_link.background_image,
                     "category": chosen_link.category,
-                    "links": chosen_link.links
+                    "links": chosen_link.links,
+                    "bioIncluded": chosen_link.bio_included
+
                 }
                 return jsonify(chosen_link_data), 200
             except OperationalError:
@@ -110,6 +112,7 @@ def update_links_profile(links_group_id, profile_id, profile_name):
                 except ValueError:
                     message = "Invalid image extension. Please provide a valid image extension."
                     return jsonify(message), 400
+            print(profile_data)
             backend_data = map_frontend_to_backend(profile_data)
             message, code = GetAllLinksData(db.session).update_profile_data(backend_data, links_group_id)
             return jsonify(message), code
@@ -148,7 +151,8 @@ def get_shorten_url(username, links_group_id):
             "backgroundColor": chosen_link.background_color,
             "backgroundImage": chosen_link.background_image,
             "category": chosen_link.category,
-            "links": chosen_link.links
+            "links": chosen_link.links,
+            "bioIncluded": chosen_link.bio_included
         }
         return jsonify(chosen_link_data), 200
     except OperationalError:

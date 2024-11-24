@@ -59,9 +59,12 @@ const saveReducer = createSlice({
         },
         updateProfileBio: (state, action) => {
             state.profileBio = action.payload;
+        },
+        clearProfileBio: (state) => {
+            state.profileBio = null;
         }
     }
 });
 
-export const {saveChooses, updateProfileName, updateProfileBio, saveData, resetSaveState, removeSavedLink, toggleModal, setBlendedColor} = saveReducer.actions;
+export const {clearProfileBio, saveChooses, updateProfileName, updateProfileBio, saveData, resetSaveState, removeSavedLink, toggleModal, setBlendedColor} = saveReducer.actions;
 export default saveReducer.reducer;
