@@ -102,7 +102,7 @@ function Preview() {
                     {!linksGroupImage ? (
                         <circle cx="153.5" cy="112" r="48" fill={commonColor}/>
                     ) : (
-                        <foreignObject x="105" y="64" width="96" height="96" clipPath="url(#screenClip)"
+                        <foreignObject x="78" y="20" width="150" height="150" clipPath="url(#screenClip)"
                                        className="rounded-full border-4" style={{borderColor: commonColor}}>
                             <div className="w-full h-full">
                                 <img
