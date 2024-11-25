@@ -108,7 +108,7 @@ function Preview() {
                                 <img
                                     src={linksGroupImage}
                                     alt="Links Group"
-                                    className="w-full h-full"
+                                    className="w-full h-full object-contain"
                                 />
                             </div>
                         </foreignObject>
