@@ -90,6 +90,7 @@ function ProfileDetails() {
     const [textColor, setTextColor] = useState("#333333");
     const [commonColor, setCommonColor] = useState("#D9D9D9");
     const [backgroundColor, setbackgroundColor] = useState("#FFF");
+    const [cardBackgroundColor, setcardBackgroundColor] = useState("#FFF");
     const [isVisible, setIsVisible] = useState(false);
     const maxCategoryLength = 20;
     const maxLinkNameLength = 30;
@@ -252,6 +253,10 @@ function ProfileDetails() {
 
     const saveBackgroundColorChange = () => {
         dispatch_redux(updateProfile({ field: "backgroundColor", value: backgroundColor }));
+    };
+
+     const saveCardBackgroundColorChange = () => {
+        dispatch_redux(updateProfile({ field: "cardBackgroundColor", value: cardBackgroundColor }));
     }
 
     const getPlatformIcon = (label) => {
@@ -531,13 +536,21 @@ function ProfileDetails() {
                                             onTouchEnd={saveBackgroundColorChange}
                                             color={backgroundColor} onChange={setbackgroundColor}/>
                         </div>
+                        <div className="flex gap-2 flex-col items-center w-full">
+                            <label className="font-bold text-lightBlack-2 text-base" htmlFor="backgroundColor">
+                                Card Background Color
+                            </label>
+                            <HexColorPicker name="backgroundColor" onMouseUp={saveCardBackgroundColorChange}
+                                            onTouchEnd={saveCardBackgroundColorChange}
+                                            color={cardBackgroundColor} onChange={setcardBackgroundColor}/>
+                        </div>
                     </div>
                 </div>
                 <div className="border-t border-light-grey-100 mt-10 -mx-10"></div>
                 <div className="mt-10 text-end">
-                   {id ? (
-                        <Button onclick={handleEditLink}  type="save">Update</Button>
-                    ):(
+                    {id ? (
+                        <Button onclick={handleEditLink} type="save">Update</Button>
+                    ) : (
                         <Button onclick={handleSave} type="save">Save</Button>
                     )}
                 </div>

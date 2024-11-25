@@ -3,8 +3,7 @@ import {backgrounds} from "../BackgroundImages/BackgroundImages.jsx";
 import {platforms} from "../Platforms/PreDefaultPlatForms.jsx";
 import Modal from "../UI/Modal.jsx";
 import {useEffect} from "react";
-import {setBlendedColor, toggleModal} from "../SaveLogic/SaveSlice.js";
-import {averageColors, hexToRgb, rgbToHex} from "../Helpers/ColorsConversion.js";
+import {setBackgroundColor, toggleModal} from "../SaveLogic/SaveSlice.js";
 import {useParams} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
 import {getLink} from "../API/DataFetchingApi.js";
@@ -31,17 +30,16 @@ function Preview() {
     const {
         linksGroupName, links, shortDescription,
         linksGroupImage, textColor, commonColor,
-        bioIncluded, backgroundColor, backgroundImage, showModal
+        bioIncluded, backgroundColor, cardBackgroundColor, backgroundImage, showModal
         } = id ? LinksGroupData || {}: useSelector((state) => state.saveChooses);
-    console.log(LinksGroupData)
     useEffect(() => {
     if (showModal) {
         const timer = setTimeout(() => {
             dispatch(toggleModal(false));
-        }, 5000);
+            }, 5000);
         return () => clearTimeout(timer);  // Clean up the timer
-    }
-}, [showModal]);
+        }
+    }, [showModal]);
 
     useEffect(() => {
         if(LinksGroupData && LinksGroupData.shorten_url) {
@@ -62,36 +60,39 @@ function Preview() {
         return platform ? platform.icon : null;
     };
 
-    const handleCalculateAverageColor = () => {
-        const textColorRgb = hexToRgb(textColor);
-        const commonColorRgb = hexToRgb(commonColor);
-        const backgroundColorRgb = hexToRgb(backgroundColor);
-
-        const avgRgb = averageColors([textColorRgb, commonColorRgb, backgroundColorRgb]);
-        const blendedColor = rgbToHex(avgRgb.r, avgRgb.g, avgRgb.b);
-        // document.body.style.backgroundColor = blendedColor;
-        dispatch(setBlendedColor(blendedColor));
+    // const handleCalculateAverageColor = () => {
+    //     const textColorRgb = hexToRgb(textColor);
+    //     const commonColorRgb = hexToRgb(commonColor);
+    //     const backgroundColorRgb = hexToRgb(backgroundColor);
+    //
+    //     const avgRgb = averageColors([textColorRgb, commonColorRgb, backgroundColorRgb]);
+    //     const blendedColor = rgbToHex(avgRgb.r, avgRgb.g, avgRgb.b);
+    //     // document.body.style.backgroundColor = blendedColor;
+    //     dispatch(setBlendedColor(blendedColor));
+    // }
+    // useEffect(() => {
+    //    if (textColor && commonColor && backgroundColor) {
+    //         if (
+    //             textColor !== "#333333" &&
+    //             commonColor !== "#D9D9D9" &&
+    //             backgroundColor !== "#FFF"
+    //         ) {
+    //             handleCalculateAverageColor();
+    //         }
+    //     }
+    // }, [textColor, commonColor, backgroundColor]);
+    if (id) {
+        dispatch(setBackgroundColor(backgroundColor));
     }
-    useEffect(() => {
-       if (textColor && commonColor && backgroundColor) {
-            if (
-                textColor !== "#333333" &&
-                commonColor !== "#D9D9D9" &&
-                backgroundColor !== "#FFF"
-            ) {
-                handleCalculateAverageColor();
-            }
-        }
-    }, [textColor, commonColor, backgroundColor]);
     if(isLoading && id) {
         return <Spinner />
     }
     return (
         <div className="flex flex-col">
             <section
-                className="self-center max-xs:top-[-140px] max-xs:h-1/2 drop-shadow-md relative top-[-120px] rounded-xl h-[500px] align-center justify-center"
+                className="self-center max-xs:top-[-150px]  drop-shadow-md relative top-[-120px] rounded-xl h-[585px] align-center justify-center"
                 style={{
-                    backgroundColor: backgroundImage ? "white" : backgroundColor,
+                    backgroundColor: cardBackgroundColor,
                     backgroundImage: `url(${getBackgroundImage(backgroundImage)})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center"
@@ -172,9 +173,9 @@ function Preview() {
             {bioIncluded && (
                 <section
                     style={{backgroundColor:commonColor}}
-                    className="relative self-center w-full min-w-[500px] max-w-[700px] my-3  px-4 py-2 rounded-md text-center top-[-115px]">
-                    <h1 style={{color: textColor}} className="text-lg font-bold mb-2">Bio Description</h1>
-                    <p style={{color: textColor}} className="text-sm text-gray-700 break-words">{profileBio}</p>
+                    className="relative self-center w-full min-w-[500px] max-xs:min-w-[250px] max-xs:max-w-[300px] max-w-[700px] my-3  px-4 py-2 rounded-md text-center top-[-115px]">
+                    <h1 style={{color: textColor}} className="max-xs:text-xl text-2xl font-bold mb-2">BIO</h1>
+                    <p style={{color: textColor}} className="max-xs:text-sm text-base text-gray-700 break-words">{profileBio}</p>
                 </section>
             )}
             <Modal text={"Please check the required fields in the profile section"} isVisible={showModal}/>

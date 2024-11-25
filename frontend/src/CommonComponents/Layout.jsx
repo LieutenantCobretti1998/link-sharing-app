@@ -4,7 +4,7 @@ import Spinner from "../UI/Spinner.jsx";
 import {useMutation} from "@tanstack/react-query";
 import saveLink from "../SaveLogic/SaveMutation.js";
 import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {resetLinksState} from "../LinksAddition/LinkSlice.js";
 import {resetProfileState} from "../ProfileDetails/ProfileSlice.js";
 import {resetSaveState} from "../SaveLogic/SaveSlice.js";
@@ -15,6 +15,7 @@ function Layout() {
     const dynamicMatch = useMatch("/:username/:id");
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const {backgroundColor} = useSelector((state) => state.saveChooses);
     const handleSessionExpired = useHandleSessionExpired();
     const mutation = useMutation({
         mutationFn: saveLink,
@@ -33,6 +34,7 @@ function Layout() {
             toast.success(error.error || "Something went wrong.");
         }
     });
+    const isPreviewPath = location.pathname.includes("preview-linksGroup") || location.pathname.includes("/edit-preview") || location.pathname.includes("new-group-preview");
 
     return (
         <>
@@ -41,7 +43,11 @@ function Layout() {
             ): (
                 <>
                 <Header saveLinks={mutation.mutate} />
-                <main className={`flex ${location.pathname === "/" && "max-sm:flex-col"} bg-light-grey m-2  flex-grow  font-instrumentNormal ${location.pathname.includes("preview-linksGroup")  || location.pathname.includes("/edit-preview") || location.pathname === "/"  || dynamicMatch  ? "justify-center" : ""}`}>
+                <main className={`flex ${location.pathname === "/" && "max-sm:flex-col"} bg-light-grey ${location.pathname.includes("preview-linksGroup")  || location.pathname.includes("/edit-preview") || location.pathname.includes("new-group-preview") ? "m-0 min-h-[75vh]": "m-2"}   flex-grow  font-instrumentNormal ${location.pathname.includes("preview-linksGroup")  || location.pathname.includes("/edit-preview") || location.pathname === "/"  || dynamicMatch  ? "justify-center" : ""}`}
+                    style={{
+                        backgroundColor: backgroundColor && isPreviewPath ? backgroundColor : "",
+                    }}
+                >
                     <Outlet/>
                 </main>
                 </>

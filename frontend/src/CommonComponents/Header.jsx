@@ -12,13 +12,13 @@ function Header({saveLinks}) {
     const location = useLocation();
     const {id} = useParams();
     const dispatch = useDispatch();
-    const {linksGroupName, category, blendedColor} = useSelector(state => state.saveChooses);
+    const {linksGroupName, category , backgroundColor} = useSelector(state => state.saveChooses);
     const savedParameters = useSelector(state => state.saveChooses);
     const {shortenUrl} = useSelector(state => state.shortenUrl);
     const profile_data = localStorage.getItem("current-profile");
     const parsedProfileData = profile_data ? JSON.parse(profile_data) : null;
     const profileName = parsedProfileData?.profile_name;
-    const {width} = useWindowSize();
+
 
     const copyToClipBoard = () => {
         window.focus();
@@ -43,15 +43,15 @@ function Header({saveLinks}) {
     if( location.pathname.includes("/preview-linksGroup")) {
         return (
             <div
-                className="w-full h-64 rounded-b-3xl"
+                className="w-full h-64"
                 style=
                     {{
-                        backgroundColor: width > 640 ? (blendedColor ? blendedColor : '#4015f8') : "",
+                        backgroundColor: (backgroundColor ? backgroundColor : '#FFF'),
 
                     }}
             >
                 <header
-                    className="w-70 flex flex-row flex-md-row align-items-center sm:bg-white p-5 relative top-2 ml-2 mr-2 rounded-md mb-4 justify-between font-instrumentBold">
+                    className="w-70 rounded-md flex flex-row flex-md-row align-items-center sm:bg-white p-5 relative top-2 ml-2 mr-2  mb-4 justify-between font-instrumentBold">
                     <div>
                         <Button type="home-preview">
                             <NavLink className="w-full, h-full block pt-1"
@@ -72,7 +72,7 @@ function Header({saveLinks}) {
     if (location.pathname === "/") {
         return (
             <header
-                className="w-70 flex flex-row flex-md-row align-items-center bg-white p-5 relative top-2 ml-2 mr-2 rounded-md mb-4 justify-between font-instrumentBold">
+                className="w-70 rounded-md flex flex-row flex-md-row align-items-center bg-white p-5 relative top-2 ml-2 mr-2 mb-4 justify-between font-instrumentBold">
                 <div>
                     <Button disabled={location.pathname === "/"} type="home">
                         <svg xmlns="http://www.w3.org/2000/svg"
@@ -131,15 +131,15 @@ function Header({saveLinks}) {
 
     return (location.pathname.includes("new-group-preview") || location.pathname.includes("/edit-preview") ? (
             <div
-                className="w-full h-64 rounded-b-3xl"
+                className="w-full h-64"
                 style=
                     {{
-                        backgroundColor: width > 640 ? (blendedColor ? blendedColor : '#4015f8'): "",
+                       backgroundColor: (backgroundColor ? backgroundColor : '#4015f8'),
 
                     }}
             >
                 <header
-                    className="w-70 flex flex-row flex-md-row align-items-center sm:bg-white p-5 relative top-2 ml-2 mr-2 rounded-md mb-4 justify-between font-instrumentBold">
+                    className="w-70 rounded-md flex flex-row flex-md-row align-items-center sm:bg-white p-5 relative top-2 ml-2 mr-2  mb-4 justify-between font-instrumentBold">
                     <div>
                         <Button type="backToEditor">
                             <NavLink className="w-full, h-full block"

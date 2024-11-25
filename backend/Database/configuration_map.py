@@ -5,6 +5,7 @@ models_map = {
     "textColor": "text_color",
     "commonColor": "common_color",
     "backgroundColor": "background_color",
+    "cardBackgroundColor": "card_background_color",
     "backgroundImage": "background_image",
     "blendedColor": "blended_color",
     "bioIncluded": "bio_included"

@@ -1,11 +1,9 @@
-import {useSelector} from "react-redux";
-
-function CopyPageHeader() {
-    const {blendedColor} = useSelector(state => state.saveChooses);
+// eslint-disable-next-line react/prop-types
+function CopyPageHeader({backgroundColor}) {
     return (
-        <div className=" w-full h-64 rounded-b-3xl"
+        <div className=" w-full h-64"
                  style={{
-                     backgroundColor: blendedColor ? blendedColor : "#4015f8"
+                     backgroundColor: backgroundColor ? backgroundColor : "#4015f8"
                  }}
             >
             </div>

@@ -178,7 +178,7 @@ function AllLinks() {
                                 key={link.id}
                                 className="max-xs:w-[250px] max-sm:w-[200px] w-[270px] card-container relative drop-shadow-md rounded-xl h-auto flex flex-col items-center justify-center"
                                 style={{
-                                    backgroundColor: link.backgroundImage ? "white" : link.backgroundColor,
+                                    backgroundColor: link.backgroundImage ? "white" : link.cardBackgroundColor,
                                     backgroundImage: `url(${getBackgroundImage(link.backgroundImage)})`,
                                     backgroundSize: "cover",
                                     backgroundPosition: "center"

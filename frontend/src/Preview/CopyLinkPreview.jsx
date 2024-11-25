@@ -1,9 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {backgrounds} from "../BackgroundImages/BackgroundImages.jsx";
 import {platforms} from "../Platforms/PreDefaultPlatForms.jsx";
-import {useCallback, useEffect} from "react";
-import {setBlendedColor} from "../SaveLogic/SaveSlice.js";
-import {averageColors, hexToRgb, rgbToHex} from "../Helpers/ColorsConversion.js";
 import {useParams} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
 import {previewLink} from "../API/DataFetchingApi.js";
@@ -16,7 +13,6 @@ function CopyLinkPreview() {
     const dispatch = useDispatch();
     const {id, username} = useParams();
     const {profileBio} = useSelector((state) => state.saveChooses);
-    console.log(profileBio)
     const handleSessionExpired = useHandleSessionExpired();
     const {data: CopiedLinksData, isError: FailedRequest, isLoading} = useQuery({
         queryKey: ["ChosenLinks", id, username],
@@ -30,8 +26,9 @@ function CopyLinkPreview() {
     const {
              linksGroupName, links, shortDescription,
              linksGroupImage, textColor, commonColor,
-             backgroundColor, backgroundImage, bioIncluded
+             backgroundColor, backgroundImage, bioIncluded, cardBackgroundColor
           } = CopiedLinksData || {};
+    console.log(CopiedLinksData)
     const getBackgroundImage = (label) => {
         const background = backgrounds.find((image) => image.value === label);
         return background ? background.image: null;
@@ -45,37 +42,41 @@ function CopyLinkPreview() {
         return platform ? platform.icon : null;
     };
 
-    const handleCalculateAverageColor = useCallback(() => {
-        const textColorRgb = hexToRgb(textColor);
-        const commonColorRgb = hexToRgb(commonColor);
-        const backgroundColorRgb = hexToRgb(backgroundColor);
-
-        const avgRgb = averageColors([textColorRgb, commonColorRgb, backgroundColorRgb]);
-        const blendedColor = rgbToHex(avgRgb.r, avgRgb.g, avgRgb.b);
-        // document.body.style.backgroundColor = blendedColor;
-        dispatch(setBlendedColor(blendedColor));
-    },[textColor, commonColor, backgroundColor, dispatch]);
-    useEffect(() => {
-       if (textColor && commonColor && backgroundColor) {
-            if (
-                textColor !== "#333333" &&
-                commonColor !== "#D9D9D9" &&
-                backgroundColor !== "#FFF"
-            ) {
-                handleCalculateAverageColor();
-            }
-        }
-    }, [textColor, commonColor, backgroundColor]);
+    // const handleCalculateAverageColor = useCallback(() => {
+    //     const textColorRgb = hexToRgb(textColor);
+    //     const commonColorRgb = hexToRgb(commonColor);
+    //     const backgroundColorRgb = hexToRgb(backgroundColor);
+    //
+    //     const avgRgb = averageColors([textColorRgb, commonColorRgb, backgroundColorRgb]);
+    //     const blendedColor = rgbToHex(avgRgb.r, avgRgb.g, avgRgb.b);
+    //     // document.body.style.backgroundColor = blendedColor;
+    //     dispatch(setBlendedColor(blendedColor));
+    // },[textColor, commonColor, backgroundColor, dispatch]);
+    // useEffect(() => {
+    //    if (textColor && commonColor && backgroundColor) {
+    //         if (
+    //             textColor !== "#333333" &&
+    //             commonColor !== "#D9D9D9" &&
+    //             backgroundColor !== "#FFF"
+    //         ) {
+    //             handleCalculateAverageColor();
+    //         }
+    //     }
+    // }, [textColor, commonColor, backgroundColor]);
     if(isLoading) {
         return <Spinner />
     }
     return (
         <>
-            <CopyPageHeader />
-            <main className="flex flex-col bg-light-grey m-2 flex-grow gap-5 font-instrumentNormal justify-center">
+            <CopyPageHeader backgroundColor={backgroundColor} />
+            <main className="flex flex-col bg-light-grey min-h-[75vh]  flex-grow gap-5 font-instrumentNormal justify-center"
+                style={{
+                    backgroundColor: backgroundColor
+                }}
+            >
                 <section className="self-center max-xs:top-[-140px] max-xs:h-1/2 drop-shadow-md relative top-[-120px] rounded-xl h-[500px] align-center justify-center"
                      style={{
-                         backgroundColor: backgroundImage ? "white" : backgroundColor,
+                         backgroundColor: cardBackgroundColor,
                          backgroundImage: `url(${getBackgroundImage(backgroundImage)})`,
                          backgroundSize: "cover",
                          backgroundPosition: "center"

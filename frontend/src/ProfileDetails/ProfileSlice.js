@@ -9,7 +9,8 @@ const initialState = {
     backgroundImage: "",
     textColor: "#333333",
     commonColor: "#D9D9D9",
-    backgroundColor: "#FFF"
+    backgroundColor: "#FFF",
+    cardBackgroundColor: "#FFF"
 }
 
 const profileReducer = createSlice({

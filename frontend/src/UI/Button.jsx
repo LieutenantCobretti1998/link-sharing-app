@@ -3,7 +3,7 @@ function Button({type, children, isActive, onclick, disabled, typeForm}) {
     let buttonClasses;
     switch (type) {
         case "backToEditor":
-            buttonClasses = "max-xs:p-1 sm:w-40 border-[.5px] border-primaryPurple h-9 p-1 rounded-md text-primaryPurple font-bold hover:bg-lightPurple2 transition duration-300 ease-in-out"
+            buttonClasses = "max-xs:p-1 sm:w-40 border-[.5px] border-primaryPurple h-9 p-1 bg-primaryPurple rounded-md text-white font-bold hover:bg-lightPurple3 transition duration-300 ease-in-out"
             break;
         case "home":
             buttonClasses = disabled

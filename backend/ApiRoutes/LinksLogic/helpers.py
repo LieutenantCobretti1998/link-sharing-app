@@ -43,12 +43,11 @@ def format_links_data(link: any) -> dict:
     """
     return {
         "id": link.id,
-        ""
+        "cardBackgroundColor": link.card_background_color,
         "linksGroupImage": link.links_group_image if link.links_group_image else "",
         "linksGroupName": link.links_group_name,
         "textColor": link.text_color,
         "commonColor": link.common_color,
-        "backgroundColor": link.background_color,
         "backgroundImage": link.background_image,
         "category": link.category,
         "links": link.links

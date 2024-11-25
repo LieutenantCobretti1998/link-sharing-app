@@ -17,6 +17,7 @@ const initialState = {
     textColor: "#333333",
     commonColor: "#D9D9D9",
     backgroundColor: "#FFF",
+    cardBackgroundColor: "#FFF",
     backgroundImage: "",
     blendedColor: "",
     showModal: false,
@@ -40,8 +41,8 @@ const saveReducer = createSlice({
         toggleModal: (state, action) => {
             state.showModal = action.payload;
         },
-        setBlendedColor: (state, action) => {
-            state.blendedColor = action.payload;
+        setBackgroundColor: (state, action) => {
+            state.backgroundColor = action.payload;
         },
         resetSaveState: (state) => {
             return {
@@ -66,5 +67,5 @@ const saveReducer = createSlice({
     }
 });
 
-export const {clearProfileBio, saveChooses, updateProfileName, updateProfileBio, saveData, resetSaveState, removeSavedLink, toggleModal, setBlendedColor} = saveReducer.actions;
+export const {clearProfileBio, saveChooses, updateProfileName, updateProfileBio, saveData, resetSaveState, removeSavedLink, toggleModal, setBackgroundColor} = saveReducer.actions;
 export default saveReducer.reducer;
