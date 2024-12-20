@@ -103,29 +103,29 @@ function Preview() {
                 <svg xmlns="http://www.w3.org/2000/svg" width="500" height="820">
                     {/* Links Group Image */}
                     {!linksGroupImage ? (
-                        <circle cx="153.5" cy="112" r="48" fill={commonColor}/>
+                        <circle cx="245" cy="112" r="48" fill={commonColor}/>
                     ) : (
                         <foreignObject
-                            x="170"
+                            x="175"
                             y="20"
                             width="150"
                             height="150"
                             clipPath="url(#screenClip)"
-                            className="rounded-full border-4"
                             style={{borderColor: commonColor}}
                         >
                             <div className="w-full h-full">
                                 <img
                                     src={linksGroupImage}
                                     alt="Links Group"
-                                    className="w-full h-full object-contain"
+                                    className="w-full h-full object-cover rounded-full border-4"
+                                    style={{borderColor: commonColor}}
                                 />
                             </div>
                         </foreignObject>
                     )}
 
                     {/* Links Group Name */}
-                    <rect width="270" height="20" x="100" y="185" fill={commonColor} rx="8"/>
+                    <rect width="270" height="20" x="120" y="185" fill={commonColor} rx="8"/>
                     <text
                         x="245"
                         y="195"
@@ -138,9 +138,9 @@ function Preview() {
                     </text>
 
                     {/* Short Description */}
-                    <rect width="378" height="30" x="55" y="214" fill={commonColor} rx="4"/>
+                    <rect width="378" height="30" x="60" y="214" fill={commonColor} rx="4"/>
                     <text
-                        x="155"
+                        x="245"
                         y="230"
                         fill={textColor}
                         fontSize="10"
@@ -152,26 +152,23 @@ function Preview() {
 
                     {/* Bio Section */}
                     {bioIncluded && (
-                        <foreignObject x="65" y="260" width="360" height="240">
+                        <foreignObject x="50" y="260" width="400" height="240">
                             <div
                                 xmlns="http://www.w3.org/1999/xhtml"
                                 style={{
                                     backgroundColor: commonColor,
-                                    padding: '10px',
+                                    padding: '15px',
                                     borderRadius: '8px',
-                                    textAlign: 'center',
+                                    fontWeight: 'bold',
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: 'start',
+                                    wordWrap: 'break-word',
+                                    overflowWrap: 'break-word',
+                                    textAlign: 'left',
                                 }}
                             >
-                                <h1
-                                    style={{
-                                        color: textColor,
-                                        fontSize: '18px',
-                                        fontWeight: 'bold',
-                                        marginBottom: '8px',
-                                    }}
-                                >
-                                </h1>
-                                <p style={{color: textColor, fontSize: '14px'}}>{profileBio}</p>
+                                <p style={{color: textColor, fontSize: '14px', margin: 0,}}>{profileBio}</p>
                             </div>
                         </foreignObject>
                     )}
