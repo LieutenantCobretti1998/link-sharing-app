@@ -134,7 +134,7 @@ function Header({saveLinks}) {
                 className="w-full h-64"
                 style=
                     {{
-                       backgroundColor: (backgroundColor ? backgroundColor : '#4015f8'),
+                       backgroundColor: (backgroundColor !== "#FFF" ? backgroundColor : '#4015f8'),
 
                     }}
             >
