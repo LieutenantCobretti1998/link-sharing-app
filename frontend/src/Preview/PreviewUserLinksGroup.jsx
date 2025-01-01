@@ -1,27 +1,23 @@
 import {useDispatch, useSelector} from "react-redux";
-import {backgrounds} from "../BackgroundImages/BackgroundImages.jsx";
-import {platforms} from "../Platforms/PreDefaultPlatForms.jsx";
-import Modal from "../UI/Modal.jsx";
+import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
 import {useEffect, useState} from "react";
-import {setBackgroundColor, toggleModal} from "../SaveLogic/SaveSlice.js";
+import useWindowSize from "../CommonComponents/UseWindowSize.jsx";
 import {useParams} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
 import {getLink} from "../API/DataFetchingApi.js";
-import Spinner from "../UI/Spinner.jsx";
+import {setBackgroundColor, toggleModal} from "../SaveLogic/SaveSlice.js";
 import {setShortenUrl} from "../ShortenUrl/ShortenUrlSlice.js";
-import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
-import useWindowSize from "../CommonComponents/UseWindowSize.jsx";
+import {backgrounds} from "../BackgroundImages/BackgroundImages.jsx";
+import {platforms} from "../Platforms/PreDefaultPlatForms.jsx";
+import Spinner from "../UI/Spinner.jsx";
 
-function Preview() {
+
+
+function PreviewUserLinksGroup() {
     const dispatch = useDispatch();
     const handleSessionExpired = useHandleSessionExpired();
     const {profileBio} = useSelector((state) => state.saveChooses);
-    const [coordinates, setCoordinates] = useState({
-        circle: { x: 175, y: 20 },
-        rect: { x: 120, y: 185 },
-        text: { x: 245, y: 195 },
-        shortDescription: { x: 245, y: 230 },
-    });
+    const [coordinates, setCoordinates] = useState(null);
     const {width} = useWindowSize();
     const { id} = useParams();
     const {data: LinksGroupData, isLoading} = useQuery({
@@ -39,7 +35,12 @@ function Preview() {
         linksGroupName, links, shortDescription,
         linksGroupImage, textColor, commonColor,
         bioIncluded, backgroundColor, cardBackgroundColor, backgroundImage, showModal
-        } = id ? LinksGroupData || {}: useSelector((state) => state.saveChooses);
+        } =  LinksGroupData || {};
+
+    useEffect(() => {
+        dispatch(setBackgroundColor(backgroundColor));
+    }, [backgroundColor, dispatch]);
+
     useEffect(() => {
     if (showModal) {
         const timer = setTimeout(() => {
@@ -56,7 +57,7 @@ function Preview() {
     }, [LinksGroupData, dispatch]);
 
     useEffect(() => {
-        if (width <= 640) { // max-xs breakpoint
+        if (width <= 640) {
           setCoordinates({
               circle: { x: 115, y: 20 },
               rect1: { x: 80, y: 184 },
@@ -65,18 +66,44 @@ function Preview() {
               text2: { x: 175, y: 235 },
               shortDescription: { x: 160, y: 190 },
               bio: {x: 15, y: 260},
-              links: links?.map((_, index) => ({ x: 20, y: 220 + index * 50 })),
+              links: links?.map((_, index) => (
+                  {
+                      x: 20,
+                        y: 475 + index * 50,
+                        width: 300,
+                        height: 40,
+                        textX: 60,
+                        textY: 500 + index * 50,
+                        iconX: 35,
+                        iconY: 485 + index * 50,
+                        arrowX: 270,
+                        arrowY: 485 + index * 50,
+                  }
+              )),
           });
         } else { // Default for larger screens
           setCoordinates({
               circle: { x: 175, y: 20 },
-              rect1: { x: 80, y: 184 },
-              rect2: { x: 80, y: 190 },
-              text1: { x: 180, y: 195 },
-              text2: { x: 180, y: 195 },
-              bio: {x: 50, y: 260},
+              rect1: { x: 110, y: 195 },
+              rect2: { x: 60, y: 220 },
+              text1: { x: 245, y: 205 },
+              text2: { x: 250, y: 238 },
+              bio: {x: 50, y: 270},
               shortDescription: { x: 245, y: 230 },
-              links: links?.map((_, index) => ({ x: 30, y: 450 + index * 64 })),
+              links: links?.map((_, index) => (
+                  {
+                      x: 25,
+                        y: 475 + index * 60,
+                        width: 450,
+                        height: 40,
+                        textX: 70,
+                        textY: 500 + index * 60,
+                        iconX: 35,
+                        iconY: 488 + index * 60,
+                        arrowX: 430,
+                        arrowY: 488 + index * 60,
+                  }
+              )),
           });
         }
     }, [width, links]);
@@ -94,33 +121,10 @@ function Preview() {
         return platform ? platform.icon : null;
     };
 
-    // const handleCalculateAverageColor = () => {
-    //     const textColorRgb = hexToRgb(textColor);
-    //     const commonColorRgb = hexToRgb(commonColor);
-    //     const backgroundColorRgb = hexToRgb(backgroundColor);
-    //
-    //     const avgRgb = averageColors([textColorRgb, commonColorRgb, backgroundColorRgb]);
-    //     const blendedColor = rgbToHex(avgRgb.r, avgRgb.g, avgRgb.b);
-    //     // document.body.style.backgroundColor = blendedColor;
-    //     dispatch(setBlendedColor(blendedColor));
-    // }
-    // useEffect(() => {
-    //    if (textColor && commonColor && backgroundColor) {
-    //         if (
-    //             textColor !== "#333333" &&
-    //             commonColor !== "#D9D9D9" &&
-    //             backgroundColor !== "#FFF"
-    //         ) {
-    //             handleCalculateAverageColor();
-    //         }
-    //     }
-    // }, [textColor, commonColor, backgroundColor]);
-    if (id) {
-        dispatch(setBackgroundColor(backgroundColor));
-    }
-    if(isLoading && id) {
+    if(isLoading || !coordinates) {
         return <Spinner />
     }
+    console.log(10)
     return (
         <>
             <section
@@ -133,7 +137,6 @@ function Preview() {
                 }}
             >
                 <svg xmlns="http://www.w3.org/2000/svg" width="500" height="820" className="max-xs:w-[350px]">
-                    {/* Links Group Image */}
                     {!linksGroupImage ? (
                         <circle cx="245" cy="112" r="48" fill={commonColor}/>
                     ) : (
@@ -228,50 +231,60 @@ function Preview() {
                         </foreignObject>
                     )}
 
-                    {links.map((link, index) => (
-                        <g key={link.id}>
-                            <a href={link.url} target="_blank" rel="noopener noreferrer">
-                                <rect
-                                    width="437"
-                                    height="47"
-                                    x="30"
-                                    y={450 + index * 64} // Adjusted the y position to place links after bio
-                                    fill={getPlatformColor(link.label)}
-                                    rx="8"
+                    {links.map((link, index) => {
+                      const linkCoords = coordinates.links?.[index];
+                      if (!linkCoords) return null;
+
+                      return (
+                        <g key={link.id} className="pointer-events-auto transition-transform duration-200 ease-in-out scale-100 hover:scale-105 [transform-box:fill-box] [transform-origin:center]">
+                          <a href={link.url} target="_blank" rel="noopener noreferrer">
+                            <rect
+                              width={linkCoords.width}
+                              height={linkCoords.height}
+                              x={linkCoords.x}
+                              y={linkCoords.y}
+                              fill={getPlatformColor(link.label)}
+                              rx="8"
+                            />
+
+                            {/* Platform Icon */}
+                            <g transform={`translate(${linkCoords.iconX}, ${linkCoords.iconY})`}>
+                              {getPlatformIcon(link.label)}
+                            </g>
+
+                            {/* Link Text */}
+                            <text
+                              x={linkCoords.textX}
+                              y={linkCoords.textY}
+                              fontSize="12"   // Make the font smaller if you wish
+                              fill="white"
+                            >
+                              {link.label || `Link #${index + 1}`}
+                            </text>
+
+                            {/* Arrow Icon */}
+                            <g transform={`translate(${linkCoords.arrowX}, ${linkCoords.arrowY})`}>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="14"  // slightly smaller arrow
+                                height="14"
+                                fill="none"
+                                viewBox="0 0 16 16"
+                              >
+                                <path
+                                  fill="#fff"
+                                  d="M2.667 7.333v1.334h8L7 12.333l.947.947L13.227 8l-5.28-5.28L7 3.667l3.667 3.666h-8Z"
                                 />
-                                <g transform={`translate(45, ${464 + index * 64})`}>
-                                    {getPlatformIcon(link.label)}
+                                  </svg>
                                 </g>
-                                <text
-                                    x="70"
-                                    y={476 + index * 64} // Adjusted to position the text within the link box
-                                    fontSize="14"
-                                    fill="white"
-                                >
-                                    {link.label || `Link #${index + 1}`}
-                                </text>
-                                <g transform={`translate(440, ${464 + index * 64})`}>
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="16"
-                                        height="16"
-                                        fill="none"
-                                        viewBox="0 0 16 16"
-                                    >
-                                        <path
-                                            fill="#fff"
-                                            d="M2.667 7.333v1.334h8L7 12.333l.947.947L13.227 8l-5.28-5.28L7 3.667l3.667 3.666h-8Z"
-                                        />
-                                    </svg>
-                                </g>
-                            </a>
-                        </g>
-                    ))}
+                              </a>
+                            </g>
+                        );
+                    })}
                 </svg>
             </section>
-            <Modal text={"Please check the required fields in the profile section"} isVisible={showModal}/>
         </>
     );
 }
 
-export default Preview;
+export default PreviewUserLinksGroup;

@@ -1,6 +1,5 @@
 import { lazy, Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Toaster } from "react-hot-toast";
 import Spinner from "./UI/Spinner.jsx";
@@ -9,6 +8,8 @@ import { AuthProvider } from "./CustomLogic/AuthProvider.jsx";
 import { ProfileProvider } from "./CustomLogic/ProfileProvider.jsx";
 import ErrorBoundary from "./UI/Errors/GlobalErrorBoundary.jsx";
 import {confirmEmailLoader} from "./Helpers/EmailAutoSending.js";
+import PreviewUserLinksGroup from "./Preview/PreviewUserLinksGroup.jsx";
+import GlobalErrorBoundary from "./UI/Errors/GlobalErrorBoundary.jsx";
 
 
 // Lazy load all components
@@ -29,7 +30,6 @@ const Settings = lazy(() => import('./CommonComponents/Settings.jsx'));
 const ResetPassword = lazy(() => import('./CommonComponents/ResetPassword.jsx'));
 const ForgetPassword = lazy(() => import('./CommonComponents/ForgetPassword.jsx'));
 const NotFoundError = lazy(() => import('./UI/Errors/NotFoundError.jsx'));
-const DynamicError = lazy(() => import('./UI/Errors/DynamicError.jsx'));
 
 const router = createBrowserRouter([
   {
@@ -50,19 +50,10 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        path: "/",
+        index: true,
         element: (
           <Suspense fallback={<Spinner />}>
-            <ErrorBoundary>
               <ProtectedRoute><HomePage /></ProtectedRoute>
-            </ErrorBoundary>
-          </Suspense>
-        ),
-        errorElement: (
-          <Suspense fallback={<Spinner />}>
-            <ErrorBoundary>
-              <NotFoundError />
-            </ErrorBoundary>
           </Suspense>
         ),
       },
@@ -70,16 +61,7 @@ const router = createBrowserRouter([
         path: "/:username/create-links",
         element: (
           <Suspense fallback={<Spinner />}>
-            <ErrorBoundary>
               <ProtectedRoute><Links /></ProtectedRoute>
-            </ErrorBoundary>
-          </Suspense>
-        ),
-        errorElement: (
-          <Suspense fallback={<Spinner />}>
-            <ErrorBoundary>
-              <NotFoundError />
-            </ErrorBoundary>
           </Suspense>
         ),
       },
@@ -87,16 +69,7 @@ const router = createBrowserRouter([
         path: "/:username/create-profile",
         element: (
           <Suspense fallback={<Spinner />}>
-            <ErrorBoundary>
               <ProtectedRoute><ProfileDetails /></ProtectedRoute>
-            </ErrorBoundary>
-          </Suspense>
-        ),
-        errorElement: (
-          <Suspense fallback={<Spinner />}>
-            <ErrorBoundary>
-              <NotFoundError />
-            </ErrorBoundary>
           </Suspense>
         ),
       },
@@ -104,16 +77,7 @@ const router = createBrowserRouter([
         path: "/:username/new-group-preview",
         element: (
           <Suspense fallback={<Spinner />}>
-            <ErrorBoundary>
               <ProtectedRoute><Preview /></ProtectedRoute>
-            </ErrorBoundary>
-          </Suspense>
-        ),
-        errorElement: (
-          <Suspense fallback={<Spinner />}>
-            <ErrorBoundary>
-              <NotFoundError />
-            </ErrorBoundary>
           </Suspense>
         ),
       },
@@ -121,16 +85,7 @@ const router = createBrowserRouter([
         path: "/:username/preview-linksGroup/:id",
         element: (
           <Suspense fallback={<Spinner />}>
-            <ErrorBoundary>
-              <ProtectedRoute><Preview /></ProtectedRoute>
-            </ErrorBoundary>
-          </Suspense>
-        ),
-        errorElement: (
-          <Suspense fallback={<Spinner />}>
-            <ErrorBoundary>
-              <NotFoundError />
-            </ErrorBoundary>
+              <ProtectedRoute><PreviewUserLinksGroup /></ProtectedRoute>
           </Suspense>
         ),
       },
@@ -138,52 +93,25 @@ const router = createBrowserRouter([
         path: "/:username/edit-links/:id",
         element: (
           <Suspense fallback={<Spinner />}>
-            <ErrorBoundary>
               <ProtectedRoute><Links /></ProtectedRoute>
-            </ErrorBoundary>
           </Suspense>
         ),
         loader: editLinkLoader,
-        errorElement: (
-          <Suspense fallback={<Spinner />}>
-            <ErrorBoundary>
-              <DynamicError />
-            </ErrorBoundary>
-          </Suspense>
-        ),
       },
       {
         path: "/:username/edit-profile/:id",
         element: (
           <Suspense fallback={<Spinner />}>
-            <ErrorBoundary>
               <ProtectedRoute><ProfileDetails /></ProtectedRoute>
-            </ErrorBoundary>
           </Suspense>
         ),
         loader: editLinkLoader,
-        errorElement: (
-          <Suspense fallback={<Spinner />}>
-            <ErrorBoundary>
-              <DynamicError />
-            </ErrorBoundary>
-          </Suspense>
-        ),
       },
       {
         path: "/:username/edit-preview/:id",
         element: (
           <Suspense fallback={<Spinner />}>
-            <ErrorBoundary>
-              <ProtectedRoute><Preview /></ProtectedRoute>
-            </ErrorBoundary>
-          </Suspense>
-        ),
-        errorElement: (
-          <Suspense fallback={<Spinner />}>
-            <ErrorBoundary>
-              <NotFoundError />
-            </ErrorBoundary>
+              <ProtectedRoute><PreviewUserLinksGroup /></ProtectedRoute>
           </Suspense>
         ),
       },
@@ -193,16 +121,7 @@ const router = createBrowserRouter([
     path: "/:username/:id",
     element: (
       <Suspense fallback={<Spinner />}>
-        <ErrorBoundary>
           <CopyLinkPreview />
-        </ErrorBoundary>
-      </Suspense>
-    ),
-    errorElement: (
-      <Suspense fallback={<Spinner />}>
-        <ErrorBoundary>
-          <NotFoundError />
-        </ErrorBoundary>
       </Suspense>
     ),
   },
@@ -210,16 +129,7 @@ const router = createBrowserRouter([
     path: "/login",
     element: (
       <Suspense fallback={<Spinner />}>
-        <ErrorBoundary>
           <Login />
-        </ErrorBoundary>
-      </Suspense>
-    ),
-    errorElement: (
-      <Suspense fallback={<Spinner />}>
-        <ErrorBoundary>
-          <NotFoundError />
-        </ErrorBoundary>
       </Suspense>
     ),
   },
@@ -227,16 +137,7 @@ const router = createBrowserRouter([
     path: "/reset-password/:token",
     element: (
       <Suspense fallback={<Spinner />}>
-        <ErrorBoundary>
           <ResetPassword />
-        </ErrorBoundary>
-      </Suspense>
-    ),
-    errorElement: (
-      <Suspense fallback={<Spinner />}>
-        <ErrorBoundary>
-          <NotFoundError />
-        </ErrorBoundary>
       </Suspense>
     ),
   },
@@ -244,34 +145,16 @@ const router = createBrowserRouter([
     path: "/confirm-email/:email",
     element: (
       <Suspense fallback={<Spinner />}>
-        <ErrorBoundary>
           <SubmitUser />
-        </ErrorBoundary>
       </Suspense>
     ),
     loader: confirmEmailLoader,
-    errorElement: (
-      <Suspense fallback={<Spinner />}>
-        <ErrorBoundary>
-          <NotFoundError />
-        </ErrorBoundary>
-      </Suspense>
-    ),
   },
   {
     path: "/confirmation/:token",
     element: (
       <Suspense fallback={<Spinner />}>
-        <ErrorBoundary>
           <SubmitConfirmation />
-        </ErrorBoundary>
-      </Suspense>
-    ),
-    errorElement: (
-      <Suspense fallback={<Spinner />}>
-        <ErrorBoundary>
-          <NotFoundError />
-        </ErrorBoundary>
       </Suspense>
     ),
   },
@@ -279,16 +162,7 @@ const router = createBrowserRouter([
     path: "/forget-password",
     element: (
       <Suspense fallback={<Spinner />}>
-        <ErrorBoundary>
           <ForgetPassword />
-        </ErrorBoundary>
-      </Suspense>
-    ),
-    errorElement: (
-      <Suspense fallback={<Spinner />}>
-        <ErrorBoundary>
-          <NotFoundError />
-        </ErrorBoundary>
       </Suspense>
     ),
   },
@@ -296,16 +170,7 @@ const router = createBrowserRouter([
     path: "/create-user",
     element: (
       <Suspense fallback={<Spinner />}>
-        <ErrorBoundary>
           <CreateUser />
-        </ErrorBoundary>
-      </Suspense>
-    ),
-    errorElement: (
-      <Suspense fallback={<Spinner />}>
-        <ErrorBoundary>
-          <NotFoundError />
-        </ErrorBoundary>
       </Suspense>
     ),
   },
@@ -313,16 +178,7 @@ const router = createBrowserRouter([
     path: "/create-profile",
     element: (
       <Suspense fallback={<Spinner />}>
-        <ErrorBoundary>
           <CreateProfile />
-        </ErrorBoundary>
-      </Suspense>
-    ),
-    errorElement: (
-      <Suspense fallback={<Spinner />}>
-        <ErrorBoundary>
-          <NotFoundError />
-        </ErrorBoundary>
       </Suspense>
     ),
   },
@@ -330,16 +186,7 @@ const router = createBrowserRouter([
     path: "/profiles",
     element: (
       <Suspense fallback={<Spinner />}>
-        <ErrorBoundary>
           <ProtectedRoute><Profiles /></ProtectedRoute>
-        </ErrorBoundary>
-      </Suspense>
-    ),
-    errorElement: (
-      <Suspense fallback={<Spinner />}>
-        <ErrorBoundary>
-          <NotFoundError />
-        </ErrorBoundary>
       </Suspense>
     ),
   },
@@ -347,16 +194,7 @@ const router = createBrowserRouter([
     path: "/:username/settings",
     element: (
       <Suspense fallback={<Spinner />}>
-        <ErrorBoundary>
           <ProtectedRoute><Settings /></ProtectedRoute>
-        </ErrorBoundary>
-      </Suspense>
-    ),
-    errorElement: (
-      <Suspense fallback={<Spinner />}>
-        <ErrorBoundary>
-          <NotFoundError />
-        </ErrorBoundary>
       </Suspense>
     ),
   },
@@ -365,13 +203,15 @@ const router = createBrowserRouter([
 function App() {
   return (
       <>
-          <AuthProvider>
-            <ProfileProvider>
-              <RouterProvider router={router}></RouterProvider>
-            </ProfileProvider>
-          </AuthProvider>
-          <Toaster />
-          <ReactQueryDevtools />
+          <GlobalErrorBoundary>
+              <AuthProvider>
+                <ProfileProvider>
+                  <RouterProvider router={router}></RouterProvider>
+                </ProfileProvider>
+              </AuthProvider>
+              <Toaster />
+              <ReactQueryDevtools />
+          </GlobalErrorBoundary>
       </>
 
   );

@@ -42,6 +42,24 @@ body {
 }
 
 @layer components {
+    .video-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        pointer-events: none;
+    }
+    iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+    #root {
+        position: relative;
+        z-index: 1; /* Ensure React content stays above the video */
+      }
     .card-container {
     position: relative;
     overflow: hidden; /* Ensures content doesn't overflow outside the card */

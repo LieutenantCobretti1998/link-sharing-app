@@ -43,7 +43,7 @@ function Layout() {
             ): (
                 <>
                 <Header saveLinks={mutation.mutate} />
-                <main className={`flex ${location.pathname === "/" && "max-sm:flex-col"} bg-light-grey ${location.pathname.includes("preview-linksGroup")  || location.pathname.includes("/edit-preview") || location.pathname.includes("new-group-preview") ? "m-0 min-h-[75vh]": "m-2"}   flex-grow  font-instrumentNormal ${location.pathname.includes("preview-linksGroup")  || location.pathname.includes("/edit-preview") || location.pathname === "/"  || dynamicMatch  ? "justify-center" : ""}`}
+                <main className={`flex gap-2 ${location.pathname === "/" && "max-sm:flex-col"} bg-light-grey ${location.pathname.includes("preview-linksGroup")  || location.pathname.includes("/edit-preview") || location.pathname.includes("new-group-preview") ? "m-0 min-h-[75vh]": "m-2"}   flex-grow  font-instrumentNormal ${location.pathname.includes("preview-linksGroup")  || location.pathname.includes("/edit-preview") || location.pathname === "/"  || dynamicMatch  ? "justify-center" : ""}`}
                     style={{
                         backgroundColor: backgroundColor && isPreviewPath ? backgroundColor : "",
                     }}
