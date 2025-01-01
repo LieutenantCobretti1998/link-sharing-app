@@ -112,7 +112,9 @@ function AllLinks() {
         return <Spinner />;
     }
     else if(AllLinksError || DeleteLinkError) {
-        return <ServerError />
+        const serverError = new Error();
+        serverError.name = "ServerError";
+        throw serverError;
     }
     else if(links.length === 0) {
         return (

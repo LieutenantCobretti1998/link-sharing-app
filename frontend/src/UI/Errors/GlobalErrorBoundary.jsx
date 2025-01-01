@@ -1,15 +1,20 @@
 import { Component } from 'react';
 import NotFoundError from "./NotFoundError.jsx";
+import ServerError from "./ServerError.jsx";
 
 
 class GlobalErrorBoundary extends Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false };
+    this.state = { hasError: false, errorType: null };
   }
 
   static getDerivedStateFromError(error) {
-    return { hasError: true };
+    let errorType = null;
+    if(error.name === "ServerError") {
+      errorType = "ServerError";
+    }
+    return { hasError: true, errorType: errorType };
   }
 
   componentDidCatch(error, info) {
@@ -19,7 +24,9 @@ class GlobalErrorBoundary extends Component {
 
   render() {
     if (this.state.hasError) {
-      // Render custom error UI (e.g., NotFoundError component)
+      if(this.state.errorType === "ServerError") {
+        return <ServerError />;
+      }
       return <NotFoundError />;
     }
 
