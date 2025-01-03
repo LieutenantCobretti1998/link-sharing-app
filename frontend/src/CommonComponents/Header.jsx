@@ -35,7 +35,7 @@ function Header({saveLinks}) {
 
     const checkValidity = () => {
         if (!linksGroupName || !category) {
-            dispatch(toggleModal(true));
+            toast.error("Please check the required fields");
             return;
         }
         saveLinks(savedParameters);
@@ -131,7 +131,7 @@ function Header({saveLinks}) {
 
     return (location.pathname.includes("new-group-preview") || location.pathname.includes("/edit-preview") ? (
             <div
-                className="w-full h-64"
+                className="w-full pb-[10rem]"
                 style=
                     {{
                        backgroundColor: (backgroundColor !== "#FFF" ? backgroundColor : '#4015f8'),
@@ -167,7 +167,7 @@ function Header({saveLinks}) {
                                  width="183"
                                  height="40"
                                  fill="none"
-                                 className="sm:inline-block hidden"
+                                 className="xl:inline-block max-sm:hidden"
                                  viewBox="0 0 183 40">
                                 <path fill="#633CFF" fillRule="evenodd"
                                       d="M5.774 34.225c2.443 2.442 6.37 2.442 14.226 2.442 7.857 0 11.785 0 14.225-2.442 2.442-2.438 2.442-6.368 2.442-14.225 0-7.857 0-11.785-2.442-14.226-2.438-2.44-6.368-2.44-14.225-2.44-7.857 0-11.785 0-14.226 2.44-2.44 2.443-2.44 6.37-2.44 14.226 0 7.857 0 11.785 2.44 14.225Zm10.06-19.642A5.416 5.416 0 1 0 21.25 20a1.25 1.25 0 1 1 2.5 0 7.917 7.917 0 1 1-7.916-7.916 1.25 1.25 0 0 1 0 2.5ZM29.584 20a5.417 5.417 0 0 1-5.417 5.417 1.25 1.25 0 0 0 0 2.5A7.917 7.917 0 1 0 16.25 20a1.25 1.25 0 0 0 2.5 0 5.416 5.416 0 1 1 10.834 0Z"
@@ -181,7 +181,7 @@ function Header({saveLinks}) {
                                   width="32"
                                   height="32"
                                   fill="none"
-                                  className="max-xs:inline-block hidden"
+                                  className="max-sm:inline-block hidden"
                                   viewBox="0 0 32 32">
                                  <path fill="#633CFF" fillRule="evenodd"
                                        d="M4.619 27.38c1.954 1.953 5.095 1.953 11.38 1.953 6.286 0 9.429 0 11.38-1.953 1.954-1.95 1.954-5.095 1.954-11.38 0-6.286 0-9.428-1.953-11.381C25.43 2.667 22.285 2.667 16 2.667c-6.286 0-9.428 0-11.381 1.952-1.952 1.954-1.952 5.095-1.952 11.38 0 6.286 0 9.429 1.952 11.38Zm8.047-15.713A4.333 4.333 0 1 0 17 16a1 1 0 0 1 2 0 6.333 6.333 0 1 1-6.334-6.334 1 1 0 1 1 0 2Zm11 4.333a4.333 4.333 0 0 1-4.333 4.333 1 1 0 1 0 0 2A6.333 6.333 0 1 0 13 16a1 1 0 1 0 2 0 4.334 4.334 0 0 1 8.666 0Z"
@@ -190,7 +190,7 @@ function Header({saveLinks}) {
                          </NavLink>
                      </Button>
                 </div>
-                <div className="flex items-center gap-7">
+                <div className="flex items-center gap-28">
                     <Button type="links"
                             isActive={location.pathname.includes("create-links") || location.pathname.includes("/edit-links")}>
                         <NavLink onClick={(e) => {
@@ -205,7 +205,7 @@ function Header({saveLinks}) {
                                       fill="#737373"
                                       d="M11.154 14.65a.936.936 0 0 1 0 1.329l-.464.464a4.689 4.689 0 1 1-6.631-6.631l1.884-1.884a4.687 4.687 0 0 1 6.432-.194.941.941 0 0 1-1.25 1.407 2.813 2.813 0 0 0-3.857.114l-1.883 1.882a2.813 2.813 0 1 0 3.978 3.978l.464-.464a.936.936 0 0 1 1.327 0ZM16.94 3.558a4.695 4.695 0 0 0-6.63 0l-.465.464a.94.94 0 1 0 1.328 1.328l.464-.464a2.813 2.813 0 0 1 3.978 3.978l-1.883 1.885a2.813 2.813 0 0 1-3.858.111.942.942 0 0 0-1.25 1.407 4.688 4.688 0 0 0 6.43-.19l1.884-1.884a4.695 4.695 0 0 0 .002-6.633v-.002Z"/>
                             </svg>
-                            <h3 className="hidden sm:inline-block group-hover:text-primaryPurple font-bold transition duration-300 ease-in-out">Links</h3>
+                            <h3 className="max-sm:hidden sm:inline-block group-hover:text-primaryPurple font-bold transition duration-300 ease-in-out">Links</h3>
                         </NavLink>
                     </Button>
                     <div>
@@ -218,7 +218,7 @@ function Header({saveLinks}) {
                                           fill="#737373"
                                           d="M10.5 1.563A8.437 8.437 0 1 0 18.938 10 8.447 8.447 0 0 0 10.5 1.562ZM6.716 15.357a4.688 4.688 0 0 1 7.568 0 6.54 6.54 0 0 1-7.568 0Zm1.596-5.982a2.188 2.188 0 1 1 4.376 0 2.188 2.188 0 0 1-4.376 0Zm7.344 4.683a6.523 6.523 0 0 0-2.265-1.83 4.062 4.062 0 1 0-5.782 0 6.522 6.522 0 0 0-2.265 1.83 6.562 6.562 0 1 1 10.304 0h.008Z"/>
                                 </svg>
-                                <h3 className="hidden max-sm:text-[.9rem] sm:inline-block group-hover:text-primaryPurple font-bold transition duration-300 ease-in-out">Profile Details</h3>
+                                <h3 className="max-sm:hidden max-sm:text-[.9rem] sm:inline-block group-hover:text-primaryPurple font-bold transition duration-300 ease-in-out">Profile Details</h3>
                             </NavLink>
                         </Button>
                     </div>
@@ -232,12 +232,12 @@ function Header({saveLinks}) {
                                  width="20"
                                  height="20"
                                  fill="none"
-                                 className="sm:hidden inline-flex"
+                                 className="xl:hidden inline-flex"
                                  viewBox="0 0 20 20">
                                 <path fill="#633CFF"
                                       d="M19.61 9.62c-.03-.064-.714-1.583-2.225-3.095-2.023-2.02-4.572-3.088-7.385-3.088-2.812 0-5.362 1.068-7.382 3.088C1.106 8.037.422 9.556.391 9.62a.944.944 0 0 0 0 .761c.029.064.713 1.583 2.226 3.095 2.021 2.02 4.57 3.086 7.383 3.086 2.813 0 5.362-1.067 7.381-3.086 1.513-1.512 2.197-3.03 2.226-3.095a.946.946 0 0 0 .003-.761Zm-3.599 2.578c-1.677 1.651-3.7 2.49-6.01 2.49-2.313 0-4.334-.839-6.01-2.491A10.185 10.185 0 0 1 2.307 10a10.192 10.192 0 0 1 1.686-2.196C5.667 6.15 7.688 5.312 10 5.312s4.333.839 6.009 2.492c.659.652 1.226 1.39 1.685 2.196a10.19 10.19 0 0 1-1.685 2.197h.002Zm-6.01-5.636a3.438 3.438 0 1 0 0 6.876 3.438 3.438 0 0 0 0-6.876Zm0 5A1.562 1.562 0 1 1 10 8.438a1.562 1.562 0 0 1 0 3.124Z"/>
                             </svg>
-                            <span className="sm:inline-flex hidden">Preview</span>
+                            <span className="xl:inline-flex hidden">Preview</span>
                         </NavLink>
                     </Button>
                 </div>

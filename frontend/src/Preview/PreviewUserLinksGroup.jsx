@@ -59,25 +59,25 @@ function PreviewUserLinksGroup() {
     useEffect(() => {
         if (width <= 640) {
           setCoordinates({
-              circle: { x: 115, y: 20 },
+              circle: { x: 100, y: 20 },
               rect1: { x: 80, y: 184 },
               rect2: { x: 20, y: 220 },
               text1: { x: 180, y: 195 },
               text2: { x: 175, y: 235 },
               shortDescription: { x: 160, y: 190 },
-              bio: {x: 15, y: 260},
+              bio: {x: 15, y: 270},
               links: links?.map((_, index) => (
                   {
                       x: 20,
-                        y: 475 + index * 50,
+                        y: 490 + index * 50,
                         width: 300,
                         height: 40,
                         textX: 60,
-                        textY: 500 + index * 50,
+                        textY: 515 + index * 50,
                         iconX: 35,
-                        iconY: 485 + index * 50,
+                        iconY: 500 + index * 50,
                         arrowX: 270,
-                        arrowY: 485 + index * 50,
+                        arrowY: 505 + index * 50,
                   }
               )),
           });
@@ -124,11 +124,10 @@ function PreviewUserLinksGroup() {
     if(isLoading || !coordinates) {
         return <Spinner />
     }
-    console.log(10)
     return (
         <>
             <section
-                className="max-xs:top-[-150px]  drop-shadow-md relative top-[-120px] rounded-xl h-[820px]"
+                className="max-xs:top-[-150px]  drop-shadow-md relative top-[-120px] rounded-md h-[820px]"
                 style={{
                     backgroundColor: cardBackgroundColor,
                     backgroundImage: `url(${getBackgroundImage(backgroundImage)})`,
@@ -161,13 +160,13 @@ function PreviewUserLinksGroup() {
                     )}
 
                     {/* Links Group Name */}
-                    <rect className="max-xs:w-[200px]"
+                    <rect className="max-xs:w-[200px] rounded-md"
                           width="270"
                           height="20"
                           x={coordinates.rect1.x}
                           y={coordinates.rect1.y}
                           fill={commonColor}
-                          rx="8"/>
+                          rx="4"/>
                     <text
                         x={coordinates.text1.x}
                         y={coordinates.text1.y}
@@ -213,10 +212,10 @@ function PreviewUserLinksGroup() {
                             >
                             <div
                                 xmlns="http://www.w3.org/1999/xhtml"
+                                className="rounded-md"
                                 style={{
                                     backgroundColor: commonColor,
                                     padding: '15px',
-                                    borderRadius: '8px',
                                     fontWeight: 'bold',
                                     display: "flex",
                                     flexDirection: "column",

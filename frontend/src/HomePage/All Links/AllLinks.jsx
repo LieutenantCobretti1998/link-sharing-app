@@ -4,7 +4,6 @@ import Spinner from "../../UI/Spinner.jsx";
 import {getBackgroundImage, getPlatformColor, getPlatformIcon} from "../../Helpers/SliceFunctions.js";
 import {useState} from "react";
 import {useNavigate, useSearchParams} from "react-router-dom";
-import ServerError from "../../UI/Errors/ServerError.jsx";
 import Pagination from "../../UI/Pagination.jsx";
 import {DEFAULT_PAGE, PER_PAGE} from "../../UI/GlobalVariables.js";
 import Delete from "../../UI/Delete.jsx";
@@ -256,10 +255,10 @@ function AllLinks() {
                                         <circle cx="100" cy="45" r="30" fill={link.commonColor}/>
                                     ) : (
                                         <foreignObject
-                                            x="70"
-                                            y="20"
-                                            width="60"
-                                            height="60"
+                                            x="65"
+                                            y="15"
+                                            width="75"
+                                            height="75"
                                             clipPath="url(#screenClip)"
                                             className="rounded-full border-4"
                                             style={{borderColor: link.commonColor}}

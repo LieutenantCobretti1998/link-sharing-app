@@ -3,23 +3,18 @@ import {useDispatch, useSelector} from "react-redux";
 import {addLink, fetchLinks, removeLink, showForm, updateLink} from "../LinksAddition/LinkSlice.js";
 import NewLinkForm from "../LinksAddition/NewLink.jsx";
 import {platforms} from "../Platforms/PreDefaultPlatForms.jsx";
-import {lazy, Suspense, useEffect, useMemo, useState} from "react";
-import Modal from "../UI/Modal.jsx";
-import {backgrounds} from "../BackgroundImages/BackgroundImages.jsx";
+import {useEffect, useMemo, useState} from "react";
 import {removeSavedLink, saveChooses, saveData, toggleModal} from "../SaveLogic/SaveSlice.js";
 import {useLoaderData, useNavigate, useParams} from "react-router-dom";
 import {fetchProfileData} from "../ProfileDetails/ProfileSlice.js";
 import {useMutation} from "@tanstack/react-query";
 import {updateLinksGroup} from "../API/DataFetchingApi.js";
 import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
-import useWindowSize from "../CommonComponents/UseWindowSize.jsx";
-import Spinner from "../UI/Spinner.jsx";
 import toast from "react-hot-toast";
-const MobileOverview =  lazy(() => import("../UI/MobileOverview.jsx"));
 
 function Links() {
     const {id} = useParams();
-    const {width} = useWindowSize();
+    // const {width} = useWindowSize();
     const navigate = useNavigate();
     const handleSessionExpired = useHandleSessionExpired();
     const linksFromQuery = useLoaderData();
@@ -27,9 +22,8 @@ function Links() {
     const showLinkForm = useSelector((state) => state.link.showForm);
     const links = useSelector((state) => state.link.links);
     const linksReducer = useSelector((state) => state.link);
-    const profile = useSelector((state) => state.profile);
+    // const profile = useSelector((state) => state.profile);
     const [errors, setErrors] = useState({});
-    const [isVisible, setIsVisible] = useState(false);
     const profile_data = localStorage.getItem("current-profile");
     const parsedProfileData = profile_data ? JSON.parse(profile_data) : null;
     const profileName = parsedProfileData.profile_name;
@@ -39,7 +33,7 @@ function Links() {
         mutationKey: ["update-link"],
         onSuccess: () => {
             navigate(`/${profileName}/edit-links/${id}`);
-            setIsVisible(true);
+            toast.success("Links were updated successfully")
         },
         onError: (error) => {
             if (error.message === "Session expired. Please log in again.") {
@@ -57,15 +51,6 @@ function Links() {
 
         }
     }, [linksFromQuery]);
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsVisible(false);
-        }, 5000);
-        return () => {
-            clearTimeout(timer);
-        };
-    }, [isVisible]);
 
     useEffect(() => {
         dispatch(toggleModal(false));
@@ -92,10 +77,10 @@ function Links() {
         dispatch(updateLink({id: linkId, updates}));
     };
 
-    const getPlatformIcon = (label) => {
-        const platform = platforms.find((p) => p.label === label);
-        return platform ? platform.icon : null;
-    };
+    // const getPlatformIcon = (label) => {
+    //     const platform = platforms.find((p) => p.label === label);
+    //     return platform ? platform.icon : null;
+    // };
 
     const findLinkById = (id, links) => {
          const link = links.find((link) => link.id === id);
@@ -118,15 +103,15 @@ function Links() {
         }, {})
     }, [links]);
 
-    const getPlatformColor = (label) => {
-        const platform = platforms.find((p) => p.label === label);
-        return platform ? platform.color : null;
-    };
-
-    const getBackgroundImage = (label) => {
-        const background = backgrounds.find((image) => image.value === label);
-        return background ? background.image: null;
-    };
+    // const getPlatformColor = (label) => {
+    //     const platform = platforms.find((p) => p.label === label);
+    //     return platform ? platform.color : null;
+    // };
+    //
+    // const getBackgroundImage = (label) => {
+    //     const background = backgrounds.find((image) => image.value === label);
+    //     return background ? background.image: null;
+    // };
 
     const validateLink = (link) => {
       let errors = {};
@@ -166,7 +151,7 @@ function Links() {
             setErrors({});
             allErrors = {};
             if (!id) {
-                setIsVisible(true);
+                toast.success("Links saved successfully");
             }
             for (const field in linksReducer) {
                 if(field === "showForm") continue;
@@ -177,11 +162,11 @@ function Links() {
     };
     return (
                 <>
-                    {width > 1280 &&
-                        <Suspense fallback={<Spinner />}>
-                            <MobileOverview profile={profile} getBackgroundImage={getBackgroundImage} links={links} getPlatformColor={getPlatformColor} getPlatformIcon={getPlatformIcon} />
-                        </Suspense>
-                        }
+                    {/*{width > 1280 &&*/}
+                    {/*    <Suspense fallback={<Spinner />}>*/}
+                    {/*        <MobileOverview profile={profile} getBackgroundImage={getBackgroundImage} links={links} getPlatformColor={getPlatformColor} getPlatformIcon={getPlatformIcon} />*/}
+                    {/*    </Suspense>*/}
+                    {/*    }*/}
                     <section className="w-full bg-white p-10 relative rounded-md border-light-grey">
                         <div className="pb-12">
                         <h2 className="max-xs:text-[1.2rem] font-bold text-lightBlack-1 text-3xl">Customize your links</h2>
@@ -263,7 +248,6 @@ function Links() {
                                 <Button onclick={handleSave} type="save">Save</Button>
                             )}
                         </div>
-                        <Modal isVisible={isVisible} text={"Links saved successfully"} />
                     </section>
         </>
     );

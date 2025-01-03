@@ -1,11 +1,9 @@
 import {useDispatch, useSelector} from "react-redux";
-import {platforms} from "../Platforms/PreDefaultPlatForms.jsx";
 import {backgrounds} from "../BackgroundImages/BackgroundImages.jsx";
 import Select from "react-select";
 import {fetchProfileData, removeLinksGroupImage, updateProfile} from "./ProfileSlice.js";
 import Button from "../UI/Button.jsx";
-import {lazy, Suspense, useEffect, useReducer, useRef, useState} from "react";
-import Modal from "../UI/Modal.jsx";
+import {useEffect, useReducer, useRef, useState} from "react";
 import {saveChooses, saveData} from "../SaveLogic/SaveSlice.js";
 import {HexColorPicker} from "react-colorful";
 import {useLoaderData, useNavigate, useParams} from "react-router-dom";
@@ -13,11 +11,7 @@ import {fetchLinks} from "../LinksAddition/LinkSlice.js";
 import {useMutation} from "@tanstack/react-query";
 import {updateLinksProfile} from "../API/DataFetchingApi.js";
 import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
-import useWindowSize from "../CommonComponents/UseWindowSize.jsx";
-import Spinner from "../UI/Spinner.jsx";
 import toast from "react-hot-toast";
-const MobileOverview =  lazy(() => import("../UI/MobileOverview.jsx"));
-
 
 const customStyles = {
     control: (provided, state) => ({
@@ -70,7 +64,7 @@ const errorReducer = (state, action) => {
 
 function ProfileDetails() {
     const dispatch_redux = useDispatch();
-    const {width} = useWindowSize();
+    // const {width} = useWindowSize();
     const handleSessionExpired = useHandleSessionExpired();
     const navigate = useNavigate();
     const profileDetailsFromQuery = useLoaderData();
@@ -79,7 +73,7 @@ function ProfileDetails() {
     const fileInputRef = useRef(null);
     const [state, dispatch] = useReducer(errorReducer, { errorType: null, errorMessage: '', successMessage: "" });
     const profile = useSelector((state) => state.profile);
-    const links = useSelector((state) => state.link.links);
+    // const links = useSelector((state) => state.link.links);
     const savedData= useSelector((state) => state.saveChooses);
     const [imagePreview, setImagePreview] = useState("");
     const [description, setDescription] = useState("");
@@ -91,7 +85,6 @@ function ProfileDetails() {
     const [commonColor, setCommonColor] = useState("#D9D9D9");
     const [backgroundColor, setbackgroundColor] = useState("#FFF");
     const [cardBackgroundColor, setcardBackgroundColor] = useState("#FFF");
-    const [isVisible, setIsVisible] = useState(false);
     const maxCategoryLength = 20;
     const maxLinkNameLength = 30;
     const maxDescriptionLength = 40;
@@ -103,7 +96,7 @@ function ProfileDetails() {
         mutationKey: ["update-profile"],
         onSuccess: () => {
             navigate(`/${profileName}/edit-profile/${id}`)
-            setIsVisible(true);
+            toast.success("Profile was updated successfully")
         },
         onError: (error) => {
             if (error.message === "Session expired. Please log in again.") {
@@ -123,12 +116,6 @@ function ProfileDetails() {
         }
     }, [profileDetailsFromQuery]);
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsVisible(false);
-        }, 5000);
-        return () => clearTimeout(timer);
-    }, [isVisible]);
 
     useEffect(() => {
         setTextColor(savedData.textColor || textColor);
@@ -259,20 +246,20 @@ function ProfileDetails() {
         dispatch_redux(updateProfile({ field: "cardBackgroundColor", value: cardBackgroundColor }));
     }
 
-    const getPlatformIcon = (label) => {
-        const platform = platforms.find((p) => p.label === label);
-        return platform ? platform.icon : null;
-    };
-
-    const getPlatformColor = (label) => {
-        const platform = platforms.find((p) => p.label === label);
-        return platform ? platform.color : null;
-    };
-
-    const getBackgroundImage = (label) => {
-        const background = backgrounds.find((image) => image.value === label);
-        return background ? background.image: null;
-    };
+    // const getPlatformIcon = (label) => {
+    //     const platform = platforms.find((p) => p.label === label);
+    //     return platform ? platform.icon : null;
+    // };
+    //
+    // const getPlatformColor = (label) => {
+    //     const platform = platforms.find((p) => p.label === label);
+    //     return platform ? platform.color : null;
+    // };
+    //
+    // const getBackgroundImage = (label) => {
+    //     const background = backgrounds.find((image) => image.value === label);
+    //     return background ? background.image: null;
+    // };
 
     const handleEditLink = () => {
          const errors = handleSave();
@@ -315,18 +302,18 @@ function ProfileDetails() {
             dispatch_redux(saveChooses({ field: field, value: updatedProfile[field] }));
         }
         if (!id) {
-            setIsVisible(true);
+            toast.success("Profile was saved successfully");
         }
         return errors;
     }
 
     return (
         <>
-            {width > 1280 &&
-                        <Suspense fallback={<Spinner />}>
-                            <MobileOverview profile={profile} getBackgroundImage={getBackgroundImage} links={links} getPlatformColor={getPlatformColor} getPlatformIcon={getPlatformIcon} />
-                        </Suspense>
-            }
+            {/*{width > 1280 &&*/}
+            {/*            <Suspense fallback={<Spinner />}>*/}
+            {/*                <MobileOverview profile={profile} getBackgroundImage={getBackgroundImage} links={links} getPlatformColor={getPlatformColor} getPlatformIcon={getPlatformIcon} />*/}
+            {/*            </Suspense>*/}
+            {/*}*/}
             <section className="w-full bg-white p-10 relative rounded-md border-light-grey">
                 <div className="pb-12">
                     <h2 className="max-xs:text-[1.2rem] font-bold text-lightBlack-1 text-3xl">Links Group Details</h2>
@@ -554,7 +541,6 @@ function ProfileDetails() {
                         <Button onclick={handleSave} type="save">Save</Button>
                     )}
                 </div>
-                <Modal isVisible={isVisible} text={"Profile saved successfully"}/>
             </section>
         </>
     );

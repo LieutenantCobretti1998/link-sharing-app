@@ -3,7 +3,9 @@ function Button({type, children, isActive, onclick, disabled, typeForm}) {
     let buttonClasses;
     switch (type) {
         case "backToEditor":
-            buttonClasses = "max-xs:p-1 sm:w-40 border-[.5px] border-primaryPurple h-9 p-1 bg-primaryPurple rounded-md text-white font-bold hover:bg-lightPurple3 transition duration-300 ease-in-out"
+            buttonClasses = "max-xs:p-1 sm:w-40 border-[.5px] border-primaryPurple " +
+                "h-9 p-1 bg-primaryPurple rounded-md text-white font-bold hover:bg-lightPurple3 " +
+                "transition duration-300 ease-in-out hover:bg-primaryPurple3"
             break;
         case "home":
             buttonClasses = disabled
@@ -15,8 +17,8 @@ function Button({type, children, isActive, onclick, disabled, typeForm}) {
                 "rounded-md text-white font-bold bg-primaryPurple hover:bg-primaryPurple3 transition duration-300 ease-in-out";
             break;
         case "header":
-            buttonClasses = "max-xs:w-[1.8rem] sm:border-primaryPurple sm:border-[.5px] max-sm:w-15 w-40 h-9 p-0" +
-                " sm:hover:bg-lightPurple2 rounded-md text-primaryPurple font-bold transition duration-300 ease-in-out";
+            buttonClasses = "max-sm:w-[1.8rem] xl:border-primaryPurple xl:border-[.5px] w-40 h-9 p-0" +
+                " xl:hover:bg-lightPurple2 rounded-md text-primaryPurple font-bold transition duration-300 ease-in-out";
             break;
         case "main":
             buttonClasses = disabled

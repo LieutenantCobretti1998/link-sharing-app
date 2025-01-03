@@ -91,11 +91,11 @@ function NewLinkForm({id, index, onUpdate, onDelete, errors, findLinkById}) {
                     )}
                     {errors?.invalidPlatform && (
                         <span
-                            className="text-red text-sm absolute right-[10px] bottom-[1px]">{errors.invalidPlatform}</span>
+                            className="text-red text-sm absolute right-[10px] bottom-[15px]">{errors.invalidPlatform}</span>
                     )}
                     {errors?.invalidUrl && (
                         <span
-                            className="text-red text-sm absolute right-[10px] bottom-[1px]">{errors.invalidUrl}</span>
+                            className="text-red text-sm absolute right-[10px] bottom-[15px]">{errors.invalidUrl}</span>
                     )}
                 </div>
             </div>
