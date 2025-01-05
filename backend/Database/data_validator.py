@@ -1,5 +1,6 @@
 from abc import ABC
 from typing import Any
+from urllib.parse import quote
 from sqlalchemy import or_
 from sqlalchemy.exc import OperationalError, NoResultFound
 from werkzeug.security import check_password_hash
@@ -62,8 +63,9 @@ class GetAllLinksData(AbstractDataValidator):
         """
         try:
             from .models import LinksGroup
+            encoded_username = quote(username)
             link_group = self.db_session.query(LinksGroup).filter_by(
-                shorten_url=f"{app.config['FRONTEND_URL']}{username}/{links_group_id}").first()
+                shorten_url=f"{app.config['FRONTEND_URL']}/{encoded_username}/{links_group_id}").first()
             if not link_group:
                 raise NoResultFound(f"LinksGroup with id {links_group_id} was not found")
             return link_group

@@ -7,6 +7,8 @@ import {previewLink} from "../API/DataFetchingApi.js";
 import Spinner from "../UI/Spinner.jsx";
 import CopyPageHeader from "./CopyPageHeader.jsx";
 import useHandleSessionExpired from "../CustomLogic/UseHandleSessionExpired.js";
+import {useEffect, useState} from "react";
+import useWindowSize from "../CommonComponents/UseWindowSize.jsx";
 
 
 function CopyLinkPreview() {
@@ -14,6 +16,8 @@ function CopyLinkPreview() {
     const {id, username} = useParams();
     const {profileBio} = useSelector((state) => state.saveChooses);
     const handleSessionExpired = useHandleSessionExpired();
+    const [coordinates, setCoordinates] = useState(null);
+    const {width} = useWindowSize();
     const {data: CopiedLinksData, isError: FailedRequest, isLoading} = useQuery({
         queryKey: ["ChosenLinks", id, username],
         queryFn: () => previewLink(username, id),
@@ -23,12 +27,66 @@ function CopyLinkPreview() {
             }
         }
     });
+
     const {
              linksGroupName, links, shortDescription,
              linksGroupImage, textColor, commonColor,
              backgroundColor, backgroundImage, bioIncluded, cardBackgroundColor
           } = CopiedLinksData || {};
-    console.log(CopiedLinksData)
+
+    useEffect(() => {
+        if (width <= 640) {
+          setCoordinates({
+              circle: { x: 100, y: 20 },
+              emptyCircle: {x: 180},
+              rect1: { x: 80, y: 184 },
+              rect2: { x: 20, y: 220 },
+              text1: { x: 180, y: 195 },
+              text2: { x: 175, y: 235 },
+              shortDescription: { x: 160, y: 190 },
+              bio: {x: 15, y: 270},
+              links: links?.map((_, index) => (
+                  {
+                      x: 20,
+                        y: 490 + index * 50,
+                        width: 300,
+                        height: 40,
+                        textX: 60,
+                        textY: 515 + index * 50,
+                        iconX: 35,
+                        iconY: 500 + index * 50,
+                        arrowX: 270,
+                        arrowY: 505 + index * 50,
+                  }
+              )),
+          });
+        } else { // Default for larger screens
+          setCoordinates({
+              circle: { x: 175, y: 20 },
+              emptyCircle: {x: 245},
+              rect1: { x: 110, y: 195 },
+              rect2: { x: 60, y: 220 },
+              text1: { x: 245, y: 205 },
+              text2: { x: 250, y: 238 },
+              bio: {x: 50, y: 270},
+              shortDescription: { x: 245, y: 230 },
+              links: links?.map((_, index) => (
+                  {
+                      x: 25,
+                        y: 475 + index * 60,
+                        width: 450,
+                        height: 40,
+                        textX: 70,
+                        textY: 500 + index * 60,
+                        iconX: 35,
+                        iconY: 488 + index * 60,
+                        arrowX: 430,
+                        arrowY: 488 + index * 60,
+                  }
+              )),
+          });
+        }
+    }, [width, links]);
     const getBackgroundImage = (label) => {
         const background = backgrounds.find((image) => image.value === label);
         return background ? background.image: null;
@@ -42,126 +100,174 @@ function CopyLinkPreview() {
         return platform ? platform.icon : null;
     };
 
-    // const handleCalculateAverageColor = useCallback(() => {
-    //     const textColorRgb = hexToRgb(textColor);
-    //     const commonColorRgb = hexToRgb(commonColor);
-    //     const backgroundColorRgb = hexToRgb(backgroundColor);
-    //
-    //     const avgRgb = averageColors([textColorRgb, commonColorRgb, backgroundColorRgb]);
-    //     const blendedColor = rgbToHex(avgRgb.r, avgRgb.g, avgRgb.b);
-    //     // document.body.style.backgroundColor = blendedColor;
-    //     dispatch(setBlendedColor(blendedColor));
-    // },[textColor, commonColor, backgroundColor, dispatch]);
-    // useEffect(() => {
-    //    if (textColor && commonColor && backgroundColor) {
-    //         if (
-    //             textColor !== "#333333" &&
-    //             commonColor !== "#D9D9D9" &&
-    //             backgroundColor !== "#FFF"
-    //         ) {
-    //             handleCalculateAverageColor();
-    //         }
-    //     }
-    // }, [textColor, commonColor, backgroundColor]);
     if(isLoading) {
         return <Spinner />
     }
     return (
         <>
             <CopyPageHeader backgroundColor={backgroundColor} />
-            <main className="flex flex-col bg-light-grey min-h-[75vh]  flex-grow gap-5 font-instrumentNormal justify-center"
+            <main className="flex gap-2 bg-light-grey m-0   flex-grow  font-instrumentNormal justify-center"
                 style={{
                     backgroundColor: backgroundColor
                 }}
             >
-                <section className="self-center max-xs:top-[-140px] max-xs:h-1/2 drop-shadow-md relative top-[-120px] rounded-xl h-[500px] align-center justify-center"
-                     style={{
-                         backgroundColor: cardBackgroundColor,
-                         backgroundImage: `url(${getBackgroundImage(backgroundImage)})`,
-                         backgroundSize: "cover",
-                         backgroundPosition: "center"
+                <section
+                    className="max-xs:top-[-150px]  drop-shadow-md relative top-[-120px] rounded-xl h-[820px]"
+                    style={{
+                        backgroundColor: cardBackgroundColor,
+                        backgroundImage: `url(${getBackgroundImage(backgroundImage)})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center"
                     }}
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="300" height="585">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="500" height="820" className="max-xs:w-[350px]">
                         {!linksGroupImage ? (
-                            <circle cx="153.5" cy="112" r="48" fill={commonColor}/>
+                            <circle cx={coordinates.emptyCircle.x} cy="112" r="48" fill={commonColor}/>
                         ) : (
-                            <foreignObject x="105" y="64" width="96" height="96" clipPath="url(#screenClip)"
-                                           className="rounded-full border-4" style={{borderColor: commonColor}}>
+                            <foreignObject
+                                x={coordinates.circle.x}
+                                y={coordinates.circle.y}
+                                width="150"
+                                height="150"
+                                clipPath="url(#screenClip)"
+
+                                style={{borderColor: commonColor}}
+                            >
                                 <div className="w-full h-full">
                                     <img
                                         src={linksGroupImage}
                                         alt="Links Group"
-                                        className="w-full h-full"
+                                        className="w-full h-full object-cover rounded-full border-4"
+                                        style={{borderColor: commonColor}}
                                     />
                                 </div>
                             </foreignObject>
                         )}
-                        <rect width="270" height="20" x="20" y="185" fill={commonColor} rx="8"/>
+
+                        {/* Links Group Name */}
+                        <rect className="max-xs:w-[200px]"
+                              width="270"
+                              height="20"
+                              x={coordinates.rect1.x}
+                              y={coordinates.rect1.y}
+                              fill={commonColor}
+                              rx="8"/>
                         <text
-                            x="155"
-                            y="195"
+                            x={coordinates.text1.x}
+                            y={coordinates.text1.y}
                             fill={textColor}
                             fontSize="12"
                             textAnchor="middle"
                             dominantBaseline="middle"
+                            className="max-xs:text-[10px]"
                         >
                             {linksGroupName}
                         </text>
-                        <rect width="278" height="30" x="15" y="214" fill={commonColor} rx="4"/>
+
+                        {/* Short Description */}
+                        <rect
+                            width="378"
+                            height="35"
+                            x={coordinates.rect2.x}
+                            y={coordinates.rect2.y}
+                            fill={commonColor}
+                            rx="4"
+                            className="max-xs:w-[300px]"
+                        />
                         <text
-                            x="155"
-                            y="230"
+                            x={coordinates.text2.x}
+                            y={coordinates.text2.y}
                             fill={textColor}
-                            fontSize="10"
+                            fontSize="14"
                             textAnchor="middle"
                             dominantBaseline="middle"
-
+                            className="max-xs:text-[10px]"
                         >
                             {shortDescription}
                         </text>
-                        {links.map((link, index) => (
-                        <g key={link.id}>
-                            <a href={link.url} target="_blank" rel="noopener noreferrer">
-                                <rect
-                                    width="237"
-                                    height="44"
-                                    x="35"
-                                    y={270 + index * 64}
-                                    fill={getPlatformColor(link.label)}
-                                    rx="8"
-                                />
-                                <g transform={`translate(45, ${284 + index * 64})`}>
-                                    {getPlatformIcon(link.label)}
-                                </g>
-                                <text
-                                    x="70"
-                                    y={296 + index * 64}  /* Text positioning inside the rect */
-                                    fontSize="14"
-                                    fill="white"
+
+                        {/* Bio Section */}
+                        {bioIncluded && (
+                            <foreignObject
+                                x={coordinates.bio.x}
+                                y={coordinates.bio.y}
+                                width="400"
+                                height="240"
+                                className="max-xs:w-[320px]"
+                            >
+                                <div
+                                    xmlns="http://www.w3.org/1999/xhtml"
+                                    style={{
+                                        backgroundColor: commonColor,
+                                        padding: '15px',
+                                        borderRadius: '8px',
+                                        fontWeight: 'bold',
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        justifyContent: 'start',
+                                        wordWrap: 'break-word',
+                                        overflowWrap: 'break-word',
+                                        textAlign: 'left',
+                                    }}
                                 >
-                                    {link.label || `Link #${index + 1}`}
-                                </text>
-                                <g transform={`translate(250, ${284 + index * 64})`}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
-                                         viewBox="0 0 16 16">
-                                        <path fill="#fff"
-                                              d="M2.667 7.333v1.334h8L7 12.333l.947.947L13.227 8l-5.28-5.28L7 3.667l3.667 3.666h-8Z"/>
-                                    </svg>
+                                    <p style={{color: textColor, fontSize: '14px', margin: 0,}}>{profileBio}</p>
+                                </div>
+                            </foreignObject>
+                        )}
+
+                        {links.map((link, index) => {
+                            const linkCoords = coordinates.links?.[index];
+                            if (!linkCoords) return null;
+
+                            return (
+                                <g key={link.id}
+                                   className="pointer-events-auto transition-transform duration-200 ease-in-out scale-100 hover:scale-105 [transform-box:fill-box] [transform-origin:center]">
+                                    <a href={link.url} target="_blank" rel="noopener noreferrer">
+                                        <rect
+                                            width={linkCoords.width}
+                                            height={linkCoords.height}
+                                            x={linkCoords.x}
+                                            y={linkCoords.y}
+                                            fill={getPlatformColor(link.label)}
+                                            rx="8"
+                                        />
+
+                                        {/* Platform Icon */}
+                                        <g transform={`translate(${linkCoords.iconX}, ${linkCoords.iconY})`}>
+                                            {getPlatformIcon(link.label)}
+                                        </g>
+
+                                        {/* Link Text */}
+                                        <text
+                                            x={linkCoords.textX}
+                                            y={linkCoords.textY}
+                                            fontSize="12"   // Make the font smaller if you wish
+                                            fill="white"
+                                        >
+                                            {link.label || `Link #${index + 1}`}
+                                        </text>
+
+                                        {/* Arrow Icon */}
+                                        <g transform={`translate(${linkCoords.arrowX}, ${linkCoords.arrowY})`}>
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="14"  // slightly smaller arrow
+                                                height="14"
+                                                fill="none"
+                                                viewBox="0 0 16 16"
+                                            >
+                                                <path
+                                                    fill="#fff"
+                                                    d="M2.667 7.333v1.334h8L7 12.333l.947.947L13.227 8l-5.28-5.28L7 3.667l3.667 3.666h-8Z"
+                                                />
+                                            </svg>
+                                        </g>
+                                    </a>
                                 </g>
-                            </a>
-                        </g>
-                    ))}
+                            );
+                        })}
                     </svg>
                 </section>
-                {bioIncluded && (
-                <section
-                    style={{backgroundColor:commonColor}}
-                    className="relative self-center w-full min-w-[500px] max-w-[700px] my-3  px-4 py-2 rounded-md text-center top-[-115px]">
-                    <h1 style={{color: textColor}} className="text-lg font-bold mb-2">Bio Description</h1>
-                    <p style={{color: textColor}} className="text-sm text-gray-700 break-words">{profileBio}</p>
-                </section>
-            )}
             </main>
 
         </>

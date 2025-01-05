@@ -358,7 +358,7 @@ function ProfileDetails() {
 
                     <p className="max-xs:text-[.7rem] w-[250px] font-normal text-lightBlack-2 text-base">
                         Image should be below
-                        1024x1024px or it will be resized. Use PNG or JPG/JPEG format.
+                        1024x1024px or it will be resized. Use PNG or JPG/JPEG format. Max 2mb
                     </p>
                     {linksGroupImage && (
                         <button
