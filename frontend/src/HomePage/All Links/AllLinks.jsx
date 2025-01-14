@@ -54,7 +54,7 @@ function AllLinks() {
              const totalPages = Math.ceil(fetchedData.total_links / fetchedData.per_page);
              const currentPage = parseInt(searchParams.get("page")) || 1;
             if (currentPage > totalPages && currentPage !== 1) {
-                setSearchParams({ page: (currentPage - 1).toString() });
+                setSearchParams({ page: (1).toString() });
             }
         },
         onError: (error) => {

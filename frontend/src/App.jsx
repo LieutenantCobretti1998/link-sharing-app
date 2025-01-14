@@ -6,7 +6,6 @@ import Spinner from "./UI/Spinner.jsx";
 import { editLinkLoader } from "./Links/EditLinksPreLoader.js";
 import { AuthProvider } from "./CustomLogic/AuthProvider.jsx";
 import { ProfileProvider } from "./CustomLogic/ProfileProvider.jsx";
-import ErrorBoundary from "./UI/Errors/GlobalErrorBoundary.jsx";
 import {confirmEmailLoader} from "./Helpers/EmailAutoSending.js";
 import PreviewUserLinksGroup from "./Preview/PreviewUserLinksGroup.jsx";
 import GlobalErrorBoundary from "./UI/Errors/GlobalErrorBoundary.jsx";
@@ -29,23 +28,14 @@ const CreateProfile = lazy(() => import('./CommonComponents/CreateProfile.jsx'))
 const Settings = lazy(() => import('./CommonComponents/Settings.jsx'));
 const ResetPassword = lazy(() => import('./CommonComponents/ResetPassword.jsx'));
 const ForgetPassword = lazy(() => import('./CommonComponents/ForgetPassword.jsx'));
-const NotFoundError = lazy(() => import('./UI/Errors/NotFoundError.jsx'));
+
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
       <Suspense fallback={<Spinner />}>
-        <ErrorBoundary>
           <ProtectedRoute><Layout /></ProtectedRoute>
-        </ErrorBoundary>
-      </Suspense>
-    ),
-    errorElement: (
-      <Suspense fallback={<Spinner />}>
-        <ErrorBoundary>
-          <NotFoundError />
-        </ErrorBoundary>
       </Suspense>
     ),
     children: [
